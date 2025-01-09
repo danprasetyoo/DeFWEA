@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        BACKEND_URL = 'http://localhost:3001'
+        FRONTEND_URL = 'http://localhost:3000'
+    }
+
+    stages {
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    sh 'yarn install'
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                script {
+                    sh 'yarn build backend'
+                }
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                script {
+                    sh 'yarn build frontend'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    sh 'yarn test'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Insert deployment commands here (e.g., Docker, Kubernetes)
+                }
+            }
+        }
+    }
+}

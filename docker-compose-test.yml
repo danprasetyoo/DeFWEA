@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: fwea-backend
+      dockerfile: Dockerfile.test
+    image: fwea-test:1.0
+    container_name: fwea-backend-test
+    ports:
+      - "5001:5000"
+    networks:
+      - fwea-test
+    env_file:
+      - fwea-backend/.env
+    volumes:
+      - ./fwea-backend:/app 
+    depends_on:
+      - db
+    command: ["pytest", "app/test_main.py", "--disable-warnings"]
+
+  frontend:
+    build:
+      context: fwea-frontend
+      dockerfile: Dockerfile
+    container_name: fwea-frontend-test
+    ports:
+      - "3001:3000"
+    networks:
+      - fwea-test
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:5001
+
+  db:
+    image: postgres:13
+    container_name: fwea-db-test
+    ports:
+      - "5433:5432"
+    networks:
+      - fwea-test
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: test_database
+    volumes:
+      - db-data-test:/var/lib/postgresql/data_test
+
+networks:
+  fwea-test:
+    name: fwea-test
+
+volumes:
+  db-data-test:  

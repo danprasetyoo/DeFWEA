@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - oracle
+    environment:
+      - DB_HOST=oracle
+      - DB_PORT=1521
+      - DB_USER=your_username
+      - DB_PASSWORD=your_password
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  oracle:
+    image: oracle/database:19.3.0-ee
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PWD=oracle
+      - ORACLE_SID=xe
+      - ORACLE_CHARACTERSET=AL32UTF8
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+
+volumes:
+  jenkins_home:
