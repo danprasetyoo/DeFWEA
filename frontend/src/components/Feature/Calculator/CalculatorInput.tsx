@@ -6,6 +6,7 @@ import PremiumDetail from "./PremiumDetail";
 import ShareDetail from "./ShareDetail";
 import axios from "axios";
 
+// Interface Definitions
 interface TreatyDetail {
     treatyCurrentYear: {
         currentExchange: string;
@@ -205,14 +206,26 @@ function CalculatorInput() {
         },
     });
 
+    const [isLoading, setIsLoading] = useState(false);  // Loading state
+
+    // Handle input change for nested objects
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+        const { id, value } = e.target;
+
+        if (!id) {
+            console.error('Input id is missing:', e.target);
+            return;
+        }
+
         setFormData((prevData) => {
-            const keys = name.split('.');
+            const keys = id.split('.');
             const updatedData = { ...prevData };
 
             let ref: any = updatedData;
             for (let i = 0; i < keys.length - 1; i++) {
+                if (!ref[keys[i]]) {
+                    ref[keys[i]] = {};
+                }
                 ref = ref[keys[i]];
             }
 
@@ -221,15 +234,27 @@ function CalculatorInput() {
         });
     };
 
+
+
+    // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Form Submitted", formData);
+
+        // Simple validation to ensure required fields are filled
+        if (!formData.inputStatementDate || !formData.inputOpeningfund) {
+            alert("Please fill all required fields.");
+            return;
+        }
+
+        setIsLoading(true);  // Set loading to true
 
         try {
             const response = await axios.post("https://your-api-endpoint.com/saveData", formData);
             console.log("Data berhasil disimpan:", response.data);
         } catch (error) {
             console.error("Ada kesalahan saat menyimpan data:", error);
+        } finally {
+            setIsLoading(false);  // Set loading to false
         }
     };
 
@@ -249,9 +274,10 @@ function CalculatorInput() {
                 <div className="flex justify-end py-3">
                     <button
                         type="submit"
+                        disabled={isLoading}
                         className="w-48 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg focus:ring-4 focus:ring-blue-300 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     >
-                        Submit
+                        {isLoading ? "Submitting..." : "Submit"}
                     </button>
                 </div>
             </div>
