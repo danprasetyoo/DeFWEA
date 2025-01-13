@@ -1,21 +1,26 @@
 const express = require('express');
-const oracledb = require('oracledb');
+const { Client } = require('pg');
 
 const app = express();
-const port = 3001;
+const port = 5000;
 
 const dbConfig = {
-    user: 'admin',
+    user: 'postgres',
+    host: 'postgres',
+    database: 'fwea',
     password: 'admin',
-    connectString: 'oracle_container:1521/xe',
+    port: 5432,
 };
 
-oracledb.getConnection(dbConfig)
-    .then(connection => {
-        console.log('Connected to Oracle DB!');
-        connection.close();
+const client = new Client(dbConfig);
+
+client.connect()
+    .then(() => {
+        console.log('Connected to PostgreSQL DB!');
     })
-    .catch(err => console.error('DB connection failed:', err));
+    .catch(err => {
+        console.error('DB connection failed:', err);
+    });
 
 app.get('/', (req, res) => {
     res.send('Backend is running');

@@ -1,4 +1,3 @@
-import React from "react";
 import SidebarMenu from "./SidebarMenu";
 
 function Navbar() {

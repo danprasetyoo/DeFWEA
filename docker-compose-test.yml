@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
     container_name: fwea-frontend-test
     ports:
-      - "3001:3000"
+      - "5006:5005"
     networks:
       - fwea-test
     environment:
