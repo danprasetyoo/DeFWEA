@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import { useFormik } from "formik";
 import StatementInput from "./StatementInput";
-import TretyDetail from "./TreatyDetail";
+import TreatyDetail from "./TreatyDetail";
 import LayerDetail from "./LayerDetail";
 import PremiumDetail from "./PremiumDetail";
 import ShareDetail from "./ShareDetail";
 import axios from "axios";
+import { validationSchema } from "../../../validation/validationSchema";
+import { useState } from "react";
 
-// Interface Definitions
+// Interface Definitions for nested fields
 interface TreatyDetail {
     treatyCurrentYear: {
         currentExchange: string;
@@ -99,177 +101,131 @@ interface ShareDetail {
     };
 }
 
-interface FormData {
-    inputStatementDate: string;
-    inputOpeningfund: string;
-    inputStatementPeriod: string;
-    inputTreatyYear: string;
-    inputTreatyDetail: TreatyDetail;
-    inputLayerDetail: LayerDetail;
-    inputPremium: PremiumDetail;
-    inputShare: ShareDetail;
-}
-
 function CalculatorInput() {
-    const [formData, setFormData] = useState<FormData>({
-        inputStatementDate: "",
-        inputOpeningfund: "",
-        inputStatementPeriod: "",
-        inputTreatyYear: "",
-        inputTreatyDetail: {
-            treatyCurrentYear: {
-                currentExchange: "",
-                currentMargin: "",
-                currentBrokerage: "",
-                currentInterest: "",
-                currentLAP: "",
-                currentMaintenance: "",
+    const [isLoading, setIsLoading] = useState(false);
+
+    const formik = useFormik({
+        initialValues: {
+            inputStatementDate: "",
+            inputOpeningfund: "",
+            inputStatementPeriod: "",
+            inputTreatyYear: "",
+            inputTreatyDetail: {
+                treatyCurrentYear: {
+                    currentExchange: "",
+                    currentMargin: "",
+                    currentBrokerage: "",
+                    currentInterest: "",
+                    currentLAP: "",
+                    currentMaintenance: "",
+                },
+                treatyPriorYear: {
+                    priorExchange: "",
+                    priorMargin: "",
+                    priorBrokerage: "",
+                    priorInterest: "",
+                    priorLAP: "",
+                    priorMaintenance: "",
+                },
             },
-            treatyPriorYear: {
-                priorExchange: "",
-                priorMargin: "",
-                priorBrokerage: "",
-                priorInterest: "",
-                priorLAP: "",
-                priorMaintenance: "",
+            inputLayerDetail: {
+                layerPdma: {
+                    pdmaDetailUsd: "",
+                    pdmaDetailIdr: "",
+                    pdmaDetailShare: "",
+                },
+                layerMa: {
+                    maDetailUsd: "",
+                    maDetailIdr: "",
+                    maDetailShare: "",
+                },
+                layerAv: {
+                    avDetailUsd: "",
+                    avDetailIdr: "",
+                    avDetailShare: "",
+                },
+                layerLiability: {
+                    liabilityDetailUsd: "",
+                    liabilityDetailIdr: "",
+                    liabilityDetailShare: "",
+                },
+            },
+            inputPremium: {
+                premiumPdma: {
+                    pdmaPremiumUsd: "",
+                    pdmaPremiumIdr: "",
+                    pdmaPremiumShare: "",
+                },
+                premiumMa: {
+                    maPremiumUsd: "",
+                    maPremiumIdr: "",
+                    maPremiumShare: "",
+                },
+                premiumAv: {
+                    avPremiumUsd: "",
+                    avPremiumIdr: "",
+                    avPremiumShare: "",
+                },
+                premiumLiability: {
+                    liabilityPremiumUsd: "",
+                    liabilityPremiumIdr: "",
+                    liabilityPremiumShare: "",
+                },
+            },
+            inputShare: {
+                sharePdma: {
+                    pdmaShareUsd: "",
+                    pdmaShareIdr: "",
+                    pdmaSharePremiumUsd: "",
+                    pdmaSharePremiumIdr: "",
+                },
+                shareMa: {
+                    maShareUsd: "",
+                    maShareIdr: "",
+                    maSharePremiumUsd: "",
+                    maSharePremiumIdr: "",
+                },
+                shareAv: {
+                    avShareUsd: "",
+                    avShareIdr: "",
+                    avSharePremiumUsd: "",
+                    avSharePremiumIdr: "",
+                },
+                shareLiability: {
+                    liabilityShareUsd: "",
+                    liabilityShareIdr: "",
+                    liabilitySharePremiumUsd: "",
+                    liabilitySharePremiumIdr: "",
+                },
             },
         },
-        inputLayerDetail: {
-            layerPdma: {
-                pdmaDetailUsd: "",
-                pdmaDetailIdr: "",
-                pdmaDetailShare: "",
-            },
-            layerMa: {
-                maDetailUsd: "",
-                maDetailIdr: "",
-                maDetailShare: "",
-            },
-            layerAv: {
-                avDetailUsd: "",
-                avDetailIdr: "",
-                avDetailShare: "",
-            },
-            layerLiability: {
-                liabilityDetailUsd: "",
-                liabilityDetailIdr: "",
-                liabilityDetailShare: "",
-            },
-        },
-        inputPremium: {
-            premiumPdma: {
-                pdmaPremiumUsd: "",
-                pdmaPremiumIdr: "",
-                pdmaPremiumShare: "",
-            },
-            premiumMa: {
-                maPremiumUsd: "",
-                maPremiumIdr: "",
-                maPremiumShare: "",
-            },
-            premiumAv: {
-                avPremiumUsd: "",
-                avPremiumIdr: "",
-                avPremiumShare: "",
-            },
-            premiumLiability: {
-                liabilityPremiumUsd: "",
-                liabilityPremiumIdr: "",
-                liabilityPremiumShare: "",
-            },
-        },
-        inputShare: {
-            sharePdma: {
-                pdmaShareUsd: "",
-                pdmaShareIdr: "",
-                pdmaSharePremiumUsd: "",
-                pdmaSharePremiumIdr: "",
-            },
-            shareMa: {
-                maShareUsd: "",
-                maShareIdr: "",
-                maSharePremiumUsd: "",
-                maSharePremiumIdr: "",
-            },
-            shareAv: {
-                avShareUsd: "",
-                avShareIdr: "",
-                avSharePremiumUsd: "",
-                avSharePremiumIdr: "",
-            },
-            shareLiability: {
-                liabilityShareUsd: "",
-                liabilityShareIdr: "",
-                liabilitySharePremiumUsd: "",
-                liabilitySharePremiumIdr: "",
-            },
+        validationSchema,
+        onSubmit: async (values) => {
+            setIsLoading(true);
+
+            try {
+                const response = await axios.post("/api/calculators", values);
+                console.log("Data berhasil disimpan:", response.data);
+            } catch (error) {
+                console.error("Ada kesalahan saat menyimpan data:", error);
+            } finally {
+                setIsLoading(false);
+            }
         },
     });
 
-    const [isLoading, setIsLoading] = useState(false);
-
-    // Handle input change for nested objects
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { id, value } = e.target;
-
-        if (!id) {
-            console.error('Input id is missing:', e.target);
-            return;
-        }
-
-        setFormData((prevData) => {
-            const keys = id.split('.');
-            const updatedData = { ...prevData };
-
-            let ref: any = updatedData;
-            for (let i = 0; i < keys.length - 1; i++) {
-                if (!ref[keys[i]]) {
-                    ref[keys[i]] = {};
-                }
-                ref = ref[keys[i]];
-            }
-
-            ref[keys[keys.length - 1]] = value;
-            return updatedData;
-        });
-    };
-
-
-
-    // Handle form submission
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        // Simple validation to ensure required fields are filled
-        if (!formData.inputStatementDate || !formData.inputOpeningfund) {
-            alert("Please fill all required fields.");
-            return;
-        }
-
-        setIsLoading(true);  // Set loading to true
-
-        try {
-            const response = await axios.post("https://fwea/saveData", formData);
-            console.log("Data berhasil disimpan:", response.data);
-        } catch (error) {
-            console.error("Ada kesalahan saat menyimpan data:", error);
-        } finally {
-            setIsLoading(false);  // Set loading to false
-        }
-    };
-
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
-                <StatementInput formData={formData} handleInputChange={handleInputChange} />
+                <StatementInput formData={formik.values} handleInputChange={formik.handleChange} />
                 <br />
-                <TretyDetail formData={formData} handleInputChange={handleInputChange} />
+                <TreatyDetail formData={formik.values} handleInputChange={formik.handleChange} />
                 <br />
-                <LayerDetail formData={formData} handleInputChange={handleInputChange} />
+                <LayerDetail formData={formik.values} handleInputChange={formik.handleChange} />
                 <br />
-                <PremiumDetail formData={formData} handleInputChange={handleInputChange} />
+                <PremiumDetail formData={formik.values} handleInputChange={formik.handleChange} />
                 <br />
-                <ShareDetail formData={formData} handleInputChange={handleInputChange} />
+                <ShareDetail formData={formik.values} handleInputChange={formik.handleChange} />
 
                 <div className="flex justify-end py-3">
                     <button
