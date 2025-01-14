@@ -206,7 +206,7 @@ function CalculatorInput() {
         },
     });
 
-    const [isLoading, setIsLoading] = useState(false);  // Loading state
+    const [isLoading, setIsLoading] = useState(false);
 
     // Handle input change for nested objects
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,7 +249,7 @@ function CalculatorInput() {
         setIsLoading(true);  // Set loading to true
 
         try {
-            const response = await axios.post("https://your-api-endpoint.com/saveData", formData);
+            const response = await axios.post("https://fwea/saveData", formData);
             console.log("Data berhasil disimpan:", response.data);
         } catch (error) {
             console.error("Ada kesalahan saat menyimpan data:", error);

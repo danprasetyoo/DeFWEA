@@ -1,31 +1,34 @@
 const express = require('express');
-const { Client } = require('pg');
-
 const app = express();
-const port = 5000;
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const calculatorRoutes = require('./routes/calculatorRoutes.js');
 
-const dbConfig = {
-    user: 'postgres',
-    host: 'postgres',
-    database: 'fwea',
-    password: 'admin',
-    port: 5432,
-};
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
 
-const client = new Client(dbConfig);
+// Routes
+app.use('/api/calculators', calculatorRoutes);
 
-client.connect()
-    .then(() => {
-        console.log('Connected to PostgreSQL DB!');
-    })
-    .catch(err => {
-        console.error('DB connection failed:', err);
-    });
-
+// Root route (optional)
 app.get('/', (req, res) => {
-    res.send('Backend is running');
+    res.send('API is working');
 });
 
-app.listen(port, () => {
-    console.log(`Backend listening at http://localhost:${port}`);
+// Handle 404 - Resource Not Found
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Resource not found' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: err.message });
+});
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

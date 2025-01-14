@@ -1,0 +1,119 @@
+{
+  "id": 1,
+  "inputStatementDate": "2025-01-14T00:00:00.000Z",
+  "inputOpeningfund": "1000000",
+  "inputStatementPeriod": "2025-01-01T00:00:00.000Z",
+  "inputTreatyYear": 2025,
+  "inputTreatyDetail": [
+    {
+      "id": 1,
+      "formDataId": 1,
+      "treatyCurrentYear": {
+        "currentExchange": 1000,
+        "currentMargin": 0.05,
+        "currentBrokerage": 0.01,
+        "currentInterest": 0.03,
+        "currentLAP": 5000,
+        "currentMaintenance": 200
+      },
+      "treatyPriorYear": {
+        "priorExchange": 950,
+        "priorMargin": 0.04,
+        "priorBrokerage": 0.009,
+        "priorInterest": 0.02,
+        "priorLAP": 4800,
+        "priorMaintenance": 180
+      },
+      "version": 1,
+      "isCurrent": true
+    }
+  ],
+  "inputLayerDetail": [
+    {
+      "id": 1,
+      "formDataId": 1,
+      "pdmaLayer": {
+        "pdmaDetailUsd": 200000,
+        "pdmaDetailIdr": 3000000,
+        "pdmaDetailShare": 0.1
+      },
+      "maLayer": {
+        "maDetailUsd": 150000,
+        "maDetailIdr": 2250000,
+        "maDetailShare": 0.15
+      },
+      "avLayer": {
+        "avDetailUsd": 100000,
+        "avDetailIdr": 1500000,
+        "avDetailShare": 0.2
+      },
+      "liabilityLayer": {
+        "liabilityDetailUsd": 50000,
+        "liabilityDetailIdr": 750000,
+        "liabilityDetailShare": 0.25
+      },
+      "version": 1,
+      "isCurrent": true
+    }
+  ],
+  "inputPremiumDetail": [
+    {
+      "id": 1,
+      "formDataId": 1,
+      "pdmaPremium": {
+        "pdmaPremiumUsd": 50000,
+        "pdmaPremiumIdr": 750000,
+        "pdmaPremiumShare": 0.1
+      },
+      "maPremium": {
+        "maPremiumUsd": 40000,
+        "maPremiumIdr": 600000,
+        "maPremiumShare": 0.15
+      },
+      "avPremium": {
+        "avPremiumUsd": 30000,
+        "avPremiumIdr": 450000,
+        "avPremiumShare": 0.2
+      },
+      "liabilityPremium": {
+        "liabilityPremiumUsd": 15000,
+        "liabilityPremiumIdr": 225000,
+        "liabilityPremiumShare": 0.25
+      },
+      "version": 1,
+      "isCurrent": true
+    }
+  ],
+  "inputShareDetail": [
+    {
+      "id": 1,
+      "formDataId": 1,
+      "pdmaShare": {
+        "pdmaShareUsd": 100000,
+        "pdmaShareIdr": 1500000,
+        "pdmaSharePremiumUsd": 50000,
+        "pdmaSharePremiumIdr": 750000
+      },
+      "maShare": {
+        "maShareUsd": 80000,
+        "maShareIdr": 1200000,
+        "maSharePremiumUsd": 40000,
+        "maSharePremiumIdr": 600000
+      },
+      "avShare": {
+        "avShareUsd": 60000,
+        "avShareIdr": 900000,
+        "avSharePremiumUsd": 30000,
+        "avSharePremiumIdr": 450000
+      },
+      "liabilityShare": {
+        "liabilityShareUsd": 30000,
+        "liabilityShareIdr": 450000,
+        "liabilitySharePremiumUsd": 15000,
+        "liabilitySharePremiumIdr": 225000
+      },
+      "version": 1,
+      "isCurrent": true
+    }
+  ]
+}
