@@ -1,14 +1,14 @@
 import { useFormik } from "formik";
 import StatementInput from "./StatementInput";
-import TreatyDetail from "./TreatyDetail";
-import LayerDetail from "./LayerDetail";
+import TreatyDetail from "./TreatyDetail/TreatyDetail";
+import LayerDetail from "./LayerDetail/LayerDetail";
 import PremiumDetail from "./PremiumDetail";
 import ShareDetail from "./ShareDetail";
 import axios from "axios";
 import { validationSchema } from "../../../validation/validationSchema";
 import { useState } from "react";
 
-// Interface Definitions for nested fields
+// Interface Definitions for nested fields (these should match the actual values expected in ShareDetail, etc.)
 interface TreatyDetail {
     treatyCurrentYear: {
         currentExchange: string;
@@ -219,7 +219,14 @@ function CalculatorInput() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
 
-        if (id.includes("Margin") || id.includes("Interest") || id.includes("LAP") || id.includes("Maintenance") || id.includes("Share")) {
+        // Ensure you only convert fields that require percentage conversion
+        if (
+            id.includes("Margin") ||
+            id.includes("Interest") ||
+            id.includes("LAP") ||
+            id.includes("Maintenance") ||
+            id.includes("Share")
+        ) {
             formik.setFieldValue(id, convertToPercentage(value));
         } else {
             formik.setFieldValue(id, value);
