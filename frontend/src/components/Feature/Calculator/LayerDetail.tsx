@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface LayerDetailProps {
     formData: {
@@ -28,11 +28,72 @@ interface LayerDetailProps {
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-function LayerDetail({ formData, handleInputChange }: LayerDetailProps) {
+function LayerDetail({ handleInputChange }: LayerDetailProps) {
+    const [amounts, setAmounts] = useState({
+        pdmaDetailUsd: "",
+        pdmaDetailIdr: "",
+        pdmaDetailShare: "",
+        maDetailUsd: "",
+        maDetailIdr: "",
+        maDetailShare: "",
+        avDetailUsd: "",
+        avDetailIdr: "",
+        avDetailShare: "",
+        liabilityDetailUsd: "",
+        liabilityDetailIdr: "",
+        liabilityDetailShare: ""
+    })
+
+    // Handle input for percentage fields (Brokerage, Interest, LAP) with a range check
+    const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+        const { value } = e.target;
+        let numericValue = value.replace('%', ''); // Remove the '%' sign if present
+        let validValue = numericValue;
+
+        // Check if the value is a valid number and within the range 0 - 100
+        if (/^\d*\.?\d+$/.test(numericValue)) {
+            if (parseFloat(numericValue) >= 0 && parseFloat(numericValue) <= 100) {
+                validValue = numericValue + "%";
+            } else {
+                validValue = "100%";
+            }
+        }
+
+        setAmounts(prevAmounts => ({
+            ...prevAmounts,
+            [id]: validValue
+        }));
+
+        handleInputChange({
+            target: {
+                id,
+                value: validValue
+            }
+        } as React.ChangeEvent<HTMLInputElement>);
+    };
+
+    const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        setAmounts(prevAmounts => {
+            const updatedAmounts = {
+                ...prevAmounts,
+                [id]: value
+            };
+            // Kirim perubahan ke handleInputChange untuk memperbarui formData
+            handleInputChange({
+                target: {
+                    id,
+                    value
+                }
+            } as React.ChangeEvent<HTMLInputElement>);
+            return updatedAmounts;
+        });
+    };
+
     return (
         <div>
             <label className="block text-lg font-medium text-gray-900 dark:text-white mb-5">
-                Prior Year Treaty Detail
+                Layer Details
             </label>
 
             {/* Label */}
@@ -69,50 +130,50 @@ function LayerDetail({ formData, handleInputChange }: LayerDetailProps) {
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="pdmaDetailUsd"
                         name="inputLayerDetail.layerPdma.pdmaDetailUsd"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputLayerDetail.layerPdma.pdmaDetailUsd}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.pdmaDetailUsd}
+                        onChange={handleAmountInput}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="maDetailUsd"
                         name="inputLayerDetail.layerMa.maDetailUsd"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputLayerDetail.layerMa.maDetailUsd}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.maDetailUsd}
+                        onChange={handleAmountInput}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="avDetailUsd"
                         name="inputLayerDetail.layerAv.avDetailUsd"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputLayerDetail.layerAv.avDetailUsd}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.avDetailUsd}
+                        onChange={handleAmountInput}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="liabilityDetailUsd"
                         name="inputLayerDetail.layerLiability.liabilityDetailUsd"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputLayerDetail.layerLiability.liabilityDetailUsd}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.liabilityDetailUsd}
+                        onChange={handleAmountInput}
+
                     />
                 </div>
             </div>
@@ -126,50 +187,50 @@ function LayerDetail({ formData, handleInputChange }: LayerDetailProps) {
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="pdmaDetailIdr"
                         name="inputLayerDetail.layerPdma.pdmaDetailIdr"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputLayerDetail.layerPdma.pdmaDetailIdr}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.pdmaDetailIdr}
+                        onChange={handleAmountInput}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="maDetailIdr"
                         name="inputLayerDetail.layerMa.maDetailIdr"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputLayerDetail.layerMa.maDetailIdr}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.maDetailIdr}
+                        onChange={handleAmountInput}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="avDetailIdr"
                         name="inputLayerDetail.layerAv.avDetailIdr"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputLayerDetail.layerAv.avDetailIdr}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.avDetailIdr}
+                        onChange={handleAmountInput}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="liabilityDetailIdr"
                         name="inputLayerDetail.layerLiability.liabilityDetailIdr"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputLayerDetail.layerLiability.liabilityDetailIdr}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.liabilityDetailIdr}
+                        onChange={handleAmountInput}
+
                     />
                 </div>
             </div>
@@ -183,50 +244,50 @@ function LayerDetail({ formData, handleInputChange }: LayerDetailProps) {
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="pdmaDetailShare"
                         name="inputLayerDetail.layerPdma.pdmaDetailShare"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Percentage"
-                        value={formData.inputLayerDetail.layerPdma.pdmaDetailShare}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.pdmaDetailShare}
+                        onChange={(e) => handlePercentageChange(e, 'pdmaDetailShare')}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="maDetailShare"
                         name="inputLayerDetail.layerMa.maDetailShare"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Percentage"
-                        value={formData.inputLayerDetail.layerMa.maDetailShare}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.maDetailShare}
+                        onChange={(e) => handlePercentageChange(e, 'maDetailShare')}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="avDetailShare"
                         name="inputLayerDetail.layerAv.avDetailShare"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Percentage"
-                        value={formData.inputLayerDetail.layerAv.avDetailShare}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.avDetailShare}
+                        onChange={(e) => handlePercentageChange(e, 'avDetailShare')}
+
                     />
                 </div>
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         id="liabilityDetailShare"
                         name="inputLayerDetail.layerLiability.liabilityDetailShare"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Percentage"
-                        value={formData.inputLayerDetail.layerLiability.liabilityDetailShare}
-                        onChange={handleInputChange}
-                        required
+                        value={amounts.liabilityDetailShare}
+                        onChange={(e) => handlePercentageChange(e, 'liabilityDetailShare')}
+
                     />
                 </div>
             </div>

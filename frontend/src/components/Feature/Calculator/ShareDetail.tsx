@@ -4,34 +4,33 @@ interface ShareDetailProps {
     formData: {
         inputShare: {
             sharePdma: {
-                pdmaShareUsd: string;
-                pdmaShareIdr: string;
-                pdmaSharePremiumUsd: string;
-                pdmaSharePremiumIdr: string;
+                pdmaShareUsd: string; // pdmaShareUsd = pdmaDetailUsd * pdmaDetailShare
+                pdmaShareIdr: string; //pdmaShareIdr = pdmaDetailIdr * pdmaDetailShare
+                pdmaSharePremiumUsd: string; //pdmaSharePremiumUsd = pdmaPremiumUsd * pdmaPremiumShare
+                pdmaSharePremiumIdr: string; //pdmaSharePremiumIdr = pdmaPremiumIdr * pdmaPremiumShare
             };
             shareMa: {
-                maShareUsd: string;
-                maShareIdr: string;
-                maSharePremiumUsd: string;
-                maSharePremiumIdr: string;
+                maShareUsd: string; //maShareUsd = maDetailUsd * maDetailShare
+                maShareIdr: string; //maShareIdr = maDetailIdr * maDetailShare
+                maSharePremiumUsd: string; //maSharePremiumUsd = pdmaPremiumUsd * maPremiumShare
+                maSharePremiumIdr: string; //maSharePremiumIdr = pdmaDetailUsd * maPremiumShare
             };
             shareAv: {
-                avShareUsd: string;
-                avShareIdr: string;
-                avSharePremiumUsd: string;
-                avSharePremiumIdr: string;
+                avShareUsd: string; //avShareUsd = avDetailUsd * avDetailShare
+                avShareIdr: string; //avShareIdr = avDetailIdr * avDetailShare
+                avSharePremiumUsd: string; //avSharePremiumUsd = avPremiumUsd * avPremiumShare
+                avSharePremiumIdr: string; //avSharePremiumIdr = avPremiumIdr * avPremiumShare
             };
             shareLiability: {
-                liabilityShareUsd: string;
-                liabilityShareIdr: string;
-                liabilitySharePremiumUsd: string;
-                liabilitySharePremiumIdr: string;
+                liabilityShareUsd: string; //liabilityShareUsd = liabilityDetailUsd * liabilityDetailShare
+                liabilityShareIdr: string; //liabilityShareIdr = liabilityDetailIdr * liabilityDetailShare
+                liabilitySharePremiumUsd: string; //liabilitySharePremiumUsd = liabilityPremiumUsd * liabilityPremiumShare
+                liabilitySharePremiumIdr: string; //liabilitySharePremiumIdr = liabilityPremiumIdr * liabilityPremiumShare
             };
         };
     };
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-
 
 const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }: ShareDetailProps) => {
     return (
@@ -57,7 +56,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.sharePdma.pdmaShareUsd}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -69,7 +68,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareMa.maShareUsd}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -81,7 +80,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareAv.avShareUsd}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -93,7 +92,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareLiability.liabilityShareUsd}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
             </div>
@@ -117,7 +116,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.sharePdma.pdmaShareIdr}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -129,7 +128,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareMa.maShareIdr}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -141,7 +140,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareAv.avShareIdr}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -153,7 +152,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareLiability.liabilityShareIdr}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
             </div>
@@ -177,7 +176,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.sharePdma.pdmaSharePremiumUsd}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -189,7 +188,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareMa.maSharePremiumUsd}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -201,7 +200,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareAv.avSharePremiumUsd}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -213,7 +212,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareLiability.liabilitySharePremiumUsd}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
             </div>
@@ -237,7 +236,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.sharePdma.pdmaSharePremiumIdr}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -249,7 +248,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareMa.maSharePremiumIdr}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -261,7 +260,7 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         placeholder="Amount"
                         value={formData.inputShare.shareAv.avSharePremiumIdr}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
                 <div>
@@ -271,9 +270,9 @@ const ShareDetail: React.FC<ShareDetailProps> = ({ formData, handleInputChange }
                         name="inputShare.shareLiability.liabilitySharePremiumIdr"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
-                        value={formData.inputShare.shareLiability.liabilitySharePremiumIdr}
+                        value={formData.inputShare.shareLiability.liabilitySharePremiumIdr || ""}
                         onChange={handleInputChange}
-                        required
+                        readOnly
                     />
                 </div>
             </div>

@@ -214,18 +214,30 @@ function CalculatorInput() {
         },
     });
 
+    const convertToPercentage = (value: string): number => (value ? parseFloat(value) / 100 : 0);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+
+        if (id.includes("Margin") || id.includes("Interest") || id.includes("LAP") || id.includes("Maintenance") || id.includes("Share")) {
+            formik.setFieldValue(id, convertToPercentage(value));
+        } else {
+            formik.setFieldValue(id, value);
+        }
+    };
+
     return (
         <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
-                <StatementInput formData={formik.values} handleInputChange={formik.handleChange} />
+                <StatementInput formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
-                <TreatyDetail formData={formik.values} handleInputChange={formik.handleChange} />
+                <TreatyDetail formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
-                <LayerDetail formData={formik.values} handleInputChange={formik.handleChange} />
+                <LayerDetail formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
-                <PremiumDetail formData={formik.values} handleInputChange={formik.handleChange} />
+                <PremiumDetail formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
-                <ShareDetail formData={formik.values} handleInputChange={formik.handleChange} />
+                <ShareDetail formData={formik.values} handleInputChange={handleInputChange} />
 
                 <div className="flex justify-end py-3">
                     <button
