@@ -16,7 +16,9 @@ interface InputGroupProps {
 const InputGroup: React.FC<InputGroupProps> = ({ label, fields, amounts, handleChange }) => {
     return (
         <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{label}</h3>
+            <div>
+                <h1 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{label}</h1>
+            </div>
             {fields.map(({ currentLabel, currentId, priorId, type }) => (
                 <div key={currentId} className="grid grid-cols-4 gap-4 mb-4">
                     {/* Current Label */}
