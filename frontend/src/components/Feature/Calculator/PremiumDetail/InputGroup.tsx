@@ -8,7 +8,8 @@ interface InputGroupProps {
         name: string;
         placeholder: string;
         value: string;
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+        readonly?: boolean;
+        onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     }[];
 }
 
@@ -16,7 +17,7 @@ const InputGroup: React.FC<InputGroupProps> = ({ label, inputs }) => {
     return (
         <div className="grid grid-cols-5 gap-4 mb-4">
             <div>
-                <label className="block text-sm font-medium text-gray-900 dark:text-white">{label}</label>
+                <label className="block text-md font-medium text-gray-900 dark:text-white">{label}</label>
             </div>
             {inputs.map((input) => (
                 <div key={input.id}>

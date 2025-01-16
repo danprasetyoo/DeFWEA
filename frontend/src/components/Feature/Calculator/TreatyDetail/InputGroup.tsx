@@ -21,16 +21,14 @@ const InputGroup: React.FC<InputGroupProps> = ({ label, fields, amounts, handleC
             </div>
             {fields.map(({ currentLabel, currentId, priorId, type }) => (
                 <div key={currentId} className="grid grid-cols-4 gap-4 mb-4">
-                    {/* Current Label */}
                     <div>
                         <label
                             htmlFor={currentId}
-                            className="block text-sm font-medium text-gray-900 dark:text-white"
+                            className="block text-md font-medium text-gray-900 dark:text-white"
                         >
                             {currentLabel}
                         </label>
                     </div>
-                    {/* Current Input Field */}
                     <div>
                         <InputField
                             id={currentId}
@@ -39,7 +37,6 @@ const InputGroup: React.FC<InputGroupProps> = ({ label, fields, amounts, handleC
                             onChange={handleChange}
                         />
                     </div>
-                    {/* Prior Input Field */}
                     <div>
                         <InputField
                             id={priorId}

@@ -3,14 +3,7 @@ const prisma = new PrismaClient();
 
 exports.getAllCalculators = async (req, res) => {
     try {
-        const calculators = await prisma.calculator.findMany({
-            include: {
-                inputTreatyDetail: true,
-                inputLayerDetail: true,
-                inputPremiumDetail: true,
-                inputShareDetail: true,
-            },
-        });
+        const calculators = await prisma.calculator.findMany();
         res.status(200).json(calculators);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -22,12 +15,6 @@ exports.getCalculatorById = async (req, res) => {
         const { id } = req.params;
         const calculator = await prisma.calculator.findUnique({
             where: { id: parseInt(id) },
-            include: {
-                inputTreatyDetail: true,
-                inputLayerDetail: true,
-                inputPremiumDetail: true,
-                inputShareDetail: true,
-            },
         });
 
         if (!calculator) {
@@ -42,7 +29,7 @@ exports.getCalculatorById = async (req, res) => {
 
 exports.createCalculator = async (req, res) => {
     try {
-        const { inputStatementDate, inputOpeningfund, inputStatementPeriod, inputTreatyYear } = req.body;
+        const { inputStatementDate, inputOpeningfund, inputStatementPeriod, inputTreatyYear, inputTreatyDetail, inputLayerDetail, inputPremium, inputShare } = req.body;
 
         const newCalculator = await prisma.calculator.create({
             data: {
@@ -50,6 +37,10 @@ exports.createCalculator = async (req, res) => {
                 inputOpeningfund,
                 inputStatementPeriod: new Date(inputStatementPeriod),
                 inputTreatyYear,
+                inputTreatyDetail: inputTreatyDetail ? JSON.stringify(inputTreatyDetail) : null,
+                inputLayerDetail: inputLayerDetail ? JSON.stringify(inputLayerDetail) : null,
+                inputPremium: inputPremium ? JSON.stringify(inputPremium) : null,
+                inputShare: inputShare ? JSON.stringify(inputShare) : null,
             },
         });
 
@@ -62,7 +53,7 @@ exports.createCalculator = async (req, res) => {
 exports.updateCalculator = async (req, res) => {
     try {
         const { id } = req.params;
-        const { inputStatementDate, inputOpeningfund, inputStatementPeriod, inputTreatyYear } = req.body;
+        const { inputStatementDate, inputOpeningfund, inputStatementPeriod, inputTreatyYear, inputTreatyDetail, inputLayerDetail, inputPremium, inputShare } = req.body;
 
         const updatedCalculator = await prisma.calculator.update({
             where: { id: parseInt(id) },
@@ -71,6 +62,10 @@ exports.updateCalculator = async (req, res) => {
                 inputOpeningfund,
                 inputStatementPeriod: new Date(inputStatementPeriod),
                 inputTreatyYear,
+                inputTreatyDetail: inputTreatyDetail ? JSON.stringify(inputTreatyDetail) : null,
+                inputLayerDetail: inputLayerDetail ? JSON.stringify(inputLayerDetail) : null,
+                inputPremium: inputPremium ? JSON.stringify(inputPremium) : null,
+                inputShare: inputShare ? JSON.stringify(inputShare) : null,
             },
         });
 

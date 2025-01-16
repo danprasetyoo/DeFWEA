@@ -15,7 +15,7 @@ interface InputGroupProps {
 const InputGroup: React.FC<InputGroupProps> = ({ label, inputs, handleInputChange }) => (
     <div className="grid grid-cols-5 gap-4 mb-4">
         <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-white">{label}</label>
+            <label className="block text-md font-medium text-gray-900 dark:text-white">{label}</label>
         </div>
         {inputs.map((input, index) => (
             <div key={index}>

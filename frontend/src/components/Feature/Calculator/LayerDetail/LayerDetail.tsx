@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputGroup from "./InputGroup";
 
-interface LayerDetailProps {
+type LayerDetailProps = {
     formData: any;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+};
 
 const LayerDetail: React.FC<LayerDetailProps> = ({ handleInputChange }) => {
-    const [amounts, setAmounts] = useState<Record<string, string>>({
+    const [amounts, setAmounts] = useState({
         pdmaDetailUsd: "",
         pdmaDetailIdr: "",
         pdmaDetailShare: "",
@@ -22,17 +22,39 @@ const LayerDetail: React.FC<LayerDetailProps> = ({ handleInputChange }) => {
         liabilityDetailShare: "",
     });
 
-    // Handle percentage change (e.g., Share)
+    const [results, setResults] = useState({
+        pdmaShareUsd: 0,
+        pdmaShareIdr: 0,
+        maShareUsd: 0,
+        maShareIdr: 0,
+        avShareUsd: 0,
+        avShareIdr: 0,
+        liabilityShareUsd: 0,
+        liabilityShareIdr: 0,
+    });
+
+    const handleLocalInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        const validValue = value.replace(/[^0-9.]/g, "");
+
+        setAmounts((prev) => ({
+            ...prev,
+            [id]: validValue,
+        }));
+
+        handleInputChange(e);
+    };
+
     const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
-        let numericValue = value.replace("%", ""); // Remove the '%' sign if present
+        let numericValue = value.replace("%", "");
         let validValue = numericValue;
 
         if (/^\d*\.?\d+$/.test(numericValue)) {
             if (parseFloat(numericValue) >= 0 && parseFloat(numericValue) <= 100) {
                 validValue = numericValue + "%";
             } else {
-                validValue = "100%"; // Cap value at 100%
+                validValue = "100%";
             }
         }
 
@@ -49,96 +71,109 @@ const LayerDetail: React.FC<LayerDetailProps> = ({ handleInputChange }) => {
         } as React.ChangeEvent<HTMLInputElement>);
     };
 
-    // Handle amount input (e.g., USD/IDR)
-    const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { id, value } = e.target;
-        let validValue = value.replace(/[^0-9.]/g, ""); // Remove non-numeric characters, except for dot
+    const recalculateResults = (updatedAmounts: any) => {
+        const parsePercentage = (percentage: string) =>
+            parseFloat(percentage.replace("%", "").trim() || "0") / 100;
 
-        // Optional: Limit to max 2 decimal places
-        if (validValue.split(".").length > 2) {
-            validValue = validValue.slice(0, validValue.lastIndexOf("."));
-        }
+        const calculateShare = (amount: string, share: string) => {
+            const numericAmount = parseFloat(amount || "0");
+            const numericShare = parsePercentage(share);
+            return numericAmount * numericShare;
+        };
 
-        setAmounts((prevAmounts) => ({
-            ...prevAmounts,
-            [id]: validValue,
-        }));
-
-        handleInputChange({
-            target: {
-                id,
-                value: validValue,
-            },
-        } as React.ChangeEvent<HTMLInputElement>);
+        setResults({
+            pdmaShareUsd: calculateShare(updatedAmounts.pdmaDetailUsd, updatedAmounts.pdmaDetailShare),
+            pdmaShareIdr: calculateShare(updatedAmounts.pdmaDetailIdr, updatedAmounts.pdmaDetailShare),
+            maShareUsd: calculateShare(updatedAmounts.maDetailUsd, updatedAmounts.maDetailShare),
+            maShareIdr: calculateShare(updatedAmounts.maDetailIdr, updatedAmounts.maDetailShare),
+            avShareUsd: calculateShare(updatedAmounts.avDetailUsd, updatedAmounts.avDetailShare),
+            avShareIdr: calculateShare(updatedAmounts.avDetailIdr, updatedAmounts.avDetailShare),
+            liabilityShareUsd: calculateShare(updatedAmounts.liabilityDetailUsd, updatedAmounts.liabilityDetailShare),
+            liabilityShareIdr: calculateShare(updatedAmounts.liabilityDetailIdr, updatedAmounts.liabilityDetailShare),
+        });
     };
 
-    const rows = [
+    useEffect(() => {
+        recalculateResults(amounts);
+    }, [amounts]);
+
+    type InputType = {
+        id: string;
+        placeholder: string;
+        value: string;
+        onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    };
+
+    const rows: { label: string; inputs: InputType[] }[] = [
         {
             label: "MDP-USD",
             inputs: [
-                { id: "pdmaDetailUsd", name: "inputLayerDetail.layerPdma.pdmaDetailUsd", placeholder: "Amount" },
-                { id: "maDetailUsd", name: "inputLayerDetail.layerMa.maDetailUsd", placeholder: "Amount" },
-                { id: "avDetailUsd", name: "inputLayerDetail.layerAv.avDetailUsd", placeholder: "Amount" },
-                { id: "liabilityDetailUsd", name: "inputLayerDetail.layerLiability.liabilityDetailUsd", placeholder: "Amount" },
+                { id: "pdmaDetailUsd", placeholder: "Amount", value: amounts.pdmaDetailUsd },
+                { id: "maDetailUsd", placeholder: "Amount", value: amounts.maDetailUsd },
+                { id: "avDetailUsd", placeholder: "Amount", value: amounts.avDetailUsd },
+                { id: "liabilityDetailUsd", placeholder: "Amount", value: amounts.liabilityDetailUsd },
             ],
         },
         {
             label: "MDP-IDR",
             inputs: [
-                { id: "pdmaDetailIdr", name: "inputLayerDetail.layerPdma.pdmaDetailIdr", placeholder: "Amount" },
-                { id: "maDetailIdr", name: "inputLayerDetail.layerMa.maDetailIdr", placeholder: "Amount" },
-                { id: "avDetailIdr", name: "inputLayerDetail.layerAv.avDetailIdr", placeholder: "Amount" },
-                { id: "liabilityDetailIdr", name: "inputLayerDetail.layerLiability.liabilityDetailIdr", placeholder: "Amount" },
+                { id: "pdmaDetailIdr", placeholder: "Amount", value: amounts.pdmaDetailIdr },
+                { id: "maDetailIdr", placeholder: "Amount", value: amounts.maDetailIdr },
+                { id: "avDetailIdr", placeholder: "Amount", value: amounts.avDetailIdr },
+                { id: "liabilityDetailIdr", placeholder: "Amount", value: amounts.liabilityDetailIdr },
             ],
         },
         {
-            label: "Share",
+            label: "Share (%)",
             inputs: [
-                { id: "pdmaDetailShare", name: "inputLayerDetail.layerPdma.pdmaDetailShare", placeholder: "Percentage" },
-                { id: "maDetailShare", name: "inputLayerDetail.layerMa.maDetailShare", placeholder: "Percentage" },
-                { id: "avDetailShare", name: "inputLayerDetail.layerAv.avDetailShare", placeholder: "Percentage" },
-                { id: "liabilityDetailShare", name: "inputLayerDetail.layerLiability.liabilityDetailShare", placeholder: "Percentage" },
+                { id: "pdmaDetailShare", placeholder: "Percentage", value: amounts.pdmaDetailShare, onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "pdmaDetailShare") },
+                { id: "maDetailShare", placeholder: "Percentage", value: amounts.maDetailShare, onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "maDetailShare") },
+                { id: "avDetailShare", placeholder: "Percentage", value: amounts.avDetailShare, onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "avDetailShare") },
+                { id: "liabilityDetailShare", placeholder: "Percentage", value: amounts.liabilityDetailShare, onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "liabilityDetailShare") },
+            ],
+        },
+    ];
+
+    const readonlyRows = [
+        {
+            label: "MDP - USD",
+            inputs: [
+                { id: "pdmaShareUsd", value: results.pdmaShareUsd.toFixed(2), readonly: true, placeholder: "" },
+                { id: "maShareUsd", value: results.maShareUsd.toFixed(2), readonly: true, placeholder: "" },
+                { id: "avShareUsd", value: results.avShareUsd.toFixed(2), readonly: true, placeholder: "" },
+                { id: "liabilityShareUsd", value: results.liabilityShareUsd.toFixed(2), readonly: true, placeholder: "" },
+            ],
+        },
+        {
+            label: "MDP - IDR",
+            inputs: [
+                { id: "pdmaShareIdr", value: results.pdmaShareIdr.toFixed(2), readonly: true, placeholder: "" },
+                { id: "maShareIdr", value: results.maShareIdr.toFixed(2), readonly: true, placeholder: "" },
+                { id: "avShareIdr", value: results.avShareIdr.toFixed(2), readonly: true, placeholder: "" },
+                { id: "liabilityShareIdr", value: results.liabilityShareIdr.toFixed(2), readonly: true, placeholder: "" },
             ],
         },
     ];
 
     return (
         <div>
-            <label className="block text-lg font-medium text-gray-900 dark:text-white mb-5">Layer Details</label>
-            <div className="grid grid-cols-5 gap-4 mb-4">
-                <div></div>
-                <div>
-                    <label htmlFor="pdmaDetail" className="block text-md font-medium text-gray-900 dark:text-white">
-                        PDMA Layer 1A
-                    </label>
-                </div>
-                <div>
-                    <label htmlFor="maDetail" className="block text-md font-medium text-gray-900 dark:text-white">
-                        Marine & Aviation Layer 1
-                    </label>
-                </div>
-                <div>
-                    <label htmlFor="avDetail" className="block text-md font-medium text-gray-900 dark:text-white">
-                        Marine & Aviation Layer 2
-                    </label>
-                </div>
-                <div>
-                    <label htmlFor="liabilityDetail" className="block text-md font-medium text-gray-900 dark:text-white">
-                        Liability Layer 1
-                    </label>
-                </div>
-            </div>
+            <h1 className="text-lg font-bold mb-4">Layer Details</h1>
             {rows.map((row) => (
                 <InputGroup
                     key={row.label}
                     label={row.label}
                     inputs={row.inputs.map((input) => ({
                         ...input,
-                        value: amounts[input.id],
-                        onChange: input.placeholder === "Percentage"
-                            ? (e) => handlePercentageChange(e, input.id)
-                            : handleAmountInput,
+                        onChange: input.onChange || handleLocalInputChange,
                     }))}
+                />
+            ))}
+            <h1 className="text-lg font-bold mb-4">Swiss Re Share</h1>
+            {readonlyRows.map((row) => (
+                <InputGroup
+                    key={row.label}
+                    label={row.label}
+                    inputs={row.inputs}
                 />
             ))}
         </div>

@@ -3,12 +3,10 @@ import StatementInput from "./StatementInput";
 import TreatyDetail from "./TreatyDetail/TreatyDetail";
 import LayerDetail from "./LayerDetail/LayerDetail";
 import PremiumDetail from "./PremiumDetail/PremiumDetail";
-import ShareDetail from "./ShareDetail/ShareDetail";
 import axios from "axios";
 import { validationSchema } from "../../../validation/validationSchema";
 import { useState } from "react";
 
-// Interface Definitions for nested fields (these should match the actual values expected in ShareDetail, etc.)
 interface TreatyDetail {
     treatyCurrentYear: {
         currentExchange: string;
@@ -71,33 +69,6 @@ interface PremiumDetail {
         liabilityPremiumUsd: string;
         liabilityPremiumIdr: string;
         liabilityPremiumShare: string;
-    };
-}
-
-interface ShareDetail {
-    sharePdma: {
-        pdmaShareUsd: string;
-        pdmaShareIdr: string;
-        pdmaSharePremiumUsd: string;
-        pdmaSharePremiumIdr: string;
-    };
-    shareMa: {
-        maShareUsd: string;
-        maShareIdr: string;
-        maSharePremiumUsd: string;
-        maSharePremiumIdr: string;
-    };
-    shareAv: {
-        avShareUsd: string;
-        avShareIdr: string;
-        avSharePremiumUsd: string;
-        avSharePremiumIdr: string;
-    };
-    shareLiability: {
-        liabilityShareUsd: string;
-        liabilityShareIdr: string;
-        liabilitySharePremiumUsd: string;
-        liabilitySharePremiumIdr: string;
     };
 }
 
@@ -219,7 +190,6 @@ function CalculatorInput() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
 
-        // Ensure you only convert fields that require percentage conversion
         if (
             id.includes("Margin") ||
             id.includes("Interest") ||
@@ -243,8 +213,6 @@ function CalculatorInput() {
                 <LayerDetail formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
                 <PremiumDetail formData={formik.values} handleInputChange={handleInputChange} />
-                <br />
-                <ShareDetail formData={formik.values} handleInputChange={handleInputChange} />
 
                 <div className="flex justify-end py-3">
                     <button

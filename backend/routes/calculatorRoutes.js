@@ -1,18 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const {
-    getAllCalculators,
-    getCalculatorById,
-    createCalculator,
-    updateCalculator,
-    deleteCalculator,
-} = require('../controller/calculatorController');
+const calculatorController = require('../controllers/calculatorController');
 
-// Routes
-router.get('/', getAllCalculators);
-router.get('/:id', getCalculatorById);
-router.post('/', createCalculator);
-router.put('/:id', updateCalculator);
-router.delete('/:id', deleteCalculator);
+router.get('/', calculatorController.getAllCalculators);
+router.get('/:id', calculatorController.getCalculatorById);
+router.post('/', calculatorController.createCalculator);
+router.put('/:id', calculatorController.updateCalculator);
+router.delete('/:id', calculatorController.deleteCalculator);
 
 module.exports = router;

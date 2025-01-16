@@ -18,21 +18,14 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
     const [isNegative, setIsNegative] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log("Statement date:", formData.inputStatementDate)
         console.log("Opening Fund:", formData.inputOpeningfund);
         console.log("Is Negative:", isNegative);
-        console.log("Statement Periode:", formData.inputStatementPeriod)
-        console.log('Treaty Year:', formData.inputTreatyYear)
     }, [
-        formData.inputStatementDate,
         formData.inputOpeningfund,
         isNegative,
-        formData.inputStatementPeriod,
-        formData.inputTreatyYear
     ]);
 
     useEffect(() => {
-        // Initialize Flowbite Datepicker only if refs are present
         if (statementDateRef.current) {
             new Datepicker(statementDateRef.current, {
                 dateFormat: 'yyyy-mm-dd',
@@ -62,7 +55,6 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
         }
     }, []);
 
-    // Handle checkbox negative for opening fund balance
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = e.target.checked;
         setIsNegative(isChecked);
@@ -80,7 +72,6 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
         }
     };
 
-    // Handle input for Opening Fund and ensure it remains numeric
     const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
 
@@ -97,7 +88,6 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
         }
     };
 
-    //  Handle input Treaty Year max of 4 digits are allowed
     const handleTreatyYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         if (/^\d{0,4}$/.test(value)) {
@@ -108,12 +98,11 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
 
     return (
         <div>
-            {/* Statement Date */}
             <div className="relative max-w-sm">
                 <div>
                     <label
                         htmlFor="inputStatementDate"
-                        className="form-label text-sm font-medium text-gray-900 dark:text-white"
+                        className="form-label text-md font-medium text-gray-900 dark:text-white"
                     >
                         Statement Date
                     </label>
@@ -123,13 +112,12 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                         type="text"
                         id="inputStatementDate"
                         ref={statementDateRef}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         value={formData.inputStatementDate}
                         placeholder="Select date"
                         onChange={handleInputChange}
                         required
                     />
-                    {/* Calendar Icon SVG */}
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg
                             className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -144,16 +132,14 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                 </div>
             </div>
 
-            {/* Opening Fund */}
             <div className="relative max-w-sm mt-4">
                 <label
                     htmlFor="inputOpeningfund"
-                    className="form-label text-sm font-medium text-gray-900 dark:text-white"
+                    className="form-label text-md font-medium text-gray-900 dark:text-white"
                 >
                     Opening Fund
                 </label>
                 <div className="flex items-center space-x-2">
-                    {/* Custom Checkbox with label */}
                     <div className="flex items-center">
                         <input
                             type="checkbox"
@@ -164,17 +150,16 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                         />
                         <label
                             htmlFor="negativeCheckbox"
-                            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            className="ms-2 text-md font-medium text-gray-900 dark:text-gray-300"
                         >
                             Negative
                         </label>
                     </div>
 
-                    {/* Input for Opening Fund */}
                     <input
                         type="text"
                         id="inputOpeningfund"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Amount"
                         value={amount}
                         onChange={handleAmountInput}
@@ -183,12 +168,11 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                 </div>
             </div>
 
-            {/* Statement Period Date */}
             <div className="relative max-w-sm mt-4">
                 <div>
                     <label
                         htmlFor="inputStatementPeriod"
-                        className="form-label text-sm font-medium text-gray-900 dark:text-white"
+                        className="form-label text-md font-medium text-gray-900 dark:text-white"
                     >
                         Statement Period
                     </label>
@@ -198,13 +182,12 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                         type="text"
                         id="inputStatementPeriod"
                         ref={statementPeriodRef}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         value={formData.inputStatementPeriod}
                         placeholder="Select date"
                         onChange={handleInputChange}
                         required
                     />
-                    {/* Calendar Icon SVG */}
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg
                             className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -219,12 +202,11 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                 </div>
             </div>
 
-            {/* Treaty Year */}
             <div className="relative max-w-sm mt-4">
                 <div>
                     <label
                         htmlFor="inputTreatyYear"
-                        className="block text-sm font-medium text-gray-900 dark:text-white"
+                        className="block text-md font-medium text-gray-900 dark:text-white"
                     >
                         Treaty Year
                     </label>
@@ -232,7 +214,7 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                 <input
                     type="text"
                     id="inputTreatyYear"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Enter year"
                     value={formData.inputTreatyYear}
                     onChange={handleTreatyYearChange}

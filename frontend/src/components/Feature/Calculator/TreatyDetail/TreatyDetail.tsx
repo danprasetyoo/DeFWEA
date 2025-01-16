@@ -22,17 +22,16 @@ function TretyDetail({ handleInputChange }: TretyDetailProps) {
         priorMaintenance: "",
     });
 
-    // Handle percentage change (Reinsurers' Margin, Brokerage, etc.)
     const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
-        let numericValue = value.replace("%", ""); // Remove the '%' sign if present
+        let numericValue = value.replace("%", "");
         let validValue = numericValue;
 
         if (/^\d*\.?\d+$/.test(numericValue)) {
             if (parseFloat(numericValue) >= 0 && parseFloat(numericValue) <= 100) {
                 validValue = numericValue + "%";
             } else {
-                validValue = "100%"; // Prevent exceeding 100%
+                validValue = "100%";
             }
         }
 
@@ -49,12 +48,10 @@ function TretyDetail({ handleInputChange }: TretyDetailProps) {
         } as React.ChangeEvent<HTMLInputElement>);
     };
 
-    // Handle amount input (Exchange Rate, Maintenance Credit, etc.)
     const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        let validValue = value.replace(/[^0-9.]/g, ""); // Remove non-numeric characters, except for dot
+        let validValue = value.replace(/[^0-9.]/g, "");
 
-        // Optional: Add any additional logic to limit decimal places, e.g., max 2 decimal places
         if (validValue.split(".").length > 2) {
             validValue = validValue.slice(0, validValue.lastIndexOf("."));
         }
