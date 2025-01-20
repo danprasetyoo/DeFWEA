@@ -84,7 +84,7 @@ function CalculatorInput() {
                 <br />
                 <LayerDetail formData={formik.values} handleInputChange={handleInputChange} setFieldValue={formik.setFieldValue} />
                 <br />
-                <PremiumDetail formData={formik.values} handleInputChange={handleInputChange} />
+                <PremiumDetail formData={formik.values} handleInputChange={handleInputChange} setFieldValue={formik.setFieldValue} />
 
                 <div className="flex justify-end py-3">
                     <button

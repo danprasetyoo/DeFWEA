@@ -68,9 +68,8 @@ const LayerDetail: React.FC<LayerDetailProps> = ({ handleInputChange, setFieldVa
         const { id, value } = e.target;
         const validValue = (value || "").replace(/[^0-9.]/g, "");
 
-        // Split the id into path (if nested, e.g., "layerPdma.pdmaDetailUsd")
         const path = id.split(".");
-        const updatedAmounts = JSON.parse(JSON.stringify(amounts)); // Deep copy to trigger re-render
+        const updatedAmounts = JSON.parse(JSON.stringify(amounts));
         updateNestedField(updatedAmounts, path, validValue);
         setAmounts(updatedAmounts);
 
@@ -164,7 +163,7 @@ const LayerDetail: React.FC<LayerDetailProps> = ({ handleInputChange, setFieldVa
         };
 
         setResults(newResults);
-        setFieldValue("results", newResults);
+        setFieldValue("Results Layer", newResults);
     };
 
     useEffect(() => {
