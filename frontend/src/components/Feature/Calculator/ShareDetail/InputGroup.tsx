@@ -9,7 +9,7 @@ interface InputGroupProps {
         placeholder: string;
         value: string;
     }[];
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void; // Memperbarui tipe handleInputChange
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 }
 
 const InputGroup: React.FC<InputGroupProps> = ({ label, inputs, handleInputChange }) => (
