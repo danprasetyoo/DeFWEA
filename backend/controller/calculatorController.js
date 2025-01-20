@@ -3,7 +3,11 @@ const prisma = new PrismaClient();
 
 exports.getAllCalculators = async (req, res) => {
     try {
-        const calculators = await prisma.calculator.findMany();
+        const { page = 1, limit = 10 } = req.query;
+        const calculators = await prisma.calculator.findMany({
+            skip: (page - 1) * limit,
+            take: parseInt(limit),
+        });
         res.status(200).json(calculators);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -58,14 +62,14 @@ exports.updateCalculator = async (req, res) => {
         const updatedCalculator = await prisma.calculator.update({
             where: { id: parseInt(id) },
             data: {
-                inputStatementDate: new Date(inputStatementDate),
+                inputStatementDate,
                 inputOpeningfund,
-                inputStatementPeriod: new Date(inputStatementPeriod),
+                inputStatementPeriod,
                 inputTreatyYear,
-                inputTreatyDetail: inputTreatyDetail ? JSON.stringify(inputTreatyDetail) : null,
-                inputLayerDetail: inputLayerDetail ? JSON.stringify(inputLayerDetail) : null,
-                inputPremium: inputPremium ? JSON.stringify(inputPremium) : null,
-                inputShare: inputShare ? JSON.stringify(inputShare) : null,
+                inputTreatyDetail,
+                inputLayerDetail,
+                inputPremium,
+                inputShare,
             },
         });
 

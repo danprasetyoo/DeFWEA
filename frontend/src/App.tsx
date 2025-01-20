@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavigationItem from "./pages/NavigationItem";
-import CalculatorInput from "./components/Feature/Calculator/CalculatorInput";
+import CalculatorInput from "./components/Feature/Calculator/CalculatorInput/CalculatorInput";
 
 
 function App() {

@@ -23,31 +23,31 @@ model TreatyDetail {
   id                  Int              @id @default(autoincrement())
   formDataId          Int
   formData            Calculator       @relation(fields: [formDataId], references: [id], map: "custom_foreign_key")
-  treatyCurrentYear   treatyDetailCurrent? @relation("TreatyDetailToCurrent")
-  treatyPriorYear     treatyDetailPrior?   @relation("TreatyDetailToPrior")
+  treatyCurrentYear   TreatyDetailCurrent? @relation("TreatyDetailToCurrent")
+  treatyPriorYear     TreatyDetailPrior?   @relation("TreatyDetailToPrior")
   version             Int
 }
 
-model treatyDetailCurrent {
+model TreatyDetailCurrent {
   id                  Int             @id @default(autoincrement())
   currentExchange     Int
   currentMargin       Float
   currentBrokerage    Float
   currentInterest     Float
   currentLAP          Float
-  currentMaintenance  Float
+  currentMaintenance  Int
   treatyDetail        TreatyDetail    @relation("TreatyDetailToCurrent", fields: [treatyDetailId], references: [id])
   treatyDetailId      Int             @unique
 }
 
-model treatyDetailPrior {
+model TreatyDetailPrior {
   id                  Int             @id @default(autoincrement())
   priorExchange       Int
   priorMargin         Float
   priorBrokerage      Float
   priorInterest       Float
   priorLAP            Float
-  priorMaintenance    Float
+  priorMaintenance    Int
   treatyDetail        TreatyDetail    @relation("TreatyDetailToPrior", fields: [treatyDetailId], references: [id])
   treatyDetailId      Int             @unique
 }
@@ -56,18 +56,18 @@ model LayerDetail {
   id                  Int              @id @default(autoincrement())
   formDataId          Int
   formData            Calculator       @relation(fields: [formDataId], references: [id])
-  pdmaLayerId         Int              @unique 
-  pdmaLayer           pdmaDetailLayer  @relation(fields: [pdmaLayerId], references: [id])
-  maLayerId           Int              @unique  
-  maLayer             maDetailLayer    @relation(fields: [maLayerId], references: [id])
-  avLayerId           Int              @unique  
-  avLayer             avDetailLayer    @relation(fields: [avLayerId], references: [id])
-  liabilityLayerId    Int              @unique 
-  liabilityLayer      liabilityDetailLayer @relation(fields: [liabilityLayerId], references: [id])
+  pdmaLayerId         Int              @unique
+  pdmaLayer           PdmaDetailLayer  @relation(fields: [pdmaLayerId], references: [id])
+  maLayerId           Int              @unique
+  maLayer             MaDetailLayer    @relation(fields: [maLayerId], references: [id])
+  avLayerId           Int              @unique
+  avLayer             AvDetailLayer    @relation(fields: [avLayerId], references: [id])
+  liabilityLayerId    Int              @unique
+  liabilityLayer      LiabilityDetailLayer @relation(fields: [liabilityLayerId], references: [id])
   version             Int
 }
 
-model pdmaDetailLayer {
+model PdmaDetailLayer {
   id                  Int                   @id @default(autoincrement())
   pdmaDetailUsd       Int
   pdmaDetailIdr       Int
@@ -76,7 +76,7 @@ model pdmaDetailLayer {
   layerDetailId       Int                
 }
 
-model maDetailLayer {
+model MaDetailLayer {
   id                  Int                   @id @default(autoincrement())
   maDetailUsd         Int
   maDetailIdr         Int
@@ -85,7 +85,7 @@ model maDetailLayer {
   layerDetailId       Int                 
 }
 
-model avDetailLayer {
+model AvDetailLayer {
   id                  Int                   @id @default(autoincrement())
   avDetailUsd         Int
   avDetailIdr         Int
@@ -94,7 +94,7 @@ model avDetailLayer {
   layerDetailId       Int       
 }
 
-model liabilityDetailLayer {
+model LiabilityDetailLayer {
   id                  Int                   @id @default(autoincrement())
   liabilityDetailUsd  Int
   liabilityDetailIdr  Int
@@ -108,17 +108,17 @@ model PremiumDetail {
   formDataId          Int
   formData            Calculator       @relation(fields: [formDataId], references: [id])
   pdmaPremiumId       Int              @unique  
-  pdmaPremium         pdmaDetailPremium @relation(fields: [pdmaPremiumId], references: [id])
+  pdmaPremium         PdmaDetailPremium @relation(fields: [pdmaPremiumId], references: [id])
   maPremiumId         Int              @unique  
-  maPremium           maDetailPremium   @relation(fields: [maPremiumId], references: [id])
+  maPremium           MaDetailPremium   @relation(fields: [maPremiumId], references: [id])
   avPremiumId         Int              @unique  
-  avPremium           avDetailPremium   @relation(fields: [avPremiumId], references: [id])
+  avPremium           AvDetailPremium   @relation(fields: [avPremiumId], references: [id])
   liabilityPremiumId  Int              @unique 
-  liabilityPremium    liabilityDetailPremium  @relation(fields: [liabilityPremiumId], references: [id])
+  liabilityPremium    LiabilityDetailPremium  @relation(fields: [liabilityPremiumId], references: [id])
   version             Int
 }
 
-model pdmaDetailPremium {
+model PdmaDetailPremium {
   id                  Int               @id @default(autoincrement())
   pdmaPremiumUsd      Int
   pdmaPremiumIdr      Int
@@ -127,7 +127,7 @@ model pdmaDetailPremium {
   premiumDetailId     Int?
 }
 
-model maDetailPremium {
+model MaDetailPremium {
   id                  Int               @id @default(autoincrement())
   maPremiumUsd        Int
   maPremiumIdr        Int
@@ -136,7 +136,7 @@ model maDetailPremium {
   premiumDetailId     Int?
 }
 
-model avDetailPremium {
+model AvDetailPremium {
   id                  Int               @id @default(autoincrement())
   avPremiumUsd        Int
   avPremiumIdr        Int
@@ -145,7 +145,7 @@ model avDetailPremium {
   premiumDetailId     Int?
 }
 
-model liabilityDetailPremium {
+model LiabilityDetailPremium {
   id                  Int               @id @default(autoincrement())
   liabilityPremiumUsd Int
   liabilityPremiumIdr Int
@@ -157,19 +157,19 @@ model liabilityDetailPremium {
 model ShareDetail {
   id                        Int                     @id @default(autoincrement())
   pdmaShareId               Int                     @unique  
-  pdmaShare                 pdmaDetailShare         @relation(fields: [pdmaShareId], references: [id])
+  pdmaShare                 PdmaDetailShare         @relation(fields: [pdmaShareId], references: [id])
   maShareId                 Int                     @unique  
-  maShare                   maDetailShare           @relation(fields: [maShareId], references: [id])
+  maShare                   MaDetailShare           @relation(fields: [maShareId], references: [id])
   avShareId                 Int                     @unique  
-  avShare                   avDetailShare           @relation(fields: [avShareId], references: [id])
+  avShare                   AvDetailShare           @relation(fields: [avShareId], references: [id])
   liabilityShareId          Int                     @unique  
-  liabilityShare            liabilityDetailShare    @relation(fields: [liabilityShareId], references: [id])
+  liabilityShare            LiabilityDetailShare    @relation(fields: [liabilityShareId], references: [id])
   version                   Int
   calculatorId              Int
   calculator                Calculator              @relation("CalculatorToShareDetail", fields: [calculatorId], references: [id])
 }
 
-model pdmaDetailShare {
+model PdmaDetailShare {
   id                  Int                   @id @default(autoincrement())
   pdmaShareUsd        Int
   pdmaShareIdr        Int
@@ -179,7 +179,7 @@ model pdmaDetailShare {
   shareDetailId       Int      
 }
 
-model maDetailShare {
+model MaDetailShare {
   id                  Int                   @id @default(autoincrement())
   maShareUsd          Int
   maShareIdr          Int
@@ -187,10 +187,9 @@ model maDetailShare {
   maSharePremiumIdr   Int
   shareDetail         ShareDetail?   
   shareDetailId       Int      
-       
 }
 
-model avDetailShare {
+model AvDetailShare {
   id                  Int                   @id @default(autoincrement())
   avShareUsd          Int
   avShareIdr          Int
@@ -198,10 +197,9 @@ model avDetailShare {
   avSharePremiumIdr   Int
   shareDetail         ShareDetail?
   shareDetailId       Int      
-         
 }
 
-model liabilityDetailShare {
+model LiabilityDetailShare {
   id                        Int              @id @default(autoincrement())
   liabilityShareUsd         Int
   liabilityShareIdr         Int

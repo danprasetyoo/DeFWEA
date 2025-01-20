@@ -116,7 +116,6 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                         value={formData.inputStatementDate}
                         placeholder="Select date"
                         onChange={handleInputChange}
-                        required
                     />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg
@@ -163,7 +162,6 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                         placeholder="Amount"
                         value={amount}
                         onChange={handleAmountInput}
-                        required
                     />
                 </div>
             </div>
@@ -186,7 +184,6 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                         value={formData.inputStatementPeriod}
                         placeholder="Select date"
                         onChange={handleInputChange}
-                        required
                     />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg
@@ -218,7 +215,6 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                     placeholder="Enter year"
                     value={formData.inputTreatyYear}
                     onChange={handleTreatyYearChange}
-                    required
                     maxLength={4}
                 />
             </div>

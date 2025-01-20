@@ -1,30 +1,28 @@
 import React, { useState } from "react";
 import InputGroup from "./InputGroup";
+import TreatyValues from "./TreatyValues";
 
-interface TretyDetailProps {
+interface TreatyDetailProps {
     formData: any;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-function TretyDetail({ handleInputChange }: TretyDetailProps) {
-    const [amounts, setAmounts] = useState({
-        currentExchange: "",
-        priorExchange: "",
-        currentMargin: "",
-        priorMargin: "",
-        currentBrokerage: "",
-        priorBrokerage: "",
-        currentInterest: "",
-        priorInterest: "",
-        currentLAP: "",
-        priorLAP: "",
-        currentMaintenance: "",
-        priorMaintenance: "",
-    });
+function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
+    const [amounts, setAmounts] = useState(JSON.parse(JSON.stringify(TreatyValues)));
+
+    const updateNestedField = (obj: any, path: string[], value: any) => {
+        const [key, ...rest] = path;
+        if (!rest.length) {
+            obj[key] = value;
+            return;
+        }
+        if (!obj[key]) obj[key] = {};
+        updateNestedField(obj[key], rest, value);
+    };
 
     const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
-        let numericValue = value.replace("%", "");
+        const numericValue = value.replace("%", "");
         let validValue = numericValue;
 
         if (/^\d*\.?\d+$/.test(numericValue)) {
@@ -35,10 +33,10 @@ function TretyDetail({ handleInputChange }: TretyDetailProps) {
             }
         }
 
-        setAmounts((prevAmounts) => ({
-            ...prevAmounts,
-            [id]: validValue,
-        }));
+        const path = id.split(".");
+        const updatedAmounts = { ...amounts };
+        updateNestedField(updatedAmounts, path, validValue);
+        setAmounts(updatedAmounts);
 
         handleInputChange({
             target: {
@@ -56,10 +54,10 @@ function TretyDetail({ handleInputChange }: TretyDetailProps) {
             validValue = validValue.slice(0, validValue.lastIndexOf("."));
         }
 
-        setAmounts((prevAmounts) => ({
-            ...prevAmounts,
-            [id]: validValue,
-        }));
+        const path = id.split(".");
+        const updatedAmounts = { ...amounts };
+        updateNestedField(updatedAmounts, path, validValue);
+        setAmounts(updatedAmounts);
 
         handleInputChange({
             target: {
@@ -75,61 +73,67 @@ function TretyDetail({ handleInputChange }: TretyDetailProps) {
                 fields={[
                     {
                         currentLabel: "Exchange Rate",
-                        currentId: "currentExchange",
-                        priorId: "priorExchange",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.currentExchange",
+                        priorId: "inputTreatyDetail.treatyPriorYear.priorExchange",
                         type: "text",
-                        priorLabel: ""
+                        priorLabel: "",
                     },
                 ]}
                 amounts={amounts}
-                handleChange={handleAmountInput} label={"Treaty Details"} />
+                handleChange={handleAmountInput}
+                label={"Treaty Details"}
+            />
             <InputGroup
                 fields={[
                     {
                         currentLabel: "Reinsurers' Margin",
-                        currentId: "currentMargin",
-                        priorId: "priorMargin",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.currentMargin",
+                        priorId: "inputTreatyDetail.treatyPriorYear.priorMargin",
                         type: "percentage",
-                        priorLabel: ""
+                        priorLabel: "",
                     },
                     {
                         currentLabel: "Brokerage",
-                        currentId: "currentBrokerage",
-                        priorId: "priorBrokerage",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.currentBrokerage",
+                        priorId: "inputTreatyDetail.treatyPriorYear.priorBrokerage",
                         type: "percentage",
-                        priorLabel: ""
+                        priorLabel: "",
                     },
                     {
                         currentLabel: "Interest Rate",
-                        currentId: "currentInterest",
-                        priorId: "priorInterest",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.currentInterest",
+                        priorId: "inputTreatyDetail.treatyPriorYear.priorInterest",
                         type: "percentage",
-                        priorLabel: ""
+                        priorLabel: "",
                     },
                     {
                         currentLabel: "LAP",
-                        currentId: "currentLAP",
-                        priorId: "priorLAP",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.currentLAP",
+                        priorId: "inputTreatyDetail.treatyPriorYear.priorLAP",
                         type: "percentage",
-                        priorLabel: ""
+                        priorLabel: "",
                     },
                 ]}
                 amounts={amounts}
-                handleChange={handlePercentageChange} label={""} />
+                handleChange={handlePercentageChange}
+                label={""}
+            />
             <InputGroup
                 fields={[
                     {
                         currentLabel: "Maintenance Credit",
-                        currentId: "currentMaintenance",
-                        priorId: "priorMaintenance",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.currentMaintenance",
+                        priorId: "inputTreatyDetail.treatyPriorYear.priorMaintenance",
                         type: "text",
-                        priorLabel: ""
+                        priorLabel: "",
                     },
                 ]}
                 amounts={amounts}
-                handleChange={handleAmountInput} label={""} />
+                handleChange={handleAmountInput}
+                label={""}
+            />
         </div>
     );
 }
 
-export default TretyDetail;
+export default TreatyDetail;

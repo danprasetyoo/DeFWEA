@@ -1,13 +1,11 @@
 const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const calculatorRoutes = require('./routes/calculatorRoutes');
+const app = express();
+const calculatorRouter = require('./routes/calculatorRoutes');
 
 app.use(cors());
-app.use(bodyParser.json());
-
-app.use('/api/calculators', calculatorRoutes);
+app.use(express.json());
+app.use('/api/calculators', calculatorRouter);
 
 app.get('/', (req, res) => {
     res.send('API is working');
@@ -19,7 +17,11 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: err.message });
+    const statusCode = err.status || 500;
+    res.status(statusCode).json({
+        error: err.message || 'Internal Server Error',
+        stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+    });
 });
 
 const PORT = process.env.PORT || 5000;
