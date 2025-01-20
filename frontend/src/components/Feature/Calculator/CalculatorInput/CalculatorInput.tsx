@@ -29,8 +29,7 @@ function CalculatorInput() {
 
                 if (value) {
                     if (
-                        key.includes("currentBrokerage") ||
-                        key.includes("priorBrokerage") ||
+                        key.includes("Brokerage") ||
                         key.includes("Interest") ||
                         key.includes("Margin") ||
                         key.includes("LAP")
@@ -67,7 +66,7 @@ function CalculatorInput() {
             id.includes("Margin") ||
             id.includes("Interest") ||
             id.includes("LAP") ||
-            id.includes("Maintenance") ||
+            id.includes("Brokerage") ||
             id.includes("Share")
         ) {
             formik.setFieldValue(id, convertToPercentage(value));

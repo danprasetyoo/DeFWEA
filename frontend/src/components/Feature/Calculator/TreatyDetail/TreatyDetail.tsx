@@ -38,6 +38,11 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
         updateNestedField(updatedAmounts, path, validValue);
         setAmounts(updatedAmounts);
 
+        setAmounts((prevAmounts: any) => ({
+            ...prevAmounts,
+            [id]: validValue,
+        }));
+
         handleInputChange({
             target: {
                 id,
@@ -95,7 +100,7 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
                     {
                         currentLabel: "Brokerage",
                         currentId: "inputTreatyDetail.treatyCurrentYear.currentBrokerage",
-                        priorId: "inputTreatyDetail.treatyPriorYear.priorBrokerage",
+                        priorId: "inputTreatyDetail.treatyPriorYear.priorBrokerage  ",
                         type: "percentage",
                         priorLabel: "",
                     },
