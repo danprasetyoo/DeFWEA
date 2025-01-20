@@ -82,7 +82,7 @@ function CalculatorInput() {
                 <br />
                 <TreatyDetail formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
-                <LayerDetail formData={formik.values} handleInputChange={handleInputChange} />
+                <LayerDetail formData={formik.values} handleInputChange={handleInputChange} setFieldValue={formik.setFieldValue} />
                 <br />
                 <PremiumDetail formData={formik.values} handleInputChange={handleInputChange} />
 
