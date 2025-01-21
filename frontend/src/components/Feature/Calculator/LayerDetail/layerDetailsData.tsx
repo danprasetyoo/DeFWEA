@@ -83,25 +83,25 @@ export const readonlyRows = (results: typeof initialResults) => [
         label: "MDP - USD",
         inputs: [
             {
-                id: "pdmaShareUsd",
+                id: "inputShare.sharePdma.pdmaShareUsd",
                 value: results.inputShare.sharePdma.pdmaShareUsd,
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "maShareUsd",
+                id: "inputShare.shareMa.maShareUsd",
                 value: results.inputShare.shareMa.maShareUsd,
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "avShareUsd",
+                id: "inputShare.shareAv.avShareUsd",
                 value: results.inputShare.shareAv.avShareUsd,
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "liabilityShareUsd",
+                id: "inputShare.shareLiability.liabilityShareUsd",
                 value: results.inputShare.shareLiability.liabilityShareUsd,
                 readonly: true,
                 placeholder: ""
@@ -111,10 +111,10 @@ export const readonlyRows = (results: typeof initialResults) => [
     {
         label: "MDP - IDR",
         inputs: [
-            { id: "pdmaShareIdr", value: results.inputShare.sharePdma.pdmaShareIdr, readonly: true, placeholder: "" },
-            { id: "maShareIdr", value: results.inputShare.shareMa.maShareIdr, readonly: true, placeholder: "" },
-            { id: "avShareIdr", value: results.inputShare.shareAv.avShareIdr, readonly: true, placeholder: "" },
-            { id: "liabilityShareIdr", value: results.inputShare.shareLiability.liabilityShareIdr, readonly: true, placeholder: "" },
+            { id: "inputShare.sharePdma.pdmaShareIdr", value: results.inputShare.sharePdma.pdmaShareIdr, readonly: true, placeholder: "" },
+            { id: "inputShare.shareMa.maShareIdr", value: results.inputShare.shareMa.maShareIdr, readonly: true, placeholder: "" },
+            { id: "inputShare.shareAv.avShareIdr", value: results.inputShare.shareAv.avShareIdr, readonly: true, placeholder: "" },
+            { id: "inputShare.shareLiability.liabilityShareIdr", value: results.inputShare.shareLiability.liabilityShareIdr, readonly: true, placeholder: "" },
         ],
     },
 ];

@@ -100,7 +100,7 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
                     {
                         currentLabel: "Brokerage",
                         currentId: "inputTreatyDetail.treatyCurrentYear.currentBrokerage",
-                        priorId: "inputTreatyDetail.treatyPriorYear.priorBrokerage  ",
+                        priorId: "inputTreatyDetail.treatyPriorYear.priorBrokerage",
                         type: "percentage",
                         priorLabel: "",
                     },
