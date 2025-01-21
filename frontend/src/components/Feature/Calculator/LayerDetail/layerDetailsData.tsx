@@ -111,7 +111,12 @@ export const readonlyRows = (results: typeof initialResults) => [
     {
         label: "MDP - IDR",
         inputs: [
-            { id: "inputShare.sharePdma.pdmaShareIdr", value: results.inputShare.sharePdma.pdmaShareIdr, readonly: true, placeholder: "" },
+            {
+                id: "inputShare.sharePdma.pdmaShareIdr",
+                value: results.inputShare.sharePdma.pdmaShareIdr,
+                readonly: true,
+                placeholder: ""
+            },
             { id: "inputShare.shareMa.maShareIdr", value: results.inputShare.shareMa.maShareIdr, readonly: true, placeholder: "" },
             { id: "inputShare.shareAv.avShareIdr", value: results.inputShare.shareAv.avShareIdr, readonly: true, placeholder: "" },
             { id: "inputShare.shareLiability.liabilityShareIdr", value: results.inputShare.shareLiability.liabilityShareIdr, readonly: true, placeholder: "" },
