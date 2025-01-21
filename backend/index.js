@@ -11,6 +11,11 @@ app.get('/', (req, res) => {
     res.send('API is working');
 });
 
+app.post('/api/calculators/post', (req, res) => {
+    console.log("POST request received");
+    res.send("POST request success");
+});
+
 app.use((req, res, next) => {
     res.status(404).json({ message: 'Resource not found' });
 });
