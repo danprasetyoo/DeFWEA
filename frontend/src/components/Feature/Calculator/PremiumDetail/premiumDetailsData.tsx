@@ -25,24 +25,22 @@ export const initialAmounts = {
     },
 };
 
-export const initialResults = {
-    inputShare: {
-        sharePdma: {
-            pdmaSharePremiumUsd: "",
-            pdmaSharePremiumIdr: "",
-        },
-        shareMa: {
-            maSharePremiumUsd: "",
-            maSharePremiumIdr: "",
-        },
-        shareAv: {
-            avSharePremiumUsd: "",
-            avSharePremiumIdr: "",
-        },
-        shareLiability: {
-            liabilitySharePremiumUsd: "",
-            liabilitySharePremiumIdr: "",
-        },
+export const inputShare = {
+    sharePdma: {
+        pdmaSharePremiumUsd: "",
+        pdmaSharePremiumIdr: "",
+    },
+    shareMa: {
+        maSharePremiumUsd: "",
+        maSharePremiumIdr: "",
+    },
+    shareAv: {
+        avSharePremiumUsd: "",
+        avSharePremiumIdr: "",
+    },
+    shareLiability: {
+        liabilitySharePremiumUsd: "",
+        liabilitySharePremiumIdr: "",
     },
 };
 
@@ -144,31 +142,31 @@ export const rows = (
         },
     ];
 
-export const readonlyRows = (results: typeof initialResults) => [
+export const readonlyRows = (results: typeof inputShare) => [
     {
         label: "Adjustment Premium - USD",
         inputs: [
             {
                 id: "pdmaSharePremiumUsd",
-                value: results.inputShare.sharePdma.pdmaSharePremiumUsd,
+                value: results.sharePdma.pdmaSharePremiumUsd,
                 readonly: true,
                 placeholder: "",
             },
             {
                 id: "maSharePremiumUsd",
-                value: results.inputShare.shareMa.maSharePremiumUsd,
+                value: results.shareMa.maSharePremiumUsd,
                 readonly: true,
                 placeholder: "",
             },
             {
                 id: "avSharePremiumUsd",
-                value: results.inputShare.shareAv.avSharePremiumUsd,
+                value: results.shareAv.avSharePremiumUsd,
                 readonly: true,
                 placeholder: "",
             },
             {
                 id: "liabilitySharePremiumUsd",
-                value: results.inputShare.shareLiability.liabilitySharePremiumUsd,
+                value: results.shareLiability.liabilitySharePremiumUsd,
                 readonly: true,
                 placeholder: "",
             },
@@ -179,25 +177,25 @@ export const readonlyRows = (results: typeof initialResults) => [
         inputs: [
             {
                 id: "pdmaSharePremiumIdr",
-                value: results.inputShare.sharePdma.pdmaSharePremiumIdr,
+                value: results.sharePdma.pdmaSharePremiumIdr,
                 readonly: true,
                 placeholder: "",
             },
             {
                 id: "maSharePremiumIdr",
-                value: results.inputShare.shareMa.maSharePremiumIdr,
+                value: results.shareMa.maSharePremiumIdr,
                 readonly: true,
                 placeholder: "",
             },
             {
                 id: "avSharePremiumIdr",
-                value: results.inputShare.shareAv.avSharePremiumIdr,
+                value: results.shareAv.avSharePremiumIdr,
                 readonly: true,
                 placeholder: "",
             },
             {
                 id: "liabilitySharePremiumIdr",
-                value: results.inputShare.shareLiability.liabilitySharePremiumIdr,
+                value: results.shareLiability.liabilitySharePremiumIdr,
                 readonly: true,
                 placeholder: "",
             },

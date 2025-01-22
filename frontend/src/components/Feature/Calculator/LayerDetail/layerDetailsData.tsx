@@ -23,24 +23,22 @@ export const initialAmounts = {
     },
 };
 
-export const initialResults = {
-    inputShare: {
-        sharePdma: {
-            pdmaShareUsd: "",
-            pdmaShareIdr: "",
-        },
-        shareMa: {
-            maShareUsd: "",
-            maShareIdr: "",
-        },
-        shareAv: {
-            avShareUsd: "",
-            avShareIdr: "",
-        },
-        shareLiability: {
-            liabilityShareUsd: "",
-            liabilityShareIdr: "",
-        },
+export const inputShare = {
+    sharePdma: {
+        pdmaShareUsd: "",
+        pdmaShareIdr: "",
+    },
+    shareMa: {
+        maShareUsd: "",
+        maShareIdr: "",
+    },
+    shareAv: {
+        avShareUsd: "",
+        avShareIdr: "",
+    },
+    shareLiability: {
+        liabilityShareUsd: "",
+        liabilityShareIdr: "",
     },
 };
 
@@ -78,31 +76,31 @@ export const rows = (
         },
     ];
 
-export const readonlyRows = (results: typeof initialResults) => [
+export const readonlyRows = (results: typeof inputShare) => [
     {
         label: "MDP - USD",
         inputs: [
             {
-                id: "inputShare.sharePdma.pdmaShareUsd",
-                value: results.inputShare.sharePdma.pdmaShareUsd,
+                id: "sharePdma.pdmaShareUsd",
+                value: results.sharePdma.pdmaShareUsd,
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "inputShare.shareMa.maShareUsd",
-                value: results.inputShare.shareMa.maShareUsd,
+                id: "shareMa.maShareUsd",
+                value: results.shareMa.maShareUsd,
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "inputShare.shareAv.avShareUsd",
-                value: results.inputShare.shareAv.avShareUsd,
+                id: "shareAv.avShareUsd",
+                value: results.shareAv.avShareUsd,
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "inputShare.shareLiability.liabilityShareUsd",
-                value: results.inputShare.shareLiability.liabilityShareUsd,
+                id: "shareLiability.liabilityShareUsd",
+                value: results.shareLiability.liabilityShareUsd,
                 readonly: true,
                 placeholder: ""
             },
@@ -112,14 +110,14 @@ export const readonlyRows = (results: typeof initialResults) => [
         label: "MDP - IDR",
         inputs: [
             {
-                id: "inputShare.sharePdma.pdmaShareIdr",
-                value: results.inputShare.sharePdma.pdmaShareIdr,
+                id: "sharePdma.pdmaShareIdr",
+                value: results.sharePdma.pdmaShareIdr,
                 readonly: true,
                 placeholder: ""
             },
-            { id: "inputShare.shareMa.maShareIdr", value: results.inputShare.shareMa.maShareIdr, readonly: true, placeholder: "" },
-            { id: "inputShare.shareAv.avShareIdr", value: results.inputShare.shareAv.avShareIdr, readonly: true, placeholder: "" },
-            { id: "inputShare.shareLiability.liabilityShareIdr", value: results.inputShare.shareLiability.liabilityShareIdr, readonly: true, placeholder: "" },
+            { id: "shareMa.maShareIdr", value: results.shareMa.maShareIdr, readonly: true, placeholder: "" },
+            { id: "shareAv.avShareIdr", value: results.shareAv.avShareIdr, readonly: true, placeholder: "" },
+            { id: "shareLiability.liabilityShareIdr", value: results.shareLiability.liabilityShareIdr, readonly: true, placeholder: "" },
         ],
     },
 ];
