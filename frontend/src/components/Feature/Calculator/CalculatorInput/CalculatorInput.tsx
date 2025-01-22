@@ -47,7 +47,9 @@ function CalculatorInput() {
             }, {} as Partial<typeof initialValues>);
 
             try {
-                const response = await axios.post("/api/calculators/post", cleanedValues);
+                const response = await axios.post("/api/calculators/post", cleanedValues, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
                 console.log("Data berhasil disimpan:", response.data);
             } catch (error) {
                 console.error("Ada kesalahan saat menyimpan data:", error);
