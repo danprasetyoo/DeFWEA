@@ -4,7 +4,7 @@ import { rows, readonlyRows, initialAmounts } from "./layerDetailsData";
 import { useLayerDetails } from "./useLayerDetails";
 
 type LayerDetailProps = {
-    amounts: typeof initialAmounts; // menerima amounts yang sudah didefinisikan
+    amounts: typeof initialAmounts;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handlePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     setFieldValue: (field: string, value: any) => void;

@@ -13,7 +13,6 @@ import initialValues from "./InitialValues";
 function CalculatorInput() {
     const [isLoading, setIsLoading] = useState(false);
 
-    // Hooks for Layer and Premium Details
     const {
         amounts: layerAmounts,
         results: layerResults,
@@ -59,40 +58,35 @@ function CalculatorInput() {
         },
     });
 
-    // Handle input change with formik
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        formik.setFieldValue(id, value); // Update formik field value based on the input id
+        formik.setFieldValue(id, value);
     };
 
     return (
         <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
-                {/* Statement Input */}
                 <StatementInput formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
 
-                {/* Treaty Detail */}
                 <TreatyDetail formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
 
-                {/* Layer Detail */}
                 <LayerDetail
                     amounts={layerAmounts}
-                    handleInputChange={handleLayerInputChange} // Passed down to LayerDetail
-                    handlePercentageChange={(e) => handleLayerPercentageChange(e, e.target.id)} // Adjusted to match the expected signature
-                    setFieldValue={formik.setFieldValue} // Passing setFieldValue to LayerDetail
+                    handleInputChange={handleLayerInputChange}
+                    handlePercentageChange={(e) => handleLayerPercentageChange(e, e.target.id)}
+                    setFieldValue={formik.setFieldValue}
                 />
                 <br />
 
-                {/* Premium Detail */}
                 <PremiumDetail
                     amounts={premiumAmounts}
                     handleInputChange={handlePremiumInputChange}
-                    handlePercentageChange={(e) => handlePremiumPercentageChange(e, e.target.id)} // Adjusted to match the expected signature
+                    handlePercentageChange={(e) => handlePremiumPercentageChange(e, e.target.id)}
                     setFieldValue={formik.setFieldValue}
                 />
-                {/* Submit Button */}
+
                 <div className="flex justify-end py-3">
                     <button
                         type="submit"
