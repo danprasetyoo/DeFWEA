@@ -18,6 +18,7 @@ export const useLayerDetails = (
         updateNestedField(obj[key], rest, value);
     };
 
+    // Handle input change for standard input fields (non-percentage)
     const handleLocalInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         const validValue = (value || "").replace(/[^0-9.]/g, "");
@@ -35,16 +36,18 @@ export const useLayerDetails = (
         } as React.ChangeEvent<HTMLInputElement>);
     };
 
+    // Handle percentage change input
     const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
         const numericValue = (value || "").replace("%", "");
         let validValue = numericValue;
 
+        // Validate if the input is a valid number and within the range of 0 to 100
         if (/^\d*\.?\d+$/.test(numericValue)) {
             if (parseFloat(numericValue) >= 0 && parseFloat(numericValue) <= 100) {
-                validValue = numericValue + "%";
+                validValue = numericValue + "%"; // Keep the percentage sign
             } else {
-                validValue = "100%";
+                validValue = "100%"; // Set to 100% if the value exceeds the limit
             }
         }
 
@@ -53,6 +56,7 @@ export const useLayerDetails = (
         updateNestedField(updatedAmounts, path, validValue);
         setAmounts(updatedAmounts);
 
+        // Trigger formik handleInputChange to update the form's values
         handleInputChange({
             target: {
                 id,
@@ -61,6 +65,7 @@ export const useLayerDetails = (
         } as React.ChangeEvent<HTMLInputElement>);
     };
 
+    // Recalculate results whenever the amounts state changes
     const recalculateResults = (updatedAmounts: any) => {
         const parsePercentage = (percentage: string) =>
             parseFloat((percentage || "").replace("%", "").trim() || "0") / 100;
@@ -115,12 +120,12 @@ export const useLayerDetails = (
         };
 
         setResults(newResults);
-        setFieldValue("inputShare", newResults);
+        setFieldValue("inputShare", newResults); // Update formik's field value with the new results
     };
 
     useEffect(() => {
         recalculateResults(amounts);
-    }, [amounts]);
+    }, [amounts]); // Recalculate results whenever 'amounts' changes
 
     return {
         amounts,

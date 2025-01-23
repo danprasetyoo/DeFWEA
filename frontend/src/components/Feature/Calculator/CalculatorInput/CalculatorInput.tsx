@@ -6,88 +6,93 @@ import PremiumDetail from "../PremiumDetail/PremiumDetail";
 import axios from "axios";
 import { validationSchema } from "../../../../validation/validationSchema";
 import { useState } from "react";
+import { useLayerDetails } from "../LayerDetail/useLayerDetails";
+import { usePremiumDetails } from "../PremiumDetail/usePremiumDetails";
 import initialValues from "./InitialValues";
 
 function CalculatorInput() {
     const [isLoading, setIsLoading] = useState(false);
 
+    // Hooks for Layer and Premium Details
+    const {
+        amounts: layerAmounts,
+        results: layerResults,
+        handleLocalInputChange: handleLayerInputChange,
+        handlePercentageChange: handleLayerPercentageChange,
+    } = useLayerDetails(() => { }, () => { });
+
+    const {
+        amounts: premiumAmounts,
+        results: premiumResults,
+        handleLocalInputChange: handlePremiumInputChange,
+        handlePercentageChange: handlePremiumPercentageChange,
+    } = usePremiumDetails(() => { }, () => { });
+
     const formik = useFormik({
         initialValues,
         validationSchema,
-        onSubmit: async (values: typeof initialValues) => {
+        onSubmit: async (values) => {
             setIsLoading(true);
 
-            const convertPercentageToDecimal = (value: string) => {
-                if (value.includes("%")) {
-                    return parseFloat(value.replace("%", "")) / 100;
-                }
-                return parseFloat(value);
+            const combinedData = {
+                sharePdma: { ...layerResults.sharePdma, ...premiumResults.sharePdma },
+                shareMa: { ...layerResults.shareMa, ...premiumResults.shareMa },
+                shareAv: { ...layerResults.shareAv, ...premiumResults.shareAv },
+                shareLiability: { ...layerResults.shareLiability, ...premiumResults.shareLiability },
             };
 
-            const cleanedValues = Object.keys(values).reduce((acc, key) => {
-                const value = values[key as keyof typeof initialValues];
-
-                if (value) {
-                    if (
-                        key.includes("Brokerage") ||
-                        key.includes("Interest") ||
-                        key.includes("Margin") ||
-                        key.includes("LAP")
-                    ) {
-                        if (typeof value === "string") {
-                            (acc as any)[key] = convertPercentageToDecimal(value);
-                        } else {
-                            (acc as any)[key] = value;
-                        }
-                    } else {
-                        (acc as any)[key] = value;
-                    }
-                }
-                return acc;
-            }, {} as Partial<typeof initialValues>);
+            const cleaneValues = {
+                ...values,
+                inputShare: combinedData,
+            };
 
             try {
-                const response = await axios.post("/api/calculators/post", cleanedValues, {
-                    headers: { 'Content-Type': 'application/json' }
+                const response = await axios.post("/api/calculators/post", cleaneValues, {
+                    headers: { "Content-Type": "application/json" },
                 });
-                console.log("Data berhasil disimpan:", response.data);
+                console.log("Data saved successfully:", response.data);
             } catch (error) {
-                console.error("Ada kesalahan saat menyimpan data:", error);
+                console.error("Error saving data:", error);
             } finally {
                 setIsLoading(false);
             }
         },
     });
 
-    const convertToPercentage = (value: string): number => (value ? parseFloat(value) / 100 : 0);
-
+    // Handle input change with formik
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-
-        if (
-            id.includes("Margin") ||
-            id.includes("Interest") ||
-            id.includes("LAP") ||
-            id.includes("Brokerage") ||
-            id.includes("Share")
-        ) {
-            formik.setFieldValue(id, convertToPercentage(value));
-        } else {
-            formik.setFieldValue(id, value);
-        }
+        formik.setFieldValue(id, value); // Update formik field value based on the input id
     };
 
     return (
         <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
+                {/* Statement Input */}
                 <StatementInput formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
+
+                {/* Treaty Detail */}
                 <TreatyDetail formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
-                <LayerDetail formData={formik.values} handleInputChange={handleInputChange} setFieldValue={formik.setFieldValue} />
-                <br />
-                <PremiumDetail formData={formik.values} handleInputChange={handleInputChange} setFieldValue={formik.setFieldValue} />
 
+                {/* Layer Detail */}
+                <LayerDetail
+                    amounts={layerAmounts}
+                    handleInputChange={handleLayerInputChange} // Passed down to LayerDetail
+                    handlePercentageChange={(e) => handleLayerPercentageChange(e, e.target.id)} // Adjusted to match the expected signature
+                    setFieldValue={formik.setFieldValue} // Passing setFieldValue to LayerDetail
+                />
+                <br />
+
+                {/* Premium Detail */}
+                <PremiumDetail
+                    amounts={premiumAmounts}
+                    handleInputChange={handlePremiumInputChange}
+                    handlePercentageChange={(e) => handlePremiumPercentageChange(e, e.target.id)} // Adjusted to match the expected signature
+                    setFieldValue={formik.setFieldValue}
+                />
+                {/* Submit Button */}
                 <div className="flex justify-end py-3">
                     <button
                         type="submit"

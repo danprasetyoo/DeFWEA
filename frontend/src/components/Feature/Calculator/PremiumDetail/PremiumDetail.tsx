@@ -1,19 +1,17 @@
 import React from "react";
 import InputGroup from "./InputGroup";
+import { rows, readonlyRows, initialAmounts } from "./premiumDetailsData";
 import { usePremiumDetails } from "./usePremiumDetails";
-import { rows, readonlyRows } from "./premiumDetailsData";
 
 type PremiumDetailProps = {
-    formData: any;
+    amounts: typeof initialAmounts;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handlePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Pastikan properti ini ada
     setFieldValue: (field: string, value: any) => void;
 };
 
 const PremiumDetail: React.FC<PremiumDetailProps> = ({ handleInputChange, setFieldValue }) => {
-    const { amounts, results, handleLocalInputChange, handlePercentageChange } = usePremiumDetails(
-        setFieldValue,
-        handleInputChange
-    );
+    const { amounts, results, handleLocalInputChange, handlePercentageChange } = usePremiumDetails(setFieldValue, handleInputChange);
 
     return (
         <div>

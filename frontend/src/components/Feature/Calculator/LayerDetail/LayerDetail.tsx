@@ -1,11 +1,12 @@
 import React from "react";
 import InputGroup from "./InputGroup";
-import { rows, readonlyRows } from "./layerDetailsData";
+import { rows, readonlyRows, initialAmounts } from "./layerDetailsData";
 import { useLayerDetails } from "./useLayerDetails";
 
 type LayerDetailProps = {
-    formData: any;
+    amounts: typeof initialAmounts; // menerima amounts yang sudah didefinisikan
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handlePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     setFieldValue: (field: string, value: any) => void;
 };
 
