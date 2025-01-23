@@ -1,27 +1,25 @@
 import { ChangeEvent } from "react";
 
-export const initialAmounts = {
-    inputPremium: {
-        premiumPdma: {
-            pdmaPremiumUsd: "",
-            pdmaPremiumIdr: "",
-            pdmaPremiumShare: "",
-        },
-        premiumMa: {
-            maPremiumUsd: "",
-            maPremiumIdr: "",
-            maPremiumShare: "",
-        },
-        premiumAv: {
-            avPremiumUsd: "",
-            avPremiumIdr: "",
-            avPremiumShare: "",
-        },
-        premiumLiability: {
-            liabilityPremiumUsd: "",
-            liabilityPremiumIdr: "",
-            liabilityPremiumShare: "",
-        },
+export const inputPremium = {
+    premiumPdma: {
+        pdmaPremiumUsd: "",
+        pdmaPremiumIdr: "",
+        pdmaPremiumShare: "",
+    },
+    premiumMa: {
+        maPremiumUsd: "",
+        maPremiumIdr: "",
+        maPremiumShare: "",
+    },
+    premiumAv: {
+        avPremiumUsd: "",
+        avPremiumIdr: "",
+        avPremiumShare: "",
+    },
+    premiumLiability: {
+        liabilityPremiumUsd: "",
+        liabilityPremiumIdr: "",
+        liabilityPremiumShare: "",
     },
 };
 
@@ -44,8 +42,41 @@ export const inputShare = {
     },
 };
 
+export const convertPremiumShares = (input: typeof inputPremium) => {
+    const convertToDecimal = (value: string | number): number => {
+        if (typeof value === "string") {
+            if (value.includes("%")) {
+                return parseFloat(value.replace("%", "")) / 100;
+            }
+            return parseFloat(value) / 100;
+        } else if (typeof value === "number") {
+            return value / 100;
+        }
+        return 0;
+    };
+
+    return {
+        premiumPdma: {
+            ...input.premiumPdma,
+            pdmaPremiumShare: convertToDecimal(input.premiumPdma.pdmaPremiumShare),
+        },
+        premiumMa: {
+            ...input.premiumMa,
+            maPremiumShare: convertToDecimal(input.premiumMa.maPremiumShare),
+        },
+        premiumAv: {
+            ...input.premiumAv,
+            avPremiumShare: convertToDecimal(input.premiumAv.avPremiumShare),
+        },
+        premiumLiability: {
+            ...input.premiumLiability,
+            liabilityPremiumShare: convertToDecimal(input.premiumLiability.liabilityPremiumShare),
+        },
+    };
+};
+
 export const rows = (
-    amounts: typeof initialAmounts,
+    amounts: typeof inputPremium,
     handlePercentageChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void,
     handleLocalInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 ) => [
@@ -53,27 +84,27 @@ export const rows = (
             label: "MDP-USD",
             inputs: [
                 {
-                    id: "inputPremium.premiumPdma.pdmaPremiumUsd",
+                    id: "premiumPdma.pdmaPremiumUsd",
                     placeholder: "Amount",
-                    value: amounts.inputPremium.premiumPdma.pdmaPremiumUsd,
+                    value: amounts.premiumPdma.pdmaPremiumUsd,
                     onChange: handleLocalInputChange,
                 },
                 {
-                    id: "inputPremium.premiumMa.maPremiumUsd",
+                    id: "premiumMa.maPremiumUsd",
                     placeholder: "Amount",
-                    value: amounts.inputPremium.premiumMa.maPremiumUsd,
+                    value: amounts.premiumMa.maPremiumUsd,
                     onChange: handleLocalInputChange,
                 },
                 {
-                    id: "inputPremium.premiumAv.avPremiumUsd",
+                    id: "premiumAv.avPremiumUsd",
                     placeholder: "Amount",
-                    value: amounts.inputPremium.premiumAv.avPremiumUsd,
+                    value: amounts.premiumAv.avPremiumUsd,
                     onChange: handleLocalInputChange,
                 },
                 {
-                    id: "inputPremium.premiumLiability.liabilityPremiumUsd",
+                    id: "premiumLiability.liabilityPremiumUsd",
                     placeholder: "Amount",
-                    value: amounts.inputPremium.premiumLiability.liabilityPremiumUsd,
+                    value: amounts.premiumLiability.liabilityPremiumUsd,
                     onChange: handleLocalInputChange,
                 },
             ],
@@ -82,27 +113,27 @@ export const rows = (
             label: "MDP-IDR",
             inputs: [
                 {
-                    id: "inputPremium.premiumPdma.pdmaPremiumIdr",
+                    id: "premiumPdma.pdmaPremiumIdr",
                     placeholder: "Amount",
-                    value: amounts.inputPremium.premiumPdma.pdmaPremiumIdr,
+                    value: amounts.premiumPdma.pdmaPremiumIdr,
                     onChange: handleLocalInputChange,
                 },
                 {
-                    id: "inputPremium.premiumMa.maPremiumIdr",
+                    id: "premiumMa.maPremiumIdr",
                     placeholder: "Amount",
-                    value: amounts.inputPremium.premiumMa.maPremiumIdr,
+                    value: amounts.premiumMa.maPremiumIdr,
                     onChange: handleLocalInputChange,
                 },
                 {
-                    id: "inputPremium.premiumAv.avPremiumIdr",
+                    id: "premiumAv.avPremiumIdr",
                     placeholder: "Amount",
-                    value: amounts.inputPremium.premiumAv.avPremiumIdr,
+                    value: amounts.premiumAv.avPremiumIdr,
                     onChange: handleLocalInputChange,
                 },
                 {
-                    id: "inputPremium.premiumLiability.liabilityPremiumIdr",
+                    id: "premiumLiability.liabilityPremiumIdr",
                     placeholder: "Amount",
-                    value: amounts.inputPremium.premiumLiability.liabilityPremiumIdr,
+                    value: amounts.premiumLiability.liabilityPremiumIdr,
                     onChange: handleLocalInputChange,
                 },
             ],
@@ -111,32 +142,32 @@ export const rows = (
             label: "Share (%)",
             inputs: [
                 {
-                    id: "inputPremium.premiumPdma.pdmaPremiumShare",
+                    id: "premiumPdma.pdmaPremiumShare",
                     placeholder: "Percentage",
-                    value: amounts.inputPremium.premiumPdma.pdmaPremiumShare,
+                    value: amounts.premiumPdma.pdmaPremiumShare,
                     onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                        handlePercentageChange(e, "inputPremium.premiumPdma.pdmaPremiumShare"),
+                        handlePercentageChange(e, "premiumPdma.pdmaPremiumShare"),
                 },
                 {
-                    id: "inputPremium.premiumMa.maPremiumShare",
+                    id: "premiumMa.maPremiumShare",
                     placeholder: "Percentage",
-                    value: amounts.inputPremium.premiumMa.maPremiumShare,
+                    value: amounts.premiumMa.maPremiumShare,
                     onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                        handlePercentageChange(e, "inputPremium.premiumMa.maPremiumShare"),
+                        handlePercentageChange(e, "premiumMa.maPremiumShare"),
                 },
                 {
-                    id: "inputPremium.premiumAv.avPremiumShare",
+                    id: "premiumAv.avPremiumShare",
                     placeholder: "Percentage",
-                    value: amounts.inputPremium.premiumAv.avPremiumShare,
+                    value: amounts.premiumAv.avPremiumShare,
                     onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                        handlePercentageChange(e, "inputPremium.premiumAv.avPremiumShare"),
+                        handlePercentageChange(e, "premiumAv.avPremiumShare"),
                 },
                 {
-                    id: "inputPremium.premiumLiability.liabilityPremiumShare",
+                    id: "premiumLiability.liabilityPremiumShare",
                     placeholder: "Percentage",
-                    value: amounts.inputPremium.premiumLiability.liabilityPremiumShare,
+                    value: amounts.premiumLiability.liabilityPremiumShare,
                     onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                        handlePercentageChange(e, "inputPremium.premiumLiability.liabilityPremiumShare"),
+                        handlePercentageChange(e, "premiumLiability.liabilityPremiumShare"),
                 },
             ],
         },

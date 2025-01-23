@@ -1,10 +1,10 @@
 import React from "react";
 import InputGroup from "./InputGroup";
-import { rows, readonlyRows, initialAmounts } from "./layerDetailsData";
+import { rows, readonlyRows, inputLayerDetail } from "./layerDetailsData";
 import { useLayerDetails } from "./useLayerDetails";
 
 type LayerDetailProps = {
-    amounts: typeof initialAmounts;
+    amounts: typeof inputLayerDetail;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handlePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     setFieldValue: (field: string, value: any) => void;

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { initialAmounts, inputShare } from "./layerDetailsData";
+import { inputLayerDetail, inputShare } from "./layerDetailsData";
 
 export const useLayerDetails = (
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     setFieldValue: (field: string, value: any) => void
 ) => {
-    const [amounts, setAmounts] = useState(initialAmounts);
+    const [amounts, setAmounts] = useState(inputLayerDetail);
     const [results, setResults] = useState(inputShare);
 
     const updateNestedField = (obj: any, path: string[], value: any) => {
@@ -74,42 +74,42 @@ export const useLayerDetails = (
         const newResults = {
             sharePdma: {
                 pdmaShareUsd: calculateShare(
-                    updatedAmounts.inputLayerDetail.layerPdma.pdmaDetailUsd,
-                    updatedAmounts.inputLayerDetail.layerPdma.pdmaDetailShare
+                    updatedAmounts.layerPdma.pdmaDetailUsd,
+                    updatedAmounts.layerPdma.pdmaDetailShare
                 ).toFixed(2),
                 pdmaShareIdr: calculateShare(
-                    updatedAmounts.inputLayerDetail.layerPdma.pdmaDetailIdr,
-                    updatedAmounts.inputLayerDetail.layerPdma.pdmaDetailShare
+                    updatedAmounts.layerPdma.pdmaDetailIdr,
+                    updatedAmounts.layerPdma.pdmaDetailShare
                 ).toFixed(2),
             },
             shareMa: {
                 maShareUsd: calculateShare(
-                    updatedAmounts.inputLayerDetail.layerMa.maDetailUsd,
-                    updatedAmounts.inputLayerDetail.layerMa.maDetailShare
+                    updatedAmounts.layerMa.maDetailUsd,
+                    updatedAmounts.layerMa.maDetailShare
                 ).toFixed(2),
                 maShareIdr: calculateShare(
-                    updatedAmounts.inputLayerDetail.layerMa.maDetailIdr,
-                    updatedAmounts.inputLayerDetail.layerMa.maDetailShare
+                    updatedAmounts.layerMa.maDetailIdr,
+                    updatedAmounts.layerMa.maDetailShare
                 ).toFixed(2),
             },
             shareAv: {
                 avShareUsd: calculateShare(
-                    updatedAmounts.inputLayerDetail.layerAv.avDetailUsd,
-                    updatedAmounts.inputLayerDetail.layerAv.avDetailShare
+                    updatedAmounts.layerAv.avDetailUsd,
+                    updatedAmounts.layerAv.avDetailShare
                 ).toFixed(2),
                 avShareIdr: calculateShare(
-                    updatedAmounts.inputLayerDetail.layerAv.avDetailIdr,
-                    updatedAmounts.inputLayerDetail.layerAv.avDetailShare
+                    updatedAmounts.layerAv.avDetailIdr,
+                    updatedAmounts.layerAv.avDetailShare
                 ).toFixed(2),
             },
             shareLiability: {
                 liabilityShareUsd: calculateShare(
-                    updatedAmounts.inputLayerDetail.layerLiability.liabilityDetailUsd,
-                    updatedAmounts.inputLayerDetail.layerLiability.liabilityDetailShare
+                    updatedAmounts.layerLiability.liabilityDetailUsd,
+                    updatedAmounts.layerLiability.liabilityDetailShare
                 ).toFixed(2),
                 liabilityShareIdr: calculateShare(
-                    updatedAmounts.inputLayerDetail.layerLiability.liabilityDetailIdr,
-                    updatedAmounts.inputLayerDetail.layerLiability.liabilityDetailShare
+                    updatedAmounts.layerLiability.liabilityDetailIdr,
+                    updatedAmounts.layerLiability.liabilityDetailShare
                 ).toFixed(2),
             },
         };

@@ -1,12 +1,12 @@
 import React from "react";
 import InputGroup from "./InputGroup";
-import { rows, readonlyRows, initialAmounts } from "./premiumDetailsData";
+import { rows, readonlyRows, inputPremium } from "./premiumDetailsData";
 import { usePremiumDetails } from "./usePremiumDetails";
 
 type PremiumDetailProps = {
-    amounts: typeof initialAmounts;
+    amounts: typeof inputPremium;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handlePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Pastikan properti ini ada
+    handlePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     setFieldValue: (field: string, value: any) => void;
 };
 

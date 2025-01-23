@@ -9,6 +9,8 @@ import { useState } from "react";
 import { useLayerDetails } from "../LayerDetail/useLayerDetails";
 import { usePremiumDetails } from "../PremiumDetail/usePremiumDetails";
 import initialValues from "./InitialValues";
+import { convertPremiumShares } from "../PremiumDetail/premiumDetailsData";
+import { convertLayerShares } from "../LayerDetail/layerDetailsData";
 
 function CalculatorInput() {
     const [isLoading, setIsLoading] = useState(false);
@@ -27,11 +29,40 @@ function CalculatorInput() {
         handlePercentageChange: handlePremiumPercentageChange,
     } = usePremiumDetails(() => { }, () => { });
 
+    const convertPercentageToDecimal = (value: string) => {
+        if (value.includes("%")) {
+            return parseFloat(value.replace("%", "")) / 100;
+        }
+        return parseFloat(value);
+    };
+
     const formik = useFormik({
         initialValues,
         validationSchema,
         onSubmit: async (values) => {
             setIsLoading(true);
+
+            const cleanedValues = Object.keys(values).reduce((acc: Partial<typeof initialValues>, key) => {
+                const value = values[key as keyof typeof initialValues];
+                if (value) {
+                    if (
+                        key.includes("Brokerage") ||
+                        key.includes("Interest") ||
+                        key.includes("Margin") ||
+                        key.includes("LAP") ||
+                        key.includes("Share") ||
+                        key.includes("PremiumShare")
+                    ) {
+                        (acc as any)[key] =
+                            typeof value === "string"
+                                ? convertPercentageToDecimal(value)
+                                : value;
+                    } else {
+                        (acc as any)[key] = value;
+                    }
+                }
+                return acc;
+            }, {} as Partial<typeof initialValues>);
 
             const combinedData = {
                 sharePdma: { ...layerResults.sharePdma, ...premiumResults.sharePdma },
@@ -40,13 +71,17 @@ function CalculatorInput() {
                 shareLiability: { ...layerResults.shareLiability, ...premiumResults.shareLiability },
             };
 
-            const cleaneValues = {
-                ...values,
+            const payload = {
+                ...cleanedValues,
+                inputLayerDetail: convertLayerShares(layerAmounts),
+                inputPremium: convertPremiumShares(premiumAmounts),
                 inputShare: combinedData,
             };
 
+            console.log("Payload:", payload);
+
             try {
-                const response = await axios.post("/api/calculators/post", cleaneValues, {
+                const response = await axios.post("/api/calculators/post", payload, {
                     headers: { "Content-Type": "application/json" },
                 });
                 console.log("Data saved successfully:", response.data);
@@ -60,7 +95,17 @@ function CalculatorInput() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        formik.setFieldValue(id, value);
+        if (
+            id.includes("Margin") ||
+            id.includes("Interest") ||
+            id.includes("LAP") ||
+            id.includes("Brokerage") ||
+            id.includes("Share")
+        ) {
+            formik.setFieldValue(id, convertPercentageToDecimal(value));
+        } else {
+            formik.setFieldValue(id, value);
+        }
     };
 
     return (
@@ -75,7 +120,9 @@ function CalculatorInput() {
                 <LayerDetail
                     amounts={layerAmounts}
                     handleInputChange={handleLayerInputChange}
-                    handlePercentageChange={(e) => handleLayerPercentageChange(e, e.target.id)}
+                    handlePercentageChange={(e) =>
+                        handleLayerPercentageChange(e, e.target.id)
+                    }
                     setFieldValue={formik.setFieldValue}
                 />
                 <br />
@@ -83,7 +130,9 @@ function CalculatorInput() {
                 <PremiumDetail
                     amounts={premiumAmounts}
                     handleInputChange={handlePremiumInputChange}
-                    handlePercentageChange={(e) => handlePremiumPercentageChange(e, e.target.id)}
+                    handlePercentageChange={(e) =>
+                        handlePremiumPercentageChange(e, e.target.id)
+                    }
                     setFieldValue={formik.setFieldValue}
                 />
 

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { initialAmounts, inputShare } from "./premiumDetailsData";
+import { inputPremium, inputShare } from "./premiumDetailsData";
 
 export const usePremiumDetails = (
     setFieldValue: (field: string, value: any) => void,
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 ) => {
-    const [amounts, setAmounts] = useState(initialAmounts);
+    const [amounts, setAmounts] = useState(inputPremium);
     const [results, setResults] = useState(inputShare);
 
     const updateNestedField = (obj: any, path: string[], value: any) => {
@@ -72,42 +72,42 @@ export const usePremiumDetails = (
         const newResults = {
             sharePdma: {
                 pdmaSharePremiumUsd: calculateShare(
-                    updatedAmounts.inputPremium.premiumPdma.pdmaPremiumUsd,
-                    updatedAmounts.inputPremium.premiumPdma.pdmaPremiumShare
+                    updatedAmounts.premiumPdma.pdmaPremiumUsd,
+                    updatedAmounts.premiumPdma.pdmaPremiumShare
                 ).toFixed(2),
                 pdmaSharePremiumIdr: calculateShare(
-                    updatedAmounts.inputPremium.premiumPdma.pdmaPremiumIdr,
-                    updatedAmounts.inputPremium.premiumPdma.pdmaPremiumShare
+                    updatedAmounts.premiumPdma.pdmaPremiumIdr,
+                    updatedAmounts.premiumPdma.pdmaPremiumShare
                 ).toFixed(2),
             },
             shareMa: {
                 maSharePremiumUsd: calculateShare(
-                    updatedAmounts.inputPremium.premiumMa.maPremiumUsd,
-                    updatedAmounts.inputPremium.premiumMa.maPremiumShare
+                    updatedAmounts.premiumMa.maPremiumUsd,
+                    updatedAmounts.premiumMa.maPremiumShare
                 ).toFixed(2),
                 maSharePremiumIdr: calculateShare(
-                    updatedAmounts.inputPremium.premiumMa.maPremiumIdr,
-                    updatedAmounts.inputPremium.premiumMa.maPremiumShare
+                    updatedAmounts.premiumMa.maPremiumIdr,
+                    updatedAmounts.premiumMa.maPremiumShare
                 ).toFixed(2),
             },
             shareAv: {
                 avSharePremiumUsd: calculateShare(
-                    updatedAmounts.inputPremium.premiumAv.avPremiumUsd,
-                    updatedAmounts.inputPremium.premiumAv.avPremiumShare
+                    updatedAmounts.premiumAv.avPremiumUsd,
+                    updatedAmounts.premiumAv.avPremiumShare
                 ).toFixed(2),
                 avSharePremiumIdr: calculateShare(
-                    updatedAmounts.inputPremium.premiumAv.avPremiumIdr,
-                    updatedAmounts.inputPremium.premiumAv.avPremiumShare
+                    updatedAmounts.premiumAv.avPremiumIdr,
+                    updatedAmounts.premiumAv.avPremiumShare
                 ).toFixed(2),
             },
             shareLiability: {
                 liabilitySharePremiumUsd: calculateShare(
-                    updatedAmounts.inputPremium.premiumLiability.liabilityPremiumUsd,
-                    updatedAmounts.inputPremium.premiumLiability.liabilityPremiumShare
+                    updatedAmounts.premiumLiability.liabilityPremiumUsd,
+                    updatedAmounts.premiumLiability.liabilityPremiumShare
                 ).toFixed(2),
                 liabilitySharePremiumIdr: calculateShare(
-                    updatedAmounts.inputPremium.premiumLiability.liabilityPremiumIdr,
-                    updatedAmounts.inputPremium.premiumLiability.liabilityPremiumShare
+                    updatedAmounts.premiumLiability.liabilityPremiumIdr,
+                    updatedAmounts.premiumLiability.liabilityPremiumShare
                 ).toFixed(2),
             },
         };
