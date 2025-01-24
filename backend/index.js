@@ -1,9 +1,16 @@
 const express = require('express');
 const cors = require('cors');
+const { PrismaClient } = require('@prisma/client');
 const app = express();
 const calculatorRouter = require('./routes/calculatorRoutes');
 
-app.use(cors());
+const prisma = new PrismaClient();
+
+app.use(cors({
+    origin: 'http://localhost:5005', // Adjust this to match your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use('/api', calculatorRouter);
 
@@ -25,6 +32,13 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.listen(PORT, async () => {
+    try {
+        await prisma.$connect();
+        console.log('Connected to the database');
+        console.log(`Server running on port ${PORT}`);
+    } catch (error) {
+        console.error('Failed to connect to the database', error);
+        process.exit(1);
+    }
 });

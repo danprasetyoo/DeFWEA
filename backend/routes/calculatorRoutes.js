@@ -12,7 +12,6 @@ const { validateId, validateCalculator } = require('../middleware/validator');
 calculatorRouter.get('/calculators', getAllCalculators);
 calculatorRouter.get('/calculators/:id', validateId, getCalculatorById);
 calculatorRouter.post('/calculators', validateCalculator, createCalculator);
-calculatorRouter.post('/calculators/post', validateCalculator, createCalculator);
 calculatorRouter.put('/calculators/:id', validateId, validateCalculator, updateCalculator);
 calculatorRouter.delete('/calculators/:id', validateId, deleteCalculator);
 

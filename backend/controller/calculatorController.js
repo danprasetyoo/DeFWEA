@@ -38,13 +38,29 @@ exports.createCalculator = async (req, res) => {
         const newCalculator = await prisma.calculator.create({
             data: {
                 inputStatementDate: new Date(inputStatementDate),
-                inputOpeningfund,
+                inputOpeningfund: inputOpeningfund.toString(),
                 inputStatementPeriod: new Date(inputStatementPeriod),
-                inputTreatyYear,
-                inputTreatyDetail: inputTreatyDetail ? JSON.stringify(inputTreatyDetail) : null,
-                inputLayerDetail: inputLayerDetail ? JSON.stringify(inputLayerDetail) : null,
-                inputPremium: inputPremium ? JSON.stringify(inputPremium) : null,
-                inputShare: inputShare ? JSON.stringify(inputShare) : null,
+                inputTreatyYear: parseInt(inputTreatyYear),
+                inputTreatyDetail: {
+                    create: inputTreatyDetail.map(detail => ({
+                        treatyCurrentYear: {
+                            create: detail.treatyCurrentYear,
+                        },
+                        treatyPriorYear: {
+                            create: detail.treatyPriorYear,
+                        },
+                        version: detail.version,
+                    })),
+                },
+                inputLayerDetail: {
+                    create: inputLayerDetail,
+                },
+                inputPremiumDetail: {
+                    create: inputPremium,
+                },
+                inputShareDetail: {
+                    create: inputShare,
+                },
             },
         });
 
@@ -63,13 +79,29 @@ exports.updateCalculator = async (req, res) => {
             where: { id: parseInt(id) },
             data: {
                 inputStatementDate,
-                inputOpeningfund,
+                inputOpeningfund: inputOpeningfund.toString(),
                 inputStatementPeriod,
-                inputTreatyYear,
-                inputTreatyDetail,
-                inputLayerDetail,
-                inputPremium,
-                inputShare,
+                inputTreatyYear: parseInt(inputTreatyYear),
+                inputTreatyDetail: {
+                    update: inputTreatyDetail.map(detail => ({
+                        treatyCurrentYear: {
+                            update: detail.treatyCurrentYear,
+                        },
+                        treatyPriorYear: {
+                            update: detail.treatyPriorYear,
+                        },
+                        version: detail.version,
+                    })),
+                },
+                inputLayerDetail: {
+                    update: inputLayerDetail,
+                },
+                inputPremiumDetail: {
+                    update: inputPremium,
+                },
+                inputShareDetail: {
+                    update: inputShare,
+                },
             },
         });
 

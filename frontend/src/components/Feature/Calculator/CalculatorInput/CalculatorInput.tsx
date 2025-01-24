@@ -64,7 +64,7 @@ function CalculatorInput() {
                         (acc as any)[key] =
                             typeof value === "string"
                                 ? convertPercentageToDecimal(value)
-                                : value;
+                                : value.toString();
                     } else {
                         (acc as any)[key] = value;
                     }
@@ -90,7 +90,7 @@ function CalculatorInput() {
 
             try {
                 validatePayloadStructure(payload);
-                const response = await axios.post("/api/calculators/post", payload, {
+                const response = await axios.post("http://localhost:5000/api/calculators", payload, {
                     headers: { "Content-Type": "application/json" },
                 });
                 console.log("Data saved successfully:", response.data);
@@ -112,6 +112,10 @@ function CalculatorInput() {
             id.includes("Share")
         ) {
             formik.setFieldValue(id, convertPercentageToDecimal(value));
+        } else if (id === "inputOpeningfund") {
+            formik.setFieldValue(id, value.toString());
+        } else if (id === "inputTreatyYear") {
+            formik.setFieldValue(id, parseInt(value));
         } else {
             formik.setFieldValue(id, value);
         }
@@ -120,7 +124,7 @@ function CalculatorInput() {
     return (
         <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
-                <StatementInput formData={formik.values} handleInputChange={handleInputChange} />
+                <StatementInput formData={{ ...formik.values, inputTreatyYear: formik.values.inputTreatyYear.toString() }} handleInputChange={handleInputChange} />
                 <br />
 
                 <TreatyDetail formData={formik.values} handleInputChange={handleInputChange} />

@@ -10,18 +10,18 @@ const parseDate = z.string().nonempty().transform(val => {
 const treatySchema = z.object({
     treatyCurrentYear: z.object({
         currentExchange: z.string().optional(),
-        currentMargin: z.string().optional(),
-        currentBrokerage: z.string().optional(),
-        currentInterest: z.string().optional(),
-        currentLAP: z.string().optional(),
+        currentMargin: z.number().optional(),
+        currentBrokerage: z.number().optional(),
+        currentInterest: z.number().optional(),
+        currentLAP: z.number().optional(),
         currentMaintenance: z.string().optional()
     }),
     treatyPriorYear: z.object({
         priorExchange: z.string().optional(),
-        priorMargin: z.string().optional(),
-        priorBrokerage: z.string().optional(),
-        priorInterest: z.string().optional(),
-        priorLAP: z.string().optional(),
+        priorMargin: z.number().optional(),
+        priorBrokerage: z.number().optional(),
+        priorInterest: z.number().optional(),
+        priorLAP: z.number().optional(),
         priorMaintenance: z.string().optional(),
     })
 });
@@ -53,22 +53,22 @@ const premiumSchema = z.object({
     premiumPdma: z.object({
         pdmaPremiumUsd: z.string().optional(),
         pdmaPremiumIdr: z.string().optional(),
-        pdmaPremiumShare: z.string().optional(),
+        pdmaPremiumShare: z.number().optional(),
     }),
     premiumMa: z.object({
         maPremiumUsd: z.string().optional(),
         maPremiumIdr: z.string().optional(),
-        maPremiumShare: z.string().optional(),
+        maPremiumShare: z.number().optional(),
     }),
     premiumAv: z.object({
         avPremiumUsd: z.string().optional(),
         avPremiumIdr: z.string().optional(),
-        avPremiumShare: z.string().optional(),
+        avPremiumShare: z.number().optional(),
     }),
     premiumLiability: z.object({
         liabilityPremiumUsd: z.string().optional(),
         liabilityPremiumIdr: z.string().optional(),
-        liabilityPremiumShare: z.string().optional(),
+        liabilityPremiumShare: z.number().optional(),
     }),
 });
 
@@ -101,9 +101,9 @@ const shareSchema = z.object({
 
 const calculatorSchema = z.object({
     inputStatementDate: parseDate,
-    inputOpeningfund: z.string().nonempty(),
+    inputOpeningfund: z.string().optional(),
     inputStatementPeriod: parseDate,
-    inputTreatyYear: z.string().nonempty(),
+    inputTreatyYear: z.number().optional(),
     inputTreatyDetail: treatySchema,
     inputLayerDetail: layerSchema,
     inputPremium: premiumSchema,

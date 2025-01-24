@@ -14,6 +14,7 @@ services:
       - DB_USER=user
       - DB_PASSWORD=danprasetyoo
       - DB_NAME=fwea
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/fwea
     restart: always
 
   frontend:

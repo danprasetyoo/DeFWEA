@@ -77,11 +77,11 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
         const value = e.target.value;
 
         if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
-            setAmount(value);
+            setAmount(value.toString());
             handleInputChange({
                 target: {
                     id: 'inputOpeningfund',
-                    value: value,
+                    value: parseFloat(value).toString(),
                 },
             } as React.ChangeEvent<HTMLInputElement>);
         } else {
@@ -92,10 +92,14 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
     const handleTreatyYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         if (/^\d{0,4}$/.test(value)) {
-            handleInputChange(e);
+            handleInputChange({
+                target: {
+                    id: 'inputTreatyYear',
+                    value: value,
+                },
+            } as React.ChangeEvent<HTMLInputElement>);
         }
     };
-
 
     return (
         <div>
