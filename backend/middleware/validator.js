@@ -1,5 +1,12 @@
 const { z } = require('zod');
 
+const parseNumber = z.string().optional().transform(val => (val ? parseFloat(val) : undefined));
+const parseDate = z.string().nonempty().transform(val => {
+    const date = new Date(val);
+    if (isNaN(date)) throw new Error("Invalid date format");
+    return date;
+});
+
 const treatySchema = z.object({
     treatyCurrentYear: z.object({
         currentExchange: z.string().optional(),
@@ -22,22 +29,22 @@ const treatySchema = z.object({
 const layerSchema = z.object({
     layerPdma: z.object({
         pdmaLayerIdr: z.string().optional(),
-        pdmaLayerShare: z.number().optional(),
+        pdmaLayerShare: parseNumber,
         pdmaLayerUsd: z.string().optional(),
     }),
     layerMa: z.object({
         maLayerIdr: z.string().optional(),
-        maLayerShare: z.number().optional(),
+        maLayerShare: parseNumber,
         maLayerUsd: z.string().optional(),
     }),
     layerAv: z.object({
         avLayerIdr: z.string().optional(),
-        avLayerShare: z.number().optional(),
+        avLayerShare: parseNumber,
         avLayerUsd: z.string().optional(),
     }),
     layerLiability: z.object({
         liabilityLayerIdr: z.string().optional(),
-        liabilityLayerShare: z.number().optional(),
+        liabilityLayerShare: parseNumber,
         liabilityLayerUsd: z.string().optional(),
     })
 });
@@ -63,7 +70,7 @@ const premiumSchema = z.object({
         liabilityPremiumIdr: z.string().optional(),
         liabilityPremiumShare: z.string().optional(),
     }),
-})
+});
 
 const shareSchema = z.object({
     sharePdma: z.object({
@@ -90,12 +97,12 @@ const shareSchema = z.object({
         liabilitySharePremiumUsd: z.string().optional(),
         liabilitySharePremiumIdr: z.string().optional(),
     }),
-})
+});
 
 const calculatorSchema = z.object({
-    inputStatementDate: z.string().nonempty().transform((val) => new Date(val)),
+    inputStatementDate: parseDate,
     inputOpeningfund: z.string().nonempty(),
-    inputStatementPeriod: z.string().nonempty().transform((val) => new Date(val)),
+    inputStatementPeriod: parseDate,
     inputTreatyYear: z.string().nonempty(),
     inputTreatyDetail: treatySchema,
     inputLayerDetail: layerSchema,
@@ -110,15 +117,18 @@ const validateCalculator = (req, res, next) => {
     } catch (err) {
         return res.status(400).json({
             error: 'Invalid data',
-            details: err.errors,
+            details: err.errors.map(e => ({
+                path: e.path.join('.'),
+                message: e.message,
+            })),
         });
     }
 };
 
 const validateId = (req, res, next) => {
     const { id } = req.params;
-    if (isNaN(id) || parseInt(id) <= 0) {
-        return res.status(400).json({ error: 'Invalid ID' });
+    if (!id || isNaN(id) || parseInt(id) <= 0) {
+        return res.status(400).json({ error: 'Invalid or missing ID' });
     }
     next();
 };

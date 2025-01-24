@@ -9,10 +9,11 @@ const {
 } = require('../controller/calculatorController');
 const { validateId, validateCalculator } = require('../middleware/validator');
 
-calculatorRouter.get('/', getAllCalculators);
-calculatorRouter.get('/:id', validateId, getCalculatorById);
-calculatorRouter.post('/post', validateCalculator, createCalculator);
-calculatorRouter.put('/:id', validateId, validateCalculator, updateCalculator);
-calculatorRouter.delete('/:id', validateId, deleteCalculator);
+calculatorRouter.get('/calculators', getAllCalculators);
+calculatorRouter.get('/calculators/:id', validateId, getCalculatorById);
+calculatorRouter.post('/calculators', validateCalculator, createCalculator);
+calculatorRouter.post('/calculators/post', validateCalculator, createCalculator);
+calculatorRouter.put('/calculators/:id', validateId, validateCalculator, updateCalculator);
+calculatorRouter.delete('/calculators/:id', validateId, deleteCalculator);
 
 module.exports = calculatorRouter;

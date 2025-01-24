@@ -30,6 +30,7 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
             new Datepicker(statementDateRef.current, {
                 dateFormat: 'yyyy-mm-dd',
                 onChange: (selectedDate: any) => {
+                    console.log('Selected Date:', selectedDate);
                     handleInputChange({
                         target: {
                             id: 'inputStatementDate',

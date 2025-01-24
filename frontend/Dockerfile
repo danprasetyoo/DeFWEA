@@ -18,6 +18,6 @@ COPY --from=build /app/dist /usr/share/nginx/html
 
 ENV NODE_ENV=production
 
-EXPOSE 5173
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]

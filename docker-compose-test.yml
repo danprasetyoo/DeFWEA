@@ -14,10 +14,10 @@ services:
     env_file:
       - fwea-backend/.env
     volumes:
-      - ./fwea-backend:/app 
+      - ./fwea-backend:/app
     depends_on:
       - db
-    command: ["pytest", "app/test_main.py", "--disable-warnings"]
+    command: [ "pytest", "app/test_main.py", "--disable-warnings" ]
 
   frontend:
     build:
@@ -50,4 +50,4 @@ networks:
     name: fwea-test
 
 volumes:
-  db-data-test:  
+  db-data-test:

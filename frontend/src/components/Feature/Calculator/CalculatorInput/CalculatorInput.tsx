@@ -36,6 +36,14 @@ function CalculatorInput() {
         return parseFloat(value);
     };
 
+    function validatePayloadStructure(payload: any) {
+        // Implement validation logic here to ensure payload matches database structure
+        // For example:
+        if (!payload.inputLayerDetail || !payload.inputPremium || !payload.inputShare) {
+            throw new Error("Payload structure is invalid");
+        }
+    }
+
     const formik = useFormik({
         initialValues,
         validationSchema,
@@ -81,6 +89,7 @@ function CalculatorInput() {
             console.log("Payload:", payload);
 
             try {
+                validatePayloadStructure(payload);
                 const response = await axios.post("/api/calculators/post", payload, {
                     headers: { "Content-Type": "application/json" },
                 });
