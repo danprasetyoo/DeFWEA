@@ -42,24 +42,69 @@ exports.createCalculator = async (req, res) => {
                 inputStatementPeriod: new Date(inputStatementPeriod),
                 inputTreatyYear: parseInt(inputTreatyYear),
                 inputTreatyDetail: {
-                    create: inputTreatyDetail.map(detail => ({
+                    create: {
                         treatyCurrentYear: {
-                            create: detail.treatyCurrentYear,
+                            create: {
+                                ...inputTreatyDetail.treatyCurrentYear,
+                                currentMaintenance: parseFloat(inputTreatyDetail.treatyCurrentYear.currentMaintenance), // Ensure correct type
+                            },
                         },
                         treatyPriorYear: {
-                            create: detail.treatyPriorYear,
+                            create: {
+                                ...inputTreatyDetail.treatyPriorYear,
+                                priorMaintenance: parseFloat(inputTreatyDetail.treatyPriorYear.priorMaintenance), // Ensure correct type
+                            },
                         },
-                        version: detail.version,
-                    })),
+                        version: inputTreatyDetail.version,
+                    },
                 },
                 inputLayerDetail: {
-                    create: inputLayerDetail,
+                    create: {
+                        pdmaLayer: {
+                            create: inputLayerDetail.layerPdma,
+                        },
+                        maLayer: {
+                            create: inputLayerDetail.layerMa,
+                        },
+                        avLayer: {
+                            create: inputLayerDetail.layerAv,
+                        },
+                        liabilityLayer: {
+                            create: inputLayerDetail.layerLiability,
+                        },
+                    },
                 },
                 inputPremiumDetail: {
-                    create: inputPremium,
+                    create: {
+                        pdmaPremium: {
+                            create: inputPremium.premiumPdma,
+                        },
+                        maPremium: {
+                            create: inputPremium.premiumMa,
+                        },
+                        avPremium: {
+                            create: inputPremium.premiumAv,
+                        },
+                        liabilityPremium: {
+                            create: inputPremium.premiumLiability,
+                        },
+                    },
                 },
                 inputShareDetail: {
-                    create: inputShare,
+                    create: {
+                        pdmaShare: {
+                            create: inputShare.sharePdma,
+                        },
+                        maShare: {
+                            create: inputShare.shareMa,
+                        },
+                        avShare: {
+                            create: inputShare.shareAv,
+                        },
+                        liabilityShare: {
+                            create: inputShare.shareLiability,
+                        },
+                    },
                 },
             },
         });
@@ -83,18 +128,30 @@ exports.updateCalculator = async (req, res) => {
                 inputStatementPeriod,
                 inputTreatyYear: parseInt(inputTreatyYear),
                 inputTreatyDetail: {
-                    update: inputTreatyDetail.map(detail => ({
+                    update: {
                         treatyCurrentYear: {
-                            update: detail.treatyCurrentYear,
+                            update: {
+                                ...inputTreatyDetail.treatyCurrentYear,
+                                currentMaintenance: parseFloat(inputTreatyDetail.treatyCurrentYear.currentMaintenance), // Ensure correct type
+                            },
                         },
                         treatyPriorYear: {
-                            update: detail.treatyPriorYear,
+                            update: {
+                                ...inputTreatyDetail.treatyPriorYear,
+                                priorMaintenance: parseFloat(inputTreatyDetail.treatyPriorYear.priorMaintenance), // Ensure correct type
+                            },
                         },
-                        version: detail.version,
-                    })),
+                        version: inputTreatyDetail.version,
+                    },
                 },
                 inputLayerDetail: {
-                    update: inputLayerDetail,
+                    update: {
+                        ...inputLayerDetail,
+                        pdmaLayerShare: parseFloat(inputLayerDetail.pdmaLayerShare), // Ensure correct type
+                        maLayerShare: parseFloat(inputLayerDetail.maLayerShare), // Ensure correct type
+                        avLayerShare: parseFloat(inputLayerDetail.avLayerShare), // Ensure correct type
+                        liabilityLayerShare: parseFloat(inputLayerDetail.liabilityLayerShare), // Ensure correct type
+                    },
                 },
                 inputPremiumDetail: {
                     update: inputPremium,

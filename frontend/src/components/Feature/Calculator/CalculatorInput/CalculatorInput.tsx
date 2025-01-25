@@ -14,6 +14,7 @@ import { convertLayerShares } from "../LayerDetail/layerDetailsData";
 
 function CalculatorInput() {
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const {
         amounts: layerAmounts,
@@ -37,10 +38,8 @@ function CalculatorInput() {
     };
 
     function validatePayloadStructure(payload: any) {
-        // Implement validation logic here to ensure payload matches database structure
-        // For example:
         if (!payload.inputLayerDetail || !payload.inputPremium || !payload.inputShare) {
-            throw new Error("Payload structure is invalid");
+            throw new Error("Struktur payload tidak valid.");
         }
     }
 
@@ -49,8 +48,9 @@ function CalculatorInput() {
         validationSchema,
         onSubmit: async (values) => {
             setIsLoading(true);
+            setError(null);
 
-            const cleanedValues = Object.keys(values).reduce((acc: Partial<typeof initialValues>, key) => {
+            const cleanedValues = Object.keys(values).reduce((acc, key) => {
                 const value = values[key as keyof typeof initialValues];
                 if (value) {
                     if (
@@ -86,16 +86,19 @@ function CalculatorInput() {
                 inputShare: combinedData,
             };
 
-            console.log("Payload:", payload);
-
             try {
                 validatePayloadStructure(payload);
                 const response = await axios.post("http://localhost:5000/api/calculators", payload, {
                     headers: { "Content-Type": "application/json" },
                 });
-                console.log("Data saved successfully:", response.data);
-            } catch (error) {
-                console.error("Error saving data:", error);
+                console.log("Data berhasil disimpan:", response.data);
+            } catch (err) {
+                console.error("Terjadi kesalahan:", err);
+                if (axios.isAxiosError(err) && err.response) {
+                    setError(err.response.data.message || "Kesalahan terjadi. Mohon cek kembali input Anda.");
+                } else {
+                    setError("Terjadi kesalahan saat menyimpan data. Silakan coba lagi.");
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -124,7 +127,10 @@ function CalculatorInput() {
     return (
         <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
-                <StatementInput formData={{ ...formik.values, inputTreatyYear: formik.values.inputTreatyYear.toString() }} handleInputChange={handleInputChange} />
+                <StatementInput
+                    formData={{ ...formik.values, inputTreatyYear: formik.values.inputTreatyYear.toString() }}
+                    handleInputChange={handleInputChange}
+                />
                 <br />
 
                 <TreatyDetail formData={formik.values} handleInputChange={handleInputChange} />
@@ -158,6 +164,12 @@ function CalculatorInput() {
                         {isLoading ? "Submitting..." : "Submit"}
                     </button>
                 </div>
+
+                {error && (
+                    <div className="text-red-500 mt-4">
+                        {error}
+                    </div>
+                )}
             </div>
         </form>
     );

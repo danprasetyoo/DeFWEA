@@ -14,7 +14,7 @@ const treatySchema = z.object({
         currentBrokerage: z.number().optional(),
         currentInterest: z.number().optional(),
         currentLAP: z.number().optional(),
-        currentMaintenance: z.string().optional()
+        currentMaintenance: z.number().optional()
     }),
     treatyPriorYear: z.object({
         priorExchange: z.string().optional(),
@@ -22,80 +22,80 @@ const treatySchema = z.object({
         priorBrokerage: z.number().optional(),
         priorInterest: z.number().optional(),
         priorLAP: z.number().optional(),
-        priorMaintenance: z.string().optional(),
+        priorMaintenance: z.number().optional(),
     })
 });
 
 const layerSchema = z.object({
     layerPdma: z.object({
-        pdmaLayerIdr: z.string().optional(),
-        pdmaLayerShare: parseNumber,
-        pdmaLayerUsd: z.string().optional(),
+        pdmaDetailUsd: z.number().optional(),
+        pdmaDetailIdr: z.number().optional(),
+        pdmaDetailShare: z.number().optional(),
     }),
     layerMa: z.object({
-        maLayerIdr: z.string().optional(),
-        maLayerShare: parseNumber,
-        maLayerUsd: z.string().optional(),
+        maDetailUsd: z.number().optional(),
+        maDetailIdr: z.number().optional(),
+        maDetailShare: z.number().optional(),
     }),
     layerAv: z.object({
-        avLayerIdr: z.string().optional(),
-        avLayerShare: parseNumber,
-        avLayerUsd: z.string().optional(),
+        avDetailUsd: z.number().optional(),
+        avDetailIdr: z.number().optional(),
+        avDetailShare: z.number().optional(),
     }),
     layerLiability: z.object({
-        liabilityLayerIdr: z.string().optional(),
-        liabilityLayerShare: parseNumber,
-        liabilityLayerUsd: z.string().optional(),
+        liabilityDetailUsd: z.number().optional(),
+        liabilityDetailIdr: z.number().optional(),
+        liabilityDetailShare: z.number().optional(),
     })
 });
 
 const premiumSchema = z.object({
     premiumPdma: z.object({
-        pdmaPremiumUsd: z.string().optional(),
-        pdmaPremiumIdr: z.string().optional(),
+        pdmaPremiumUsd: z.number().optional(),
+        pdmaPremiumIdr: z.number().optional(),
         pdmaPremiumShare: z.number().optional(),
     }),
     premiumMa: z.object({
-        maPremiumUsd: z.string().optional(),
-        maPremiumIdr: z.string().optional(),
+        maPremiumUsd: z.number().optional(),
+        maPremiumIdr: z.number().optional(),
         maPremiumShare: z.number().optional(),
     }),
     premiumAv: z.object({
-        avPremiumUsd: z.string().optional(),
-        avPremiumIdr: z.string().optional(),
+        avPremiumUsd: z.number().optional(),
+        avPremiumIdr: z.number().optional(),
         avPremiumShare: z.number().optional(),
     }),
     premiumLiability: z.object({
-        liabilityPremiumUsd: z.string().optional(),
-        liabilityPremiumIdr: z.string().optional(),
+        liabilityPremiumUsd: z.number().optional(),
+        liabilityPremiumIdr: z.number().optional(),
         liabilityPremiumShare: z.number().optional(),
     }),
 });
 
 const shareSchema = z.object({
     sharePdma: z.object({
-        pdmaShareUsd: z.string().optional(),
-        pdmaShareIdr: z.string().optional(),
-        pdmaSharePremiumUsd: z.string().optional(),
-        pdmaSharePremiumIdr: z.string().optional(),
+        pdmaShareUsd: z.number().optional(),
+        pdmaShareIdr: z.number().optional(),
+        pdmaSharePremiumUsd: z.number().optional(),
+        pdmaSharePremiumIdr: z.number().optional(),
     }),
     shareMa: z.object({
-        maShareUsd: z.string().optional(),
-        maShareIdr: z.string().optional(),
-        maSharePremiumUsd: z.string().optional(),
-        maSharePremiumIdr: z.string().optional(),
+        maShareUsd: z.number().optional(),
+        maShareIdr: z.number().optional(),
+        maSharePremiumUsd: z.number().optional(),
+        maSharePremiumIdr: z.number().optional(),
     }),
     shareAv: z.object({
-        avShareUsd: z.string().optional(),
-        avShareIdr: z.string().optional(),
-        avSharePremiumUsd: z.string().optional(),
-        avSharePremiumIdr: z.string().optional(),
+        avShareUsd: z.number().optional(),
+        avShareIdr: z.number().optional(),
+        avSharePremiumUsd: z.number().optional(),
+        avSharePremiumIdr: z.number().optional(),
     }),
     shareLiability: z.object({
-        liabilityShareUsd: z.string().optional(),
-        liabilityShareIdr: z.string().optional(),
-        liabilitySharePremiumUsd: z.string().optional(),
-        liabilitySharePremiumIdr: z.string().optional(),
+        liabilityShareUsd: z.number().optional(),
+        liabilityShareIdr: z.number().optional(),
+        liabilitySharePremiumUsd: z.number().optional(),
+        liabilitySharePremiumIdr: z.number().optional(),
     }),
 });
 
