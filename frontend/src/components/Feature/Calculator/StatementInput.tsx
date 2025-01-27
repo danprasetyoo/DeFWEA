@@ -6,7 +6,7 @@ interface StatementInputProps {
         inputStatementDate: string;
         inputOpeningfund: string;
         inputStatementPeriod: string;
-        inputTreatyYear: string;
+        inputTreatyYear: number;
     };
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -77,11 +77,11 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
         const value = e.target.value;
 
         if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
-            setAmount(value.toString());
+            setAmount(value);
             handleInputChange({
                 target: {
                     id: 'inputOpeningfund',
-                    value: parseFloat(value).toString(),
+                    value: value,
                 },
             } as React.ChangeEvent<HTMLInputElement>);
         } else {
@@ -92,12 +92,7 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
     const handleTreatyYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         if (/^\d{0,4}$/.test(value)) {
-            handleInputChange({
-                target: {
-                    id: 'inputTreatyYear',
-                    value: value,
-                },
-            } as React.ChangeEvent<HTMLInputElement>);
+            handleInputChange(e);
         }
     };
 

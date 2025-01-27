@@ -14,7 +14,6 @@ import { convertLayerShares } from "../LayerDetail/layerDetailsData";
 
 function CalculatorInput() {
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     const {
         amounts: layerAmounts,
@@ -39,7 +38,7 @@ function CalculatorInput() {
 
     function validatePayloadStructure(payload: any) {
         if (!payload.inputLayerDetail || !payload.inputPremium || !payload.inputShare) {
-            throw new Error("Struktur payload tidak valid.");
+            throw new Error("Payload structure is invalid");
         }
     }
 
@@ -47,10 +46,16 @@ function CalculatorInput() {
         initialValues,
         validationSchema,
         onSubmit: async (values) => {
-            setIsLoading(true);
-            setError(null);
+            console.log("Form errors:", formik.errors);
+            if (Object.keys(formik.errors).length > 0) {
+                console.error("Form has errors, not submitting");
+                return;
+            }
 
-            const cleanedValues = Object.keys(values).reduce((acc, key) => {
+            console.log("Formik onSubmit triggered");
+            setIsLoading(true);
+
+            const cleanedValues = Object.keys(values).reduce((acc: Partial<typeof initialValues>, key) => {
                 const value = values[key as keyof typeof initialValues];
                 if (value) {
                     if (
@@ -64,7 +69,7 @@ function CalculatorInput() {
                         (acc as any)[key] =
                             typeof value === "string"
                                 ? convertPercentageToDecimal(value)
-                                : value.toString();
+                                : value;
                     } else {
                         (acc as any)[key] = value;
                     }
@@ -86,19 +91,17 @@ function CalculatorInput() {
                 inputShare: combinedData,
             };
 
+            console.log("After Payload:", payload);
+
             try {
                 validatePayloadStructure(payload);
+                console.log("Sending payload:", payload);
                 const response = await axios.post("http://localhost:5000/api/calculators", payload, {
                     headers: { "Content-Type": "application/json" },
                 });
-                console.log("Data berhasil disimpan:", response.data);
-            } catch (err) {
-                console.error("Terjadi kesalahan:", err);
-                if (axios.isAxiosError(err) && err.response) {
-                    setError(err.response.data.message || "Kesalahan terjadi. Mohon cek kembali input Anda.");
-                } else {
-                    setError("Terjadi kesalahan saat menyimpan data. Silakan coba lagi.");
-                }
+                console.log("Data saved successfully:", response.data);
+            } catch (error) {
+                console.error("Error saving data:", error);
             } finally {
                 setIsLoading(false);
             }
@@ -115,22 +118,19 @@ function CalculatorInput() {
             id.includes("Share")
         ) {
             formik.setFieldValue(id, convertPercentageToDecimal(value));
-        } else if (id === "inputOpeningfund") {
-            formik.setFieldValue(id, value.toString());
-        } else if (id === "inputTreatyYear") {
-            formik.setFieldValue(id, parseInt(value));
         } else {
             formik.setFieldValue(id, value);
         }
     };
 
     return (
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            console.log("Form submitted");
+            formik.handleSubmit(e);
+        }}>
             <div className="space-y-6">
-                <StatementInput
-                    formData={{ ...formik.values, inputTreatyYear: formik.values.inputTreatyYear.toString() }}
-                    handleInputChange={handleInputChange}
-                />
+                <StatementInput formData={formik.values} handleInputChange={handleInputChange} />
                 <br />
 
                 <TreatyDetail formData={formik.values} handleInputChange={handleInputChange} />
@@ -164,12 +164,6 @@ function CalculatorInput() {
                         {isLoading ? "Submitting..." : "Submit"}
                     </button>
                 </div>
-
-                {error && (
-                    <div className="text-red-500 mt-4">
-                        {error}
-                    </div>
-                )}
             </div>
         </form>
     );

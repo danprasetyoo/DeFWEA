@@ -9,6 +9,11 @@ services:
     depends_on:
       - postgres
     environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=admin
+      - DB_NAME=fwea
       - DATABASE_URL=postgresql://postgres:admin@postgres:5432/fwea
     restart: always
 
@@ -37,7 +42,6 @@ services:
     restart: always
 
   jenkins:
-    # If you still need Jenkins
     image: jenkins/jenkins:lts
     ports:
       - "8181:8080"

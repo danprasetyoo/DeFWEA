@@ -7,7 +7,7 @@ const calculatorRouter = require('./routes/calculatorRoutes');
 const prisma = new PrismaClient();
 
 app.use(cors({
-    origin: 'http://localhost:5005', // Adjust this to match your frontend URL
+    origin: 'http://localhost:5005',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error("Backend Error:", err);
     const statusCode = err.status || 500;
     res.status(statusCode).json({
         error: err.message || 'Internal Server Error',
