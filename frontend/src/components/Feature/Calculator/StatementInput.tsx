@@ -6,7 +6,7 @@ interface StatementInputProps {
         inputStatementDate: string;
         inputOpeningfund: string;
         inputStatementPeriod: string;
-        inputTreatyYear: number;
+        inputTreatyYear: string;
     };
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
