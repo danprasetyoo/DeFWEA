@@ -67,7 +67,22 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
         handleInputChange({
             target: {
                 id,
-                value: validValue,
+                value: parseFloat(validValue),
+            },
+        } as unknown as React.ChangeEvent<HTMLInputElement>);
+    };
+
+    const handleStringInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        const path = id.split(".");
+        const updatedAmounts = { ...amounts };
+        updateNestedField(updatedAmounts, path, value);
+        setAmounts(updatedAmounts);
+
+        handleInputChange({
+            target: {
+                id,
+                value: value,
             },
         } as React.ChangeEvent<HTMLInputElement>);
     };
@@ -85,7 +100,7 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
                     },
                 ]}
                 amounts={amounts}
-                handleChange={handleAmountInput}
+                handleChange={handleStringInput}
                 label={"Treaty Details"}
             />
             <InputGroup

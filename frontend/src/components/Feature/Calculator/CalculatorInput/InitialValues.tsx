@@ -2,7 +2,7 @@ const InitialValues = {
     inputStatementDate: "",
     inputOpeningfund: "",
     inputStatementPeriod: "",
-    inputTreatyYear: 0,
+    inputTreatyYear: "",
 
     inputTreatyDetail: {
         treatyCurrentYear: {

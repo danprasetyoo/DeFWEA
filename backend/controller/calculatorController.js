@@ -1,3 +1,4 @@
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { CalculatorSchema } = require('../middleware/validator');
@@ -68,7 +69,7 @@ exports.createCalculator = async (req, res) => {
             });
 
             if (inputTreatyDetail) {
-                const treatyDetail = await prisma.treatyDetail.create({
+                await prisma.treatyDetail.create({
                     data: {
                         calculatorId: calculator.id,
                         treatyCurrentYear: inputTreatyDetail.treatyCurrentYear
@@ -100,7 +101,7 @@ exports.createCalculator = async (req, res) => {
             }
 
             if (inputLayerDetail) {
-                const layerDetail = await prisma.layerDetail.create({
+                await prisma.layerDetail.create({
                     data: {
                         calculatorId: calculator.id,
                         pdmaLayer: inputLayerDetail.pdmaLayer
@@ -144,7 +145,7 @@ exports.createCalculator = async (req, res) => {
             }
 
             if (inputPremiumDetail) {
-                const premiumDetail = await prisma.premiumDetail.create({
+                await prisma.premiumDetail.create({
                     data: {
                         calculatorId: calculator.id,
                         pdmaPremium: inputPremiumDetail.pdmaPremium
@@ -188,7 +189,7 @@ exports.createCalculator = async (req, res) => {
             }
 
             if (inputShareDetail) {
-                const shareDetail = await prisma.shareDetail.create({
+                await prisma.shareDetail.create({
                     data: {
                         calculatorId: calculator.id,
                         pdmaShare: inputShareDetail.pdmaShare
@@ -254,10 +255,11 @@ exports.createCalculator = async (req, res) => {
     }
 };
 
+// Refactored updateCalculator function
 exports.updateCalculator = async (req, res) => {
     try {
         const { id } = req.params;
-        const { inputStatementDate, inputOpeningfund, inputStatementPeriod, inputTreatyYear, inputTreatyDetail, inputLayerDetail, inputPremium, inputShare } = req.body;
+        const validatedData = CalculatorSchema.parse(req.body);
 
         const existingCalculator = await prisma.calculator.findUnique({
             where: { id: parseInt(id) },
@@ -267,19 +269,18 @@ exports.updateCalculator = async (req, res) => {
             return res.status(404).json({ error: 'Calculator not found' });
         }
 
-        const dataToUpdate = {};
-        if (inputStatementDate) dataToUpdate.inputStatementDate = new Date(inputStatementDate);
-        if (inputOpeningfund) dataToUpdate.inputOpeningfund = inputOpeningfund;
-        if (inputStatementPeriod) dataToUpdate.inputStatementPeriod = new Date(inputStatementPeriod);
-        if (inputTreatyYear) dataToUpdate.inputTreatyYear = inputTreatyYear;
-        if (inputTreatyDetail) dataToUpdate.inputTreatyDetail = JSON.stringify(inputTreatyDetail);
-        if (inputLayerDetail) dataToUpdate.inputLayerDetail = JSON.stringify(inputLayerDetail);
-        if (inputPremium) dataToUpdate.inputPremium = JSON.stringify(inputPremium);
-        if (inputShare) dataToUpdate.inputShare = JSON.stringify(inputShare);
-
         const updatedCalculator = await prisma.calculator.update({
             where: { id: parseInt(id) },
-            data: dataToUpdate,
+            data: {
+                inputStatementDate: new Date(validatedData.inputStatementDate),
+                inputOpeningfund: validatedData.inputOpeningfund,
+                inputStatementPeriod: new Date(validatedData.inputStatementPeriod),
+                inputTreatyYear: validatedData.inputTreatyYear,
+                inputTreatyDetail: validatedData.inputTreatyDetail ? JSON.stringify(validatedData.inputTreatyDetail) : undefined,
+                inputLayerDetail: validatedData.inputLayerDetail ? JSON.stringify(validatedData.inputLayerDetail) : undefined,
+                inputPremiumDetail: validatedData.inputPremiumDetail ? JSON.stringify(validatedData.inputPremiumDetail) : undefined,
+                inputShareDetail: validatedData.inputShareDetail ? JSON.stringify(validatedData.inputShareDetail) : undefined,
+            },
         });
 
         res.status(200).json(updatedCalculator);
@@ -292,6 +293,7 @@ exports.updateCalculator = async (req, res) => {
     }
 };
 
+// Refactored deleteCalculator function
 exports.deleteCalculator = async (req, res) => {
     try {
         const { id } = req.params;

@@ -1,4 +1,6 @@
 const { z } = require('zod');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 // Schema for TreatyDetailCurrent
 const TreatyDetailCurrentSchema = z.object({
@@ -26,116 +28,80 @@ const TreatyDetailSchema = z.object({
     treatyPriorYear: TreatyDetailPriorSchema.optional(),
 });
 
-// Schema for PdmaDetailLayer
-const PdmaDetailLayerSchema = z.object({
-    pdmaDetailUsd: z.number().optional(),
-    pdmaDetailIdr: z.number().optional(),
-    pdmaDetailShare: z.number().optional(),
-});
-
-// Schema for MaDetailLayer
-const MaDetailLayerSchema = z.object({
-    maDetailUsd: z.number().optional(),
-    maDetailIdr: z.number().optional(),
-    maDetailShare: z.number().optional(),
-});
-
-// Schema for AvDetailLayer
-const AvDetailLayerSchema = z.object({
-    avDetailUsd: z.number().optional(),
-    avDetailIdr: z.number().optional(),
-    avDetailShare: z.number().optional(),
-});
-
-// Schema for LiabilityDetailLayer
-const LiabilityDetailLayerSchema = z.object({
-    liabilityDetailUsd: z.number().optional(),
-    liabilityDetailIdr: z.number().optional(),
-    liabilityDetailShare: z.number().optional(),
-});
-
 // Schema for LayerDetail
 const LayerDetailSchema = z.object({
-    pdmaLayer: PdmaDetailLayerSchema.optional(),
-    maLayer: MaDetailLayerSchema.optional(),
-    avLayer: AvDetailLayerSchema.optional(),
-    liabilityLayer: LiabilityDetailLayerSchema.optional(),
-});
-
-// Schema for PdmaDetailPremium
-const PdmaDetailPremiumSchema = z.object({
-    pdmaPremiumUsd: z.number().optional(),
-    pdmaPremiumIdr: z.number().optional(),
-    pdmaPremiumShare: z.number().optional(),
-});
-
-// Schema for MaDetailPremium
-const MaDetailPremiumSchema = z.object({
-    maPremiumUsd: z.number().optional(),
-    maPremiumIdr: z.number().optional(),
-    maPremiumShare: z.number().optional(),
-});
-
-// Schema for AvDetailPremium
-const AvDetailPremiumSchema = z.object({
-    avPremiumUsd: z.number().optional(),
-    avPremiumIdr: z.number().optional(),
-    avPremiumShare: z.number().optional(),
-});
-
-// Schema for LiabilityDetailPremium
-const LiabilityDetailPremiumSchema = z.object({
-    liabilityPremiumUsd: z.number().optional(),
-    liabilityPremiumIdr: z.number().optional(),
-    liabilityPremiumShare: z.number().optional(),
+    layerPdma: z.object({
+        pdmaDetailUsd: z.number().optional(),
+        pdmaDetailIdr: z.number().optional(),
+        pdmaDetailShare: z.number().optional(),
+    }).optional(),
+    layerMa: z.object({
+        maDetailUsd: z.number().optional(),
+        maDetailIdr: z.number().optional(),
+        maDetailShare: z.number().optional(),
+    }).optional(),
+    layerAv: z.object({
+        avDetailUsd: z.number().optional(),
+        avDetailIdr: z.number().optional(),
+        avDetailShare: z.number().optional(),
+    }).optional(),
+    layerLiability: z.object({
+        liabilityDetailUsd: z.number().optional(),
+        liabilityDetailIdr: z.number().optional(),
+        liabilityDetailShare: z.number().optional(),
+    }).optional(),
 });
 
 // Schema for PremiumDetail
 const PremiumDetailSchema = z.object({
-    pdmaPremium: PdmaDetailPremiumSchema.optional(),
-    maPremium: MaDetailPremiumSchema.optional(),
-    avPremium: AvDetailPremiumSchema.optional(),
-    liabilityPremium: LiabilityDetailPremiumSchema.optional(),
-});
-
-// Schema for PdmaDetailShare
-const PdmaDetailShareSchema = z.object({
-    pdmaShareUsd: z.number().optional(),
-    pdmaShareIdr: z.number().optional(),
-    pdmaSharePremiumUsd: z.number().optional(),
-    pdmaSharePremiumIdr: z.number().optional(),
-});
-
-// Schema for MaDetailShare
-const MaDetailShareSchema = z.object({
-    maShareUsd: z.number().optional(),
-    maShareIdr: z.number().optional(),
-    maSharePremiumUsd: z.number().optional(),
-    maSharePremiumIdr: z.number().optional(),
-});
-
-// Schema for AvDetailShare
-const AvDetailShareSchema = z.object({
-    avShareUsd: z.number().optional(),
-    avShareIdr: z.number().optional(),
-    avSharePremiumUsd: z.number().optional(),
-    avSharePremiumIdr: z.number().optional(),
-});
-
-// Schema for LiabilityDetailShare
-const LiabilityDetailShareSchema = z.object({
-    liabilityShareUsd: z.number().optional(),
-    liabilityShareIdr: z.number().optional(),
-    liabilitySharePremiumUsd: z.number().optional(),
-    liabilitySharePremiumIdr: z.number().optional(),
+    premiumPdma: z.object({
+        pdmaPremiumUsd: z.number().optional(),
+        pdmaPremiumIdr: z.number().optional(),
+        pdmaPremiumShare: z.number().optional(),
+    }).optional(),
+    premiumMa: z.object({
+        maPremiumUsd: z.number().optional(),
+        maPremiumIdr: z.number().optional(),
+        maPremiumShare: z.number().optional(),
+    }).optional(),
+    premiumAv: z.object({
+        avPremiumUsd: z.number().optional(),
+        avPremiumIdr: z.number().optional(),
+        avPremiumShare: z.number().optional(),
+    }).optional(),
+    premiumLiability: z.object({
+        liabilityPremiumUsd: z.number().optional(),
+        liabilityPremiumIdr: z.number().optional(),
+        liabilityPremiumShare: z.number().optional(),
+    }).optional(),
 });
 
 // Schema for ShareDetail
 const ShareDetailSchema = z.object({
-    pdmaShare: PdmaDetailShareSchema.optional(),
-    maShare: MaDetailShareSchema.optional(),
-    avShare: AvDetailShareSchema.optional(),
-    liabilityShare: LiabilityDetailShareSchema.optional(),
+    sharePdma: z.object({
+        pdmaShareUsd: z.number().optional(),
+        pdmaShareIdr: z.number().optional(),
+        pdmaSharePremiumUsd: z.number().optional(),
+        pdmaSharePremiumIdr: z.number().optional(),
+    }).optional(),
+    shareMa: z.object({
+        maShareUsd: z.number().optional(),
+        maShareIdr: z.number().optional(),
+        maSharePremiumUsd: z.number().optional(),
+        maSharePremiumIdr: z.number().optional(),
+    }).optional(),
+    shareAv: z.object({
+        avShareUsd: z.number().optional(),
+        avShareIdr: z.number().optional(),
+        avSharePremiumUsd: z.number().optional(),
+        avSharePremiumIdr: z.number().optional(),
+    }).optional(),
+    shareLiability: z.object({
+        liabilityShareUsd: z.number().optional(),
+        liabilityShareIdr: z.number().optional(),
+        liabilitySharePremiumUsd: z.number().optional(),
+        liabilitySharePremiumIdr: z.number().optional(),
+    }).optional(),
 });
 
 // Main schema for Calculator
@@ -147,14 +113,18 @@ const CalculatorSchema = z.object({
     inputStatementPeriod: z.string().refine(val => !isNaN(new Date(val).getTime()), {
         message: "Invalid date format for inputStatementPeriod",
     }),
-    inputTreatyYear: z.number(),
+    inputTreatyYear: z.string(),
     inputTreatyDetail: TreatyDetailSchema.optional(),
     inputLayerDetail: LayerDetailSchema.optional(),
-    inputPremiumDetail: PremiumDetailSchema.optional(),
-    inputShareDetail: ShareDetailSchema.optional(),
+    inputPremium: PremiumDetailSchema.optional(),
+    inputShare: ShareDetailSchema.optional(),
 });
 
 const validateCalculator = (req, res, next) => {
+    if (!req.body) {
+        return res.status(400).json({ error: 'Request body is missing' });
+    }
+
     try {
         req.body = CalculatorSchema.parse(req.body);
         next();
