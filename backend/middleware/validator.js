@@ -154,4 +154,27 @@ const CalculatorSchema = z.object({
     inputShareDetail: ShareDetailSchema.optional(),
 });
 
-module.exports = { CalculatorSchema };
+const validateCalculator = (req, res, next) => {
+    try {
+        req.body = CalculatorSchema.parse(req.body);
+        next();
+    } catch (err) {
+        return res.status(400).json({
+            error: 'Invalid data',
+            details: err.errors.map(e => ({
+                path: e.path.join('.'),
+                message: e.message,
+            })),
+        });
+    }
+};
+
+const validateId = (req, res, next) => {
+    const { id } = req.params;
+    if (!id || isNaN(id) || parseInt(id) <= 0) {
+        return res.status(400).json({ error: 'Invalid or missing ID' });
+    }
+    next();
+};
+
+module.exports = { CalculatorSchema, validateCalculator, validateId };

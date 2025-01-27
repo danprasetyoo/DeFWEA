@@ -1,10 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
-const app = express();
 const calculatorRouter = require('./routes/calculatorRoutes');
-
 const prisma = new PrismaClient();
+const app = express();
 
 app.use(cors({
     origin: 'http://localhost:5005',
