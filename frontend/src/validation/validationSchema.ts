@@ -39,22 +39,22 @@ export const validationSchema = Yup.object({
         layerPdma: Yup.object({
             pdmaDetailUsd: Yup.number().optional(),
             pdmaDetailIdr: Yup.number().optional(),
-            pdmaDetailShare: Yup.number().optional(),
+            pdmaDetailShare: Yup.string().optional(),
         }).optional(),
         layerMa: Yup.object({
             maDetailUsd: Yup.number().optional(),
             maDetailIdr: Yup.number().optional(),
-            maDetailShare: Yup.number().optional(),
+            maDetailShare: Yup.string().optional(),
         }).optional(),
         layerAv: Yup.object({
             avDetailUsd: Yup.number().optional(),
             avDetailIdr: Yup.number().optional(),
-            avDetailShare: Yup.number().optional(),
+            avDetailShare: Yup.string().optional(),
         }).optional(),
         layerLiability: Yup.object({
             liabilityDetailUsd: Yup.number().optional(),
             liabilityDetailIdr: Yup.number().optional(),
-            liabilityDetailShare: Yup.number().optional(),
+            liabilityDetailShare: Yup.string().optional(),
         }).optional(),
     }).optional(),
 

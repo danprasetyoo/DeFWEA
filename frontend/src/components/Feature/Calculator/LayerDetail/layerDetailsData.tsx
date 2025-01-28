@@ -1,42 +1,42 @@
 export const inputLayerDetail = {
     layerPdma: {
-        pdmaDetailUsd: "",
-        pdmaDetailIdr: "",
-        pdmaDetailShare: "",
+        pdmaDetailUsd: 0,
+        pdmaDetailIdr: 0,
+        pdmaDetailShare: 0,
     },
     layerMa: {
-        maDetailUsd: "",
-        maDetailIdr: "",
-        maDetailShare: "",
+        maDetailUsd: 0,
+        maDetailIdr: 0,
+        maDetailShare: 0,
     },
     layerAv: {
-        avDetailUsd: "",
-        avDetailIdr: "",
-        avDetailShare: "",
+        avDetailUsd: 0,
+        avDetailIdr: 0,
+        avDetailShare: 0,
     },
     layerLiability: {
-        liabilityDetailUsd: "",
-        liabilityDetailIdr: "",
-        liabilityDetailShare: "",
+        liabilityDetailUsd: 0,
+        liabilityDetailIdr: 0,
+        liabilityDetailShare: 0,
     },
 };
 
 export const inputShare = {
     sharePdma: {
-        pdmaShareUsd: "",
-        pdmaShareIdr: "",
+        pdmaShareUsd: 0,
+        pdmaShareIdr: 0,
     },
     shareMa: {
-        maShareUsd: "",
-        maShareIdr: "",
+        maShareUsd: 0,
+        maShareIdr: 0,
     },
     shareAv: {
-        avShareUsd: "",
-        avShareIdr: "",
+        avShareUsd: 0,
+        avShareIdr: 0,
     },
     shareLiability: {
-        liabilityShareUsd: "",
-        liabilityShareIdr: "",
+        liabilityShareUsd: 0,
+        liabilityShareIdr: 0,
     },
 };
 
@@ -81,28 +81,28 @@ export const rows = (
         {
             label: "MDP-USD",
             inputs: [
-                { id: "layerPdma.pdmaDetailUsd", placeholder: "Amount", value: amounts.layerPdma.pdmaDetailUsd, onChange: handleLocalInputChange },
-                { id: "layerMa.maDetailUsd", placeholder: "Amount", value: amounts.layerMa.maDetailUsd, onChange: handleLocalInputChange },
-                { id: "layerAv.avDetailUsd", placeholder: "Amount", value: amounts.layerAv.avDetailUsd, onChange: handleLocalInputChange },
-                { id: "layerLiability.liabilityDetailUsd", placeholder: "Amount", value: amounts.layerLiability.liabilityDetailUsd, onChange: handleLocalInputChange },
+                { id: "layerPdma.pdmaDetailUsd", placeholder: "Amount", value: amounts.layerPdma.pdmaDetailUsd.toString(), onChange: handleLocalInputChange },
+                { id: "layerMa.maDetailUsd", placeholder: "Amount", value: amounts.layerMa.maDetailUsd.toString(), onChange: handleLocalInputChange },
+                { id: "layerAv.avDetailUsd", placeholder: "Amount", value: amounts.layerAv.avDetailUsd.toString(), onChange: handleLocalInputChange },
+                { id: "layerLiability.liabilityDetailUsd", placeholder: "Amount", value: amounts.layerLiability.liabilityDetailUsd.toString(), onChange: handleLocalInputChange },
             ],
         },
         {
             label: "MDP-IDR",
             inputs: [
-                { id: "layerPdma.pdmaDetailIdr", placeholder: "Amount", value: amounts.layerPdma.pdmaDetailIdr, onChange: handleLocalInputChange },
-                { id: "layerMa.maDetailIdr", placeholder: "Amount", value: amounts.layerMa.maDetailIdr, onChange: handleLocalInputChange },
-                { id: "layerAv.avDetailIdr", placeholder: "Amount", value: amounts.layerAv.avDetailIdr, onChange: handleLocalInputChange },
-                { id: "layerLiability.liabilityDetailIdr", placeholder: "Amount", value: amounts.layerLiability.liabilityDetailIdr, onChange: handleLocalInputChange },
+                { id: "layerPdma.pdmaDetailIdr", placeholder: "Amount", value: amounts.layerPdma.pdmaDetailIdr.toString(), onChange: handleLocalInputChange },
+                { id: "layerMa.maDetailIdr", placeholder: "Amount", value: amounts.layerMa.maDetailIdr.toString(), onChange: handleLocalInputChange },
+                { id: "layerAv.avDetailIdr", placeholder: "Amount", value: amounts.layerAv.avDetailIdr.toString(), onChange: handleLocalInputChange },
+                { id: "layerLiability.liabilityDetailIdr", placeholder: "Amount", value: amounts.layerLiability.liabilityDetailIdr.toString(), onChange: handleLocalInputChange },
             ],
         },
         {
             label: "Share (%)",
             inputs: [
-                { id: "layerPdma.pdmaDetailShare", placeholder: "Percentage", value: amounts.layerPdma.pdmaDetailShare, onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerPdma.pdmaDetailShare") },
-                { id: "layerMa.maDetailShare", placeholder: "Percentage", value: amounts.layerMa.maDetailShare, onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerMa.maDetailShare") },
-                { id: "layerAv.avDetailShare", placeholder: "Percentage", value: amounts.layerAv.avDetailShare, onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerAv.avDetailShare") },
-                { id: "layerLiability.liabilityDetailShare", placeholder: "Percentage", value: amounts.layerLiability.liabilityDetailShare, onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerLiability.liabilityDetailShare") },
+                { id: "layerPdma.pdmaDetailShare", placeholder: "Percentage", value: amounts.layerPdma.pdmaDetailShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerPdma.pdmaDetailShare") },
+                { id: "layerMa.maDetailShare", placeholder: "Percentage", value: amounts.layerMa.maDetailShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerMa.maDetailShare") },
+                { id: "layerAv.avDetailShare", placeholder: "Percentage", value: amounts.layerAv.avDetailShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerAv.avDetailShare") },
+                { id: "layerLiability.liabilityDetailShare", placeholder: "Percentage", value: amounts.layerLiability.liabilityDetailShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerLiability.liabilityDetailShare") },
             ],
         },
     ];
@@ -113,25 +113,25 @@ export const readonlyRows = (results: typeof inputShare) => [
         inputs: [
             {
                 id: "sharePdma.pdmaShareUsd",
-                value: results.sharePdma.pdmaShareUsd,
+                value: results.sharePdma.pdmaShareUsd.toString(),
                 readonly: true,
                 placeholder: ""
             },
             {
                 id: "shareMa.maShareUsd",
-                value: results.shareMa.maShareUsd,
+                value: results.shareMa.maShareUsd.toString(),
                 readonly: true,
                 placeholder: ""
             },
             {
                 id: "shareAv.avShareUsd",
-                value: results.shareAv.avShareUsd,
+                value: results.shareAv.avShareUsd.toString(),
                 readonly: true,
                 placeholder: ""
             },
             {
                 id: "shareLiability.liabilityShareUsd",
-                value: results.shareLiability.liabilityShareUsd,
+                value: results.shareLiability.liabilityShareUsd.toString(),
                 readonly: true,
                 placeholder: ""
             },
@@ -142,13 +142,13 @@ export const readonlyRows = (results: typeof inputShare) => [
         inputs: [
             {
                 id: "sharePdma.pdmaShareIdr",
-                value: results.sharePdma.pdmaShareIdr,
+                value: results.sharePdma.pdmaShareIdr.toString(),
                 readonly: true,
                 placeholder: ""
             },
-            { id: "shareMa.maShareIdr", value: results.shareMa.maShareIdr, readonly: true, placeholder: "" },
-            { id: "shareAv.avShareIdr", value: results.shareAv.avShareIdr, readonly: true, placeholder: "" },
-            { id: "shareLiability.liabilityShareIdr", value: results.shareLiability.liabilityShareIdr, readonly: true, placeholder: "" },
+            { id: "shareMa.maShareIdr", value: results.shareMa.maShareIdr.toString(), readonly: true, placeholder: "" },
+            { id: "shareAv.avShareIdr", value: results.shareAv.avShareIdr.toString(), readonly: true, placeholder: "" },
+            { id: "shareLiability.liabilityShareIdr", value: results.shareLiability.liabilityShareIdr.toString(), readonly: true, placeholder: "" },
         ],
     },
 ];

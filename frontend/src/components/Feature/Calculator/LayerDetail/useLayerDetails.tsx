@@ -20,7 +20,7 @@ export const useLayerDetails = (
 
     const handleLocalInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        const validValue = (value || "").replace(/[^0-9.]/g, "");
+        const validValue = parseFloat((value || "").replace(/[^0-9.]/g, "")) || 0;
 
         const path = id.split(".");
         const updatedAmounts = JSON.parse(JSON.stringify(amounts));
@@ -28,24 +28,24 @@ export const useLayerDetails = (
         setAmounts(updatedAmounts);
 
         handleInputChange({
+            ...e,
             target: {
+                ...e.target,
                 id,
-                value: validValue,
+                value: validValue.toString(),
             },
-        } as React.ChangeEvent<HTMLInputElement>);
+        });
     };
 
     const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
-        const numericValue = (value || "").replace("%", "");
+        const numericValue = parseFloat((value || "").replace("%", "")) || 0;
         let validValue = numericValue;
 
-        if (/^\d*\.?\d+$/.test(numericValue)) {
-            if (parseFloat(numericValue) >= 0 && parseFloat(numericValue) <= 100) {
-                validValue = numericValue + "%";
-            } else {
-                validValue = "100%";
-            }
+        if (numericValue >= 0 && numericValue <= 100) {
+            validValue = numericValue;
+        } else {
+            validValue = 100;
         }
 
         const path = id.split(".");
@@ -54,19 +54,21 @@ export const useLayerDetails = (
         setAmounts(updatedAmounts);
 
         handleInputChange({
+            ...e,
             target: {
+                ...e.target,
                 id,
-                value: validValue,
+                value: validValue.toString(),
             },
-        } as React.ChangeEvent<HTMLInputElement>);
+        });
     };
 
     const recalculateResults = (updatedAmounts: any) => {
-        const parsePercentage = (percentage: string) =>
-            parseFloat((percentage || "").replace("%", "").trim() || "0") / 100;
+        const parsePercentage = (percentage: number) =>
+            parseFloat((percentage.toString() || "").replace("%", "").trim() || "0") / 100;
 
-        const calculateShare = (amount: string, share: string) => {
-            const numericAmount = parseFloat(amount || "0");
+        const calculateShare = (amount: number, share: number) => {
+            const numericAmount = parseFloat(amount.toString() || "0");
             const numericShare = parsePercentage(share);
             return numericAmount * numericShare;
         };
@@ -76,41 +78,41 @@ export const useLayerDetails = (
                 pdmaShareUsd: calculateShare(
                     updatedAmounts.layerPdma.pdmaDetailUsd,
                     updatedAmounts.layerPdma.pdmaDetailShare
-                ).toFixed(2),
+                ),
                 pdmaShareIdr: calculateShare(
                     updatedAmounts.layerPdma.pdmaDetailIdr,
                     updatedAmounts.layerPdma.pdmaDetailShare
-                ).toFixed(2),
+                ),
             },
             shareMa: {
                 maShareUsd: calculateShare(
                     updatedAmounts.layerMa.maDetailUsd,
                     updatedAmounts.layerMa.maDetailShare
-                ).toFixed(2),
+                ),
                 maShareIdr: calculateShare(
                     updatedAmounts.layerMa.maDetailIdr,
                     updatedAmounts.layerMa.maDetailShare
-                ).toFixed(2),
+                ),
             },
             shareAv: {
                 avShareUsd: calculateShare(
                     updatedAmounts.layerAv.avDetailUsd,
                     updatedAmounts.layerAv.avDetailShare
-                ).toFixed(2),
+                ),
                 avShareIdr: calculateShare(
                     updatedAmounts.layerAv.avDetailIdr,
                     updatedAmounts.layerAv.avDetailShare
-                ).toFixed(2),
+                ),
             },
             shareLiability: {
                 liabilityShareUsd: calculateShare(
                     updatedAmounts.layerLiability.liabilityDetailUsd,
                     updatedAmounts.layerLiability.liabilityDetailShare
-                ).toFixed(2),
+                ),
                 liabilityShareIdr: calculateShare(
                     updatedAmounts.layerLiability.liabilityDetailIdr,
                     updatedAmounts.layerLiability.liabilityDetailShare
-                ).toFixed(2),
+                ),
             },
         };
 

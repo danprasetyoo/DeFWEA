@@ -101,7 +101,12 @@ function CalculatorInput() {
                 });
                 console.log("Data saved successfully:", response.data);
             } catch (error) {
-                console.error("Error saving data:", error);
+                if (axios.isAxiosError(error) && error.code === 'ERR_NETWORK') {
+                    console.error('Network error occurred:', error.message);
+                    // Handle network error (e.g., show a user-friendly message)
+                } else {
+                    console.error('Error saving data:', error);
+                }
             } finally {
                 setIsLoading(false);
             }
