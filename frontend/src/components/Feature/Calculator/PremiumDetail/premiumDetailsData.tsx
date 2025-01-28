@@ -1,44 +1,42 @@
-import { ChangeEvent } from "react";
-
 export const inputPremium = {
     premiumPdma: {
-        pdmaPremiumUsd: "",
-        pdmaPremiumIdr: "",
-        pdmaPremiumShare: "",
+        pdmaPremiumUsd: 0,
+        pdmaPremiumIdr: 0,
+        pdmaPremiumShare: 0,
     },
     premiumMa: {
-        maPremiumUsd: "",
-        maPremiumIdr: "",
-        maPremiumShare: "",
+        maPremiumUsd: 0,
+        maPremiumIdr: 0,
+        maPremiumShare: 0,
     },
     premiumAv: {
-        avPremiumUsd: "",
-        avPremiumIdr: "",
-        avPremiumShare: "",
+        avPremiumUsd: 0,
+        avPremiumIdr: 0,
+        avPremiumShare: 0,
     },
     premiumLiability: {
-        liabilityPremiumUsd: "",
-        liabilityPremiumIdr: "",
-        liabilityPremiumShare: "",
+        liabilityPremiumUsd: 0,
+        liabilityPremiumIdr: 0,
+        liabilityPremiumShare: 0,
     },
 };
 
 export const inputShare = {
     sharePdma: {
-        pdmaSharePremiumUsd: "",
-        pdmaSharePremiumIdr: "",
+        pdmaSharePremiumUsd: 0,
+        pdmaSharePremiumIdr: 0,
     },
     shareMa: {
-        maSharePremiumUsd: "",
-        maSharePremiumIdr: "",
+        maSharePremiumUsd: 0,
+        maSharePremiumIdr: 0,
     },
     shareAv: {
-        avSharePremiumUsd: "",
-        avSharePremiumIdr: "",
+        avSharePremiumUsd: 0,
+        avSharePremiumIdr: 0,
     },
     shareLiability: {
-        liabilitySharePremiumUsd: "",
-        liabilitySharePremiumIdr: "",
+        liabilitySharePremiumUsd: 0,
+        liabilitySharePremiumIdr: 0,
     },
 };
 
@@ -83,152 +81,88 @@ export const rows = (
         {
             label: "MDP-USD",
             inputs: [
-                {
-                    id: "premiumPdma.pdmaPremiumUsd",
-                    placeholder: "Amount",
-                    value: amounts.premiumPdma.pdmaPremiumUsd,
-                    onChange: handleLocalInputChange,
-                },
-                {
-                    id: "premiumMa.maPremiumUsd",
-                    placeholder: "Amount",
-                    value: amounts.premiumMa.maPremiumUsd,
-                    onChange: handleLocalInputChange,
-                },
-                {
-                    id: "premiumAv.avPremiumUsd",
-                    placeholder: "Amount",
-                    value: amounts.premiumAv.avPremiumUsd,
-                    onChange: handleLocalInputChange,
-                },
-                {
-                    id: "premiumLiability.liabilityPremiumUsd",
-                    placeholder: "Amount",
-                    value: amounts.premiumLiability.liabilityPremiumUsd,
-                    onChange: handleLocalInputChange,
-                },
+                { id: "premiumPdma.pdmaPremiumUsd", placeholder: "Amount", value: amounts.premiumPdma.pdmaPremiumUsd.toString(), onChange: handleLocalInputChange },
+                { id: "premiumMa.maPremiumUsd", placeholder: "Amount", value: amounts.premiumMa.maPremiumUsd.toString(), onChange: handleLocalInputChange },
+                { id: "premiumAv.avPremiumUsd", placeholder: "Amount", value: amounts.premiumAv.avPremiumUsd.toString(), onChange: handleLocalInputChange },
+                { id: "premiumLiability.liabilityPremiumUsd", placeholder: "Amount", value: amounts.premiumLiability.liabilityPremiumUsd.toString(), onChange: handleLocalInputChange },
             ],
         },
         {
             label: "MDP-IDR",
             inputs: [
-                {
-                    id: "premiumPdma.pdmaPremiumIdr",
-                    placeholder: "Amount",
-                    value: amounts.premiumPdma.pdmaPremiumIdr,
-                    onChange: handleLocalInputChange,
-                },
-                {
-                    id: "premiumMa.maPremiumIdr",
-                    placeholder: "Amount",
-                    value: amounts.premiumMa.maPremiumIdr,
-                    onChange: handleLocalInputChange,
-                },
-                {
-                    id: "premiumAv.avPremiumIdr",
-                    placeholder: "Amount",
-                    value: amounts.premiumAv.avPremiumIdr,
-                    onChange: handleLocalInputChange,
-                },
-                {
-                    id: "premiumLiability.liabilityPremiumIdr",
-                    placeholder: "Amount",
-                    value: amounts.premiumLiability.liabilityPremiumIdr,
-                    onChange: handleLocalInputChange,
-                },
+                { id: "premiumPdma.pdmaPremiumIdr", placeholder: "Amount", value: amounts.premiumPdma.pdmaPremiumIdr.toString(), onChange: handleLocalInputChange },
+                { id: "premiumMa.maPremiumIdr", placeholder: "Amount", value: amounts.premiumMa.maPremiumIdr.toString(), onChange: handleLocalInputChange },
+                { id: "premiumAv.avPremiumIdr", placeholder: "Amount", value: amounts.premiumAv.avPremiumIdr.toString(), onChange: handleLocalInputChange },
+                { id: "premiumLiability.liabilityPremiumIdr", placeholder: "Amount", value: amounts.premiumLiability.liabilityPremiumIdr.toString(), onChange: handleLocalInputChange },
             ],
         },
         {
             label: "Share (%)",
             inputs: [
-                {
-                    id: "premiumPdma.pdmaPremiumShare",
-                    placeholder: "Percentage",
-                    value: amounts.premiumPdma.pdmaPremiumShare,
-                    onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                        handlePercentageChange(e, "premiumPdma.pdmaPremiumShare"),
-                },
-                {
-                    id: "premiumMa.maPremiumShare",
-                    placeholder: "Percentage",
-                    value: amounts.premiumMa.maPremiumShare,
-                    onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                        handlePercentageChange(e, "premiumMa.maPremiumShare"),
-                },
-                {
-                    id: "premiumAv.avPremiumShare",
-                    placeholder: "Percentage",
-                    value: amounts.premiumAv.avPremiumShare,
-                    onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                        handlePercentageChange(e, "premiumAv.avPremiumShare"),
-                },
-                {
-                    id: "premiumLiability.liabilityPremiumShare",
-                    placeholder: "Percentage",
-                    value: amounts.premiumLiability.liabilityPremiumShare,
-                    onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                        handlePercentageChange(e, "premiumLiability.liabilityPremiumShare"),
-                },
+                { id: "premiumPdma.pdmaPremiumShare", placeholder: "Percentage", value: amounts.premiumPdma.pdmaPremiumShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "premiumPdma.pdmaPremiumShare") },
+                { id: "premiumMa.maPremiumShare", placeholder: "Percentage", value: amounts.premiumMa.maPremiumShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "premiumMa.maPremiumShare") },
+                { id: "premiumAv.avPremiumShare", placeholder: "Percentage", value: amounts.premiumAv.avPremiumShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "premiumAv.avPremiumShare") },
+                { id: "premiumLiability.liabilityPremiumShare", placeholder: "Percentage", value: amounts.premiumLiability.liabilityPremiumShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "premiumLiability.liabilityPremiumShare") },
             ],
         },
     ];
 
 export const readonlyRows = (results: typeof inputShare) => [
     {
-        label: "Adjustment Premium - USD",
+        label: "MDP - USD",
         inputs: [
             {
-                id: "pdmaSharePremiumUsd",
-                value: results.sharePdma.pdmaSharePremiumUsd,
+                id: "sharePdma.pdmaSharePremiumUsd",
+                value: results.sharePdma.pdmaSharePremiumUsd.toString(),
                 readonly: true,
-                placeholder: "",
+                placeholder: ""
             },
             {
-                id: "maSharePremiumUsd",
-                value: results.shareMa.maSharePremiumUsd,
+                id: "shareMa.maSharePremiumUsd",
+                value: results.shareMa.maSharePremiumUsd.toString(),
                 readonly: true,
-                placeholder: "",
+                placeholder: ""
             },
             {
-                id: "avSharePremiumUsd",
-                value: results.shareAv.avSharePremiumUsd,
+                id: "shareAv.avSharePremiumUsd",
+                value: results.shareAv.avSharePremiumUsd.toString(),
                 readonly: true,
-                placeholder: "",
+                placeholder: ""
             },
             {
-                id: "liabilitySharePremiumUsd",
-                value: results.shareLiability.liabilitySharePremiumUsd,
+                id: "shareLiability.liabilitySharePremiumUsd",
+                value: results.shareLiability.liabilitySharePremiumUsd.toString(),
                 readonly: true,
-                placeholder: "",
+                placeholder: ""
             },
         ],
     },
     {
-        label: "Adjustment Premium - IDR",
+        label: "MDP - IDR",
         inputs: [
             {
-                id: "pdmaSharePremiumIdr",
-                value: results.sharePdma.pdmaSharePremiumIdr,
+                id: "sharePdma.pdmaSharePremiumIdr",
+                value: results.sharePdma.pdmaSharePremiumIdr.toString(),
                 readonly: true,
-                placeholder: "",
+                placeholder: ""
             },
             {
-                id: "maSharePremiumIdr",
-                value: results.shareMa.maSharePremiumIdr,
+                id: "shareMa.maSharePremiumIdr",
+                value: results.shareMa.maSharePremiumIdr.toString(),
                 readonly: true,
-                placeholder: "",
+                placeholder: ""
             },
             {
-                id: "avSharePremiumIdr",
-                value: results.shareAv.avSharePremiumIdr,
+                id: "shareAv.avSharePremiumIdr",
+                value: results.shareAv.avSharePremiumIdr.toString(),
                 readonly: true,
-                placeholder: "",
+                placeholder: ""
             },
             {
-                id: "liabilitySharePremiumIdr",
-                value: results.shareLiability.liabilitySharePremiumIdr,
+                id: "shareLiability.liabilitySharePremiumIdr",
+                value: results.shareLiability.liabilitySharePremiumIdr.toString(),
                 readonly: true,
-                placeholder: "",
+                placeholder: ""
             },
         ],
     },

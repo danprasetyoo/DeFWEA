@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 // Schema for TreatyDetailCurrent
 const TreatyDetailCurrentSchema = z.object({
-    currentExchange: z.string().optional(),
+    currentExchange: z.number().optional(),
     currentMargin: z.number().optional(),
     currentBrokerage: z.number().optional(),
     currentInterest: z.number().optional(),
@@ -14,7 +14,7 @@ const TreatyDetailCurrentSchema = z.object({
 
 // Schema for TreatyDetailPrior
 const TreatyDetailPriorSchema = z.object({
-    priorExchange: z.string().optional(),
+    priorExchange: z.number().optional(),
     priorMargin: z.number().optional(),
     priorBrokerage: z.number().optional(),
     priorInterest: z.number().optional(),

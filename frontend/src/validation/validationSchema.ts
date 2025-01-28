@@ -18,7 +18,7 @@ export const validationSchema = Yup.object({
 
     inputTreatyDetail: Yup.object({
         treatyCurrentYear: Yup.object({
-            currentExchange: Yup.string().optional(),
+            currentExchange: Yup.number().optional(),
             currentMargin: Yup.number().optional(),
             currentBrokerage: Yup.number().optional(),
             currentInterest: Yup.number().optional(),
@@ -26,7 +26,7 @@ export const validationSchema = Yup.object({
             currentMaintenance: Yup.number().optional(),
         }).optional(),
         treatyPriorYear: Yup.object({
-            priorExchange: Yup.string().optional(),
+            priorExchange: Yup.number().optional(),
             priorMargin: Yup.number().optional(),
             priorBrokerage: Yup.number().optional(),
             priorInterest: Yup.number().optional(),
@@ -39,22 +39,22 @@ export const validationSchema = Yup.object({
         layerPdma: Yup.object({
             pdmaDetailUsd: Yup.number().optional(),
             pdmaDetailIdr: Yup.number().optional(),
-            pdmaDetailShare: Yup.string().optional(),
+            pdmaDetailShare: Yup.number().optional(),
         }).optional(),
         layerMa: Yup.object({
             maDetailUsd: Yup.number().optional(),
             maDetailIdr: Yup.number().optional(),
-            maDetailShare: Yup.string().optional(),
+            maDetailShare: Yup.number().optional(),
         }).optional(),
         layerAv: Yup.object({
             avDetailUsd: Yup.number().optional(),
             avDetailIdr: Yup.number().optional(),
-            avDetailShare: Yup.string().optional(),
+            avDetailShare: Yup.number().optional(),
         }).optional(),
         layerLiability: Yup.object({
             liabilityDetailUsd: Yup.number().optional(),
             liabilityDetailIdr: Yup.number().optional(),
-            liabilityDetailShare: Yup.string().optional(),
+            liabilityDetailShare: Yup.number().optional(),
         }).optional(),
     }).optional(),
 

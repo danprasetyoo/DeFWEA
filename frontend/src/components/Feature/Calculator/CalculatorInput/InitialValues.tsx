@@ -6,7 +6,7 @@ const InitialValues = {
 
     inputTreatyDetail: {
         treatyCurrentYear: {
-            currentExchange: "",
+            currentExchange: 0,
             currentMargin: 0,
             currentBrokerage: 0,
             currentInterest: 0,
@@ -14,7 +14,7 @@ const InitialValues = {
             currentMaintenance: 0,
         },
         treatyPriorYear: {
-            priorExchange: "",
+            priorExchange: 0,
             priorMargin: 0,
             priorBrokerage: 0,
             priorInterest: 0,

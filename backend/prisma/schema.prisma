@@ -30,7 +30,7 @@ model TreatyDetail {
 
 model TreatyDetailCurrent {
     id              Int             @id @default(autoincrement())
-    currentExchange   String
+    currentExchange   Float
     currentMargin     Float
     currentBrokerage  Float
     currentInterest   Float
@@ -42,7 +42,7 @@ model TreatyDetailCurrent {
 
 model TreatyDetailPrior {
     id              Int             @id @default(autoincrement())
-    priorExchange   String
+    priorExchange   Float
     priorMargin     Float
     priorBrokerage  Float
     priorInterest   Float
