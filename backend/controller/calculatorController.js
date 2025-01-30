@@ -1,19 +1,104 @@
+// calculatorController.js
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 const { CalculatorSchema } = require('../middleware/validator');
+const { z } = require('zod');
 
-exports.getAllCalculators = async (req, res) => {
+const prisma = new PrismaClient();
+
+const deepMerge = (target, source) => {
+    if (typeof target !== 'object' || typeof source !== 'object') return source;
+    for (const key in source) {
+        if (source[key] instanceof Date) {
+            target[key] = source[key];
+        } else if (source[key] instanceof Object) {
+            if (!target[key]) Object.assign(target, { [key]: {} });
+            deepMerge(target[key], source[key]);
+        } else {
+            Object.assign(target, { [key]: source[key] });
+        }
+    }
+    return target;
+};
+
+const parseDates = (data) => ({
+    ...data,
+    inputStatementDate: new Date(data.inputStatementDate),
+    inputStatementPeriod: new Date(data.inputStatementPeriod),
+});
+
+const handleError = (res, error, defaultMessage) => {
+    console.error(error);
+
+    if (error instanceof z.ZodError) {
+        return res.status(400).json({
+            error: 'Validation Error',
+            details: error.errors.map(e => ({
+                path: e.path.join('.'),
+                message: e.message,
+            })),
+        });
+    }
+
+    if (error.code === 'P2025') {
+        return res.status(404).json({ error: 'Record not found' });
+    }
+
+    res.status(500).json({ error: defaultMessage });
+};
+
+const createCalculator = async (req, res) => {
     try {
-        const calculators = await prisma.calculator.findMany();
-        res.status(200).json(calculators);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const validatedData = CalculatorSchema.parse(req.body);
+
+        const result = await handleDatabaseOperation(() =>
+            prisma.calculator.create({
+                data: {
+                    ...validatedData,
+                    version: 1
+                },
+                select: {
+                    id: true,
+                    inputStatementDate: true,
+                    version: true,
+                    createdAt: true
+                }
+            })
+        );
+
+        res.status(201).json({
+            status: 'success',
+            data: result,
+            metadata: {
+                generatedAt: new Date().toISOString()
+            }
+        });
+    } catch (error) {
+        handleError(res, error, 'Failed to create calculator');
     }
 };
 
-exports.getCalculatorById = async (req, res) => {
+const getAllCalculators = async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        const calculators = await prisma.calculator.findMany({
+            skip: (page - 1) * limit,
+            take: Number(limit),
+            orderBy: { createdAt: 'desc' },
+        });
+        res.status(200).json(calculators);
+    } catch (err) {
+        handleError(res, err, 'Failed to fetch calculators');
+    }
+};
+
+const getCalculatorById = async (req, res) => {
     try {
         const { id } = req.params;
+
+        if (isNaN(parseInt(id))) {
+            return res.status(400).json({ error: "Invalid ID format" });
+        }
+
         const calculator = await prisma.calculator.findUnique({
             where: { id: parseInt(id) },
         });
@@ -22,287 +107,61 @@ exports.getCalculatorById = async (req, res) => {
             return res.status(404).json({ error: 'Calculator not found' });
         }
 
-        calculator.inputTreatyDetail = calculator.inputTreatyDetail ? JSON.parse(calculator.inputTreatyDetail) : null;
-        calculator.inputLayerDetail = calculator.inputLayerDetail ? JSON.parse(calculator.inputLayerDetail) : null;
-        calculator.inputPremium = calculator.inputPremium ? JSON.parse(calculator.inputPremium) : null;
-        calculator.inputShare = calculator.inputShare ? JSON.parse(calculator.inputShare) : null;
-
         res.status(200).json(calculator);
     } catch (err) {
-        if (err.code === 'P2025') {
-            return res.status(404).json({ error: 'Calculator not found' });
-        }
-        console.error("Error fetching calculator by ID:", err);
-        res.status(500).json({ error: "Internal server error" });
+        handleError(res, err, 'Failed to fetch calculator');
     }
 };
 
-exports.createCalculator = async (req, res) => {
+const updateCalculator = async (req, res) => {
     try {
-        const validatedData = CalculatorSchema.parse(req.body);
+        const { id } = req.params;
+        const validatedData = CalculatorSchema.partial().parse(req.body);
 
-        const {
-            inputStatementDate,
-            inputOpeningfund,
-            inputStatementPeriod,
-            inputTreatyYear,
-            inputTreatyDetail,
-            inputLayerDetail,
-            inputPremiumDetail,
-            inputShareDetail,
-        } = validatedData;
+        const existingRecord = await handleDatabaseOperation(() =>
+            prisma.calculator.findUnique({ where: { id: Number(id) } })
+        );
 
-        if (!inputStatementDate || !inputStatementPeriod || !inputTreatyYear) {
-            return res.status(400).json({ error: "Missing required fields" });
+        if (!existingRecord) {
+            return res.status(404).json({
+                error: 'NOT_FOUND',
+                message: 'Calculator record not found'
+            });
         }
 
-        const result = await prisma.$transaction(async (prisma) => {
-            const calculator = await prisma.calculator.create({
+        const mergedData = deepMerge(existingRecord, validatedData);
+
+        const updatedRecord = await handleDatabaseOperation(() =>
+            prisma.calculator.update({
+                where: { id: Number(id) },
                 data: {
-                    inputStatementDate: new Date(inputStatementDate),
-                    inputOpeningfund,
-                    inputStatementPeriod: new Date(inputStatementPeriod),
-                    inputTreatyYear,
-                    version: 1,
+                    ...mergedData,
+                    version: { increment: 1 }
                 },
-            });
+                select: {
+                    id: true,
+                    version: true,
+                    updatedAt: true
+                }
+            })
+        );
 
-            if (inputTreatyDetail) {
-                await prisma.treatyDetail.create({
-                    data: {
-                        calculatorId: calculator.id,
-                        treatyCurrentYear: inputTreatyDetail.treatyCurrentYear
-                            ? {
-                                create: {
-                                    currentExchange: inputTreatyDetail.treatyCurrentYear.currentExchange,
-                                    currentMargin: inputTreatyDetail.treatyCurrentYear.currentMargin,
-                                    currentBrokerage: inputTreatyDetail.treatyCurrentYear.currentBrokerage,
-                                    currentInterest: inputTreatyDetail.treatyCurrentYear.currentInterest,
-                                    currentLAP: inputTreatyDetail.treatyCurrentYear.currentLAP,
-                                    currentMaintenance: inputTreatyDetail.treatyCurrentYear.currentMaintenance,
-                                },
-                            }
-                            : undefined,
-                        treatyPriorYear: inputTreatyDetail.treatyPriorYear
-                            ? {
-                                create: {
-                                    priorExchange: inputTreatyDetail.treatyPriorYear.priorExchange,
-                                    priorMargin: inputTreatyDetail.treatyPriorYear.priorMargin,
-                                    priorBrokerage: inputTreatyDetail.treatyPriorYear.priorBrokerage,
-                                    priorInterest: inputTreatyDetail.treatyPriorYear.priorInterest,
-                                    priorLAP: inputTreatyDetail.treatyPriorYear.priorLAP,
-                                    priorMaintenance: inputTreatyDetail.treatyPriorYear.priorMaintenance,
-                                },
-                            }
-                            : undefined,
-                    },
-                });
-            }
-
-            if (inputLayerDetail) {
-                await prisma.layerDetail.create({
-                    data: {
-                        calculatorId: calculator.id,
-                        pdmaLayer: inputLayerDetail.pdmaLayer
-                            ? {
-                                create: {
-                                    pdmaDetailUsd: inputLayerDetail.pdmaLayer.pdmaDetailUsd,
-                                    pdmaDetailIdr: inputLayerDetail.pdmaLayer.pdmaDetailIdr,
-                                    pdmaDetailShare: inputLayerDetail.pdmaLayer.pdmaDetailShare,
-                                },
-                            }
-                            : undefined,
-                        maLayer: inputLayerDetail.maLayer
-                            ? {
-                                create: {
-                                    maDetailUsd: inputLayerDetail.maLayer.maDetailUsd,
-                                    maDetailIdr: inputLayerDetail.maLayer.maDetailIdr,
-                                    maDetailShare: inputLayerDetail.maLayer.maDetailShare,
-                                },
-                            }
-                            : undefined,
-                        avLayer: inputLayerDetail.avLayer
-                            ? {
-                                create: {
-                                    avDetailUsd: inputLayerDetail.avLayer.avDetailUsd,
-                                    avDetailIdr: inputLayerDetail.avLayer.avDetailIdr,
-                                    avDetailShare: inputLayerDetail.avLayer.avDetailShare,
-                                },
-                            }
-                            : undefined,
-                        liabilityLayer: inputLayerDetail.liabilityLayer
-                            ? {
-                                create: {
-                                    liabilityDetailUsd: inputLayerDetail.liabilityLayer.liabilityDetailUsd,
-                                    liabilityDetailIdr: inputLayerDetail.liabilityLayer.liabilityDetailIdr,
-                                    liabilityDetailShare: inputLayerDetail.liabilityLayer.liabilityDetailShare,
-                                },
-                            }
-                            : undefined,
-                    },
-                });
-            }
-
-            if (inputPremiumDetail) {
-                await prisma.premiumDetail.create({
-                    data: {
-                        calculatorId: calculator.id,
-                        pdmaPremium: inputPremiumDetail.pdmaPremium
-                            ? {
-                                create: {
-                                    pdmaPremiumUsd: inputPremiumDetail.pdmaPremium.pdmaPremiumUsd,
-                                    pdmaPremiumIdr: inputPremiumDetail.pdmaPremium.pdmaPremiumIdr,
-                                    pdmaPremiumShare: inputPremiumDetail.pdmaPremium.pdmaPremiumShare,
-                                },
-                            }
-                            : undefined,
-                        maPremium: inputPremiumDetail.maPremium
-                            ? {
-                                create: {
-                                    maPremiumUsd: inputPremiumDetail.maPremium.maPremiumUsd,
-                                    maPremiumIdr: inputPremiumDetail.maPremium.maPremiumIdr,
-                                    maPremiumShare: inputPremiumDetail.maPremium.maPremiumShare,
-                                },
-                            }
-                            : undefined,
-                        avPremium: inputPremiumDetail.avPremium
-                            ? {
-                                create: {
-                                    avPremiumUsd: inputPremiumDetail.avPremium.avPremiumUsd,
-                                    avPremiumIdr: inputPremiumDetail.avPremium.avPremiumIdr,
-                                    avPremiumShare: inputPremiumDetail.avPremium.avPremiumShare,
-                                },
-                            }
-                            : undefined,
-                        liabilityPremium: inputPremiumDetail.liabilityPremium
-                            ? {
-                                create: {
-                                    liabilityPremiumUsd: inputPremiumDetail.liabilityPremium.liabilityPremiumUsd,
-                                    liabilityPremiumIdr: inputPremiumDetail.liabilityPremium.liabilityPremiumIdr,
-                                    liabilityPremiumShare: inputPremiumDetail.liabilityPremium.liabilityPremiumShare,
-                                },
-                            }
-                            : undefined,
-                    },
-                });
-            }
-
-            if (inputShareDetail) {
-                await prisma.shareDetail.create({
-                    data: {
-                        calculatorId: calculator.id,
-                        pdmaShare: inputShareDetail.pdmaShare
-                            ? {
-                                create: {
-                                    pdmaShareUsd: inputShareDetail.pdmaShare.pdmaShareUsd,
-                                    pdmaShareIdr: inputShareDetail.pdmaShare.pdmaShareIdr,
-                                    pdmaSharePremiumUsd: inputShareDetail.pdmaShare.pdmaSharePremiumUsd,
-                                    pdmaSharePremiumIdr: inputShareDetail.pdmaShare.pdmaSharePremiumIdr,
-                                },
-                            }
-                            : undefined,
-                        maShare: inputShareDetail.maShare
-                            ? {
-                                create: {
-                                    maShareUsd: inputShareDetail.maShare.maShareUsd,
-                                    maShareIdr: inputShareDetail.maShare.maShareIdr,
-                                    maSharePremiumUsd: inputShareDetail.maShare.maSharePremiumUsd,
-                                    maSharePremiumIdr: inputShareDetail.maShare.maSharePremiumIdr,
-                                },
-                            }
-                            : undefined,
-                        avShare: inputShareDetail.avShare
-                            ? {
-                                create: {
-                                    avShareUsd: inputShareDetail.avShare.avShareUsd,
-                                    avShareIdr: inputShareDetail.avShare.avShareIdr,
-                                    avSharePremiumUsd: inputShareDetail.avShare.avSharePremiumUsd,
-                                    avSharePremiumIdr: inputShareDetail.avShare.avSharePremiumIdr,
-                                },
-                            }
-                            : undefined,
-                        liabilityShare: inputShareDetail.liabilityShare
-                            ? {
-                                create: {
-                                    liabilityShareUsd: inputShareDetail.liabilityShare.liabilityShareUsd,
-                                    liabilityShareIdr: inputShareDetail.liabilityShare.liabilityShareIdr,
-                                    liabilitySharePremiumUsd: inputShareDetail.liabilityShare.liabilitySharePremiumUsd,
-                                    liabilitySharePremiumIdr: inputShareDetail.liabilityShare.liabilitySharePremiumIdr,
-                                },
-                            }
-                            : undefined,
-                    },
-                });
-            }
-
-            return calculator;
+        res.status(200).json({
+            status: 'success',
+            data: updatedRecord,
+            changes: Object.keys(validatedData)
         });
-
-        res.status(201).json(result);
-    } catch (err) {
-        if (err instanceof z.ZodError) {
-            return res.status(400).json({
-                error: "Validation error",
-                details: err.errors.map(e => ({
-                    path: e.path.join('.'),
-                    message: e.message,
-                })),
-            });
-        }
-        console.error("Error creating calculator:", err);
-        res.status(500).json({ error: "Internal server error" });
+    } catch (error) {
+        handleError(res, error, 'Failed to update calculator');
     }
 };
 
-// Refactored updateCalculator function
-exports.updateCalculator = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const validatedData = CalculatorSchema.parse(req.body);
-
-        const existingCalculator = await prisma.calculator.findUnique({
-            where: { id: parseInt(id) },
-        });
-
-        if (!existingCalculator) {
-            return res.status(404).json({ error: 'Calculator not found' });
-        }
-
-        const updatedCalculator = await prisma.calculator.update({
-            where: { id: parseInt(id) },
-            data: {
-                inputStatementDate: new Date(validatedData.inputStatementDate),
-                inputOpeningfund: validatedData.inputOpeningfund,
-                inputStatementPeriod: new Date(validatedData.inputStatementPeriod),
-                inputTreatyYear: validatedData.inputTreatyYear,
-                inputTreatyDetail: validatedData.inputTreatyDetail ? JSON.stringify(validatedData.inputTreatyDetail) : undefined,
-                inputLayerDetail: validatedData.inputLayerDetail ? JSON.stringify(validatedData.inputLayerDetail) : undefined,
-                inputPremiumDetail: validatedData.inputPremiumDetail ? JSON.stringify(validatedData.inputPremiumDetail) : undefined,
-                inputShareDetail: validatedData.inputShareDetail ? JSON.stringify(validatedData.inputShareDetail) : undefined,
-            },
-        });
-
-        res.status(200).json(updatedCalculator);
-    } catch (err) {
-        if (err.code === 'P2025') {
-            return res.status(404).json({ error: 'Calculator not found' });
-        }
-        console.error("Error updating calculator:", err);
-        res.status(500).json({ error: "Internal server error" });
-    }
-};
-
-// Refactored deleteCalculator function
-exports.deleteCalculator = async (req, res) => {
+const deleteCalculator = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const existingCalculator = await prisma.calculator.findUnique({
-            where: { id: parseInt(id) },
-        });
-
-        if (!existingCalculator) {
-            return res.status(404).json({ error: 'Calculator not found' });
+        if (isNaN(parseInt(id))) {
+            return res.status(400).json({ error: "Invalid ID format" });
         }
 
         await prisma.calculator.delete({
@@ -311,10 +170,14 @@ exports.deleteCalculator = async (req, res) => {
 
         res.status(200).json({ message: 'Calculator deleted successfully' });
     } catch (err) {
-        if (err.code === 'P2025') {
-            return res.status(404).json({ error: 'Calculator not found' });
-        }
-        console.error("Error deleting calculator:", err);
-        res.status(500).json({ error: "Internal server error" });
+        handleError(res, err, 'Failed to delete calculator');
     }
+};
+
+module.exports = {
+    createCalculator,
+    getAllCalculators,
+    getCalculatorById,
+    updateCalculator,
+    deleteCalculator
 };

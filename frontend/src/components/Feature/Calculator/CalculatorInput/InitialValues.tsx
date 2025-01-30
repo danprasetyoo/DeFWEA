@@ -1,9 +1,107 @@
-const InitialValues = {
+interface CalculatorFormValues {
+    inputStatementDate: string;
+    inputOpeningfund: string;
+    inputStatementPeriod: string;
+    inputTreatyYear: number;
+    inputTreatyDetail: {
+        treatyCurrentYear?: {
+            currentExchange: number;
+            currentMargin: number;
+            currentBrokerage: number;
+            currentInterest: number;
+            currentLAP: number;
+            currentMaintenance: number;
+        };
+        treatyPriorYear?: {
+            priorExchange: number;
+            priorMargin: number;
+            priorBrokerage: number;
+            priorInterest: number;
+            priorLAP: number;
+            priorMaintenance: number;
+        };
+    },
+
+    inputLayerDetail: {
+        layerPdma?: {
+            pdmaDetailUsd: number;
+            pdmaDetailIdr: number;
+            pdmaDetailShare: number;
+        },
+        layerMa?: {
+            maDetailUsd: number;
+            maDetailIdr: number;
+            maDetailShare: number;
+        },
+        layerAv?: {
+            avDetailUsd: number;
+            avDetailIdr: number;
+            avDetailShare: number;
+        },
+        layerLiability?: {
+            liabilityDetailUsd: number;
+            liabilityDetailIdr: number;
+            liabilityDetailShare: number;
+        },
+    },
+
+    inputPremium: {
+        premiumPdma?: {
+            pdmaPremiumUsd: number;
+            pdmaPremiumIdr: number;
+            pdmaPremiumShare: number;
+        },
+        premiumMa?: {
+            maPremiumUsd: number;
+            maPremiumIdr: number;
+            maPremiumShare: number;
+        },
+        premiumAv?: {
+            avPremiumUsd: number;
+            avPremiumIdr: number;
+            avPremiumShare: number;
+        },
+        premiumLiability?: {
+            liabilityPremiumUsd: number;
+            liabilityPremiumIdr: number;
+            liabilityPremiumShare: number;
+        },
+    },
+
+    inputShare: {
+        sharePdma?: {
+            pdmaShareUsd: number;
+            pdmaShareIdr: number;
+            pdmaSharePremiumUsd: number;
+            pdmaSharePremiumIdr: number;
+        },
+        shareMa?: {
+            maShareUsd: number;
+            maShareIdr: number;
+            maSharePremiumUsd: number;
+            maSharePremiumIdr: number;
+        },
+        shareAv?: {
+            avShareUsd: number;
+            avShareIdr: number;
+            avSharePremiumUsd: number;
+            avSharePremiumIdr: number;
+        },
+        shareLiability?: {
+            liabilityShareUsd: number;
+            liabilityShareIdr: number;
+            liabilitySharePremiumUsd: number;
+            liabilitySharePremiumIdr: number;
+        },
+    },
+}
+
+
+const InitialValues: CalculatorFormValues = {
     inputStatementDate: "",
     inputOpeningfund: "",
     inputStatementPeriod: "",
-    inputTreatyYear: "",
-
+    inputTreatyYear: 0,
     inputTreatyDetail: {
         treatyCurrentYear: {
             currentExchange: 0,

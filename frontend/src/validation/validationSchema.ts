@@ -2,109 +2,103 @@ import * as Yup from 'yup';
 
 export const validationSchema = Yup.object({
     inputStatementDate: Yup.string()
-        .test('is-date', 'Invalid date format for inputStatementDate', (val) => {
-            if (!val) return false; // Return false if val is undefined or empty
-            return !isNaN(new Date(val).getTime());
-        })
-        .required("Tanggal statement wajib diisi"),
-    inputOpeningfund: Yup.string().optional(),
+        .transform((val) => new Date(val).toISOString())
+    .required("Tanggal statement wajib diisi"),
+    inputOpeningfund: Yup.string().required("Opening fund wajib diisi"),
     inputStatementPeriod: Yup.string()
-        .test('is-date', 'Invalid date format for inputStatementPeriod', (val) => {
-            if (!val) return false; // Return false if val is undefined or empty
-            return !isNaN(new Date(val).getTime());
-        })
-        .required("Periode statement wajib diisi"),
-    inputTreatyYear: Yup.string().required("Tahun treaty wajib diisi"),
+        .transform((val) => new Date(val).toISOString())
+    .required("Periode statement wajib diisi"),
+    inputTreatyYear: Yup.number().required("Tahun treaty wajib diisi"),
 
     inputTreatyDetail: Yup.object({
         treatyCurrentYear: Yup.object({
-            currentExchange: Yup.number().optional(),
-            currentMargin: Yup.number().optional(),
-            currentBrokerage: Yup.number().optional(),
-            currentInterest: Yup.number().optional(),
-            currentLAP: Yup.number().optional(),
-            currentMaintenance: Yup.number().optional(),
+            currentExchange: Yup.number().required(),
+            currentMargin: Yup.number().required(),
+            currentBrokerage: Yup.number().required(),
+            currentInterest: Yup.number().required(),
+            currentLAP: Yup.number().required(),
+            currentMaintenance: Yup.number().required(),
         }).optional(),
         treatyPriorYear: Yup.object({
-            priorExchange: Yup.number().optional(),
-            priorMargin: Yup.number().optional(),
-            priorBrokerage: Yup.number().optional(),
-            priorInterest: Yup.number().optional(),
-            priorLAP: Yup.number().optional(),
-            priorMaintenance: Yup.number().optional(),
+            priorExchange: Yup.number().required(),
+            priorMargin: Yup.number().required(),
+            priorBrokerage: Yup.number().required(),
+            priorInterest: Yup.number().required(),
+            priorLAP: Yup.number().required(),
+            priorMaintenance: Yup.number().required(),
         }).optional(),
     }).optional(),
 
     inputLayerDetail: Yup.object({
         layerPdma: Yup.object({
-            pdmaDetailUsd: Yup.number().optional(),
-            pdmaDetailIdr: Yup.number().optional(),
-            pdmaDetailShare: Yup.number().optional(),
+            pdmaDetailUsd: Yup.number().required(),
+            pdmaDetailIdr: Yup.number().required(),
+            pdmaDetailShare: Yup.number().required(),
         }).optional(),
         layerMa: Yup.object({
-            maDetailUsd: Yup.number().optional(),
-            maDetailIdr: Yup.number().optional(),
-            maDetailShare: Yup.number().optional(),
+            maDetailUsd: Yup.number().required(),
+            maDetailIdr: Yup.number().required(),
+            maDetailShare: Yup.number().required(),
         }).optional(),
         layerAv: Yup.object({
-            avDetailUsd: Yup.number().optional(),
-            avDetailIdr: Yup.number().optional(),
-            avDetailShare: Yup.number().optional(),
+            avDetailUsd: Yup.number().required(),
+            avDetailIdr: Yup.number().required(),
+            avDetailShare: Yup.number().required(),
         }).optional(),
         layerLiability: Yup.object({
-            liabilityDetailUsd: Yup.number().optional(),
-            liabilityDetailIdr: Yup.number().optional(),
-            liabilityDetailShare: Yup.number().optional(),
+            liabilityDetailUsd: Yup.number().required(),
+            liabilityDetailIdr: Yup.number().required(),
+            liabilityDetailShare: Yup.number().required(),
         }).optional(),
     }).optional(),
 
     inputPremium: Yup.object({
         premiumPdma: Yup.object({
-            pdmaPremiumUsd: Yup.number().optional(),
-            pdmaPremiumIdr: Yup.number().optional(),
-            pdmaPremiumShare: Yup.number().optional(),
+            pdmaPremiumUsd: Yup.number().required(),
+            pdmaPremiumIdr: Yup.number().required(),
+            pdmaPremiumShare: Yup.number().required(),
         }).optional(),
         premiumMa: Yup.object({
-            maPremiumUsd: Yup.number().optional(),
-            maPremiumIdr: Yup.number().optional(),
-            maPremiumShare: Yup.number().optional(),
+            maPremiumUsd: Yup.number().required(),
+            maPremiumIdr: Yup.number().required(),
+            maPremiumShare: Yup.number().required(),
         }).optional(),
         premiumAv: Yup.object({
-            avPremiumUsd: Yup.number().optional(),
-            avPremiumIdr: Yup.number().optional(),
-            avPremiumShare: Yup.number().optional(),
+            avPremiumUsd: Yup.number().required(),
+            avPremiumIdr: Yup.number().required(),
+            avPremiumShare: Yup.number().required(),
         }).optional(),
         premiumLiability: Yup.object({
-            liabilityPremiumUsd: Yup.number().optional(),
-            liabilityPremiumIdr: Yup.number().optional(),
-            liabilityPremiumShare: Yup.number().optional(),
+            liabilityPremiumUsd: Yup.number().required(),
+            liabilityPremiumIdr: Yup.number().required(),
+            liabilityPremiumShare: Yup.number().required(),
         }).optional(),
     }).optional(),
 
     inputShare: Yup.object({
         sharePdma: Yup.object({
-            pdmaShareUsd: Yup.number().optional(),
-            pdmaShareIdr: Yup.number().optional(),
-            pdmaSharePremiumUsd: Yup.number().optional(),
-            pdmaSharePremiumIdr: Yup.number().optional(),
+            pdmaShareUsd: Yup.number().required(),
+            pdmaShareIdr: Yup.number().required(),
+            pdmaSharePremiumUsd: Yup.number().required(),
+            pdmaSharePremiumIdr: Yup.number().required(),
         }).optional(),
         shareMa: Yup.object({
-            maShareUsd: Yup.number().optional(),
-            maShareIdr: Yup.number().optional(),
-            maSharePremiumUsd: Yup.number().optional(),
-            maSharePremiumIdr: Yup.number().optional(),
+            maShareUsd: Yup.number().required(),
+            maShareIdr: Yup.number().required(),
+            maSharePremiumUsd: Yup.number().required(),
+            maSharePremiumIdr: Yup.number().required(),
         }).optional(),
         shareAv: Yup.object({
-            avShareUsd: Yup.number().optional(),
-            avShareIdr: Yup.number().optional(),
-            avSharePremiumUsd: Yup.number().optional(),
-            avSharePremiumIdr: Yup.number().optional(),
+            avShareUsd: Yup.number().required(),
+            avShareIdr: Yup.number().required(),
+            avSharePremiumUsd: Yup.number().required(),
+            avSharePremiumIdr: Yup.number().required(),
         }).optional(),
         shareLiability: Yup.object({
-            liabilityShareUsd: Yup.number().optional(),
-            liabilityShareIdr: Yup.number().optional(),
-            liabilitySharePremiumUsd: Yup.number().optional(),
-            liabilitySharePremiumIdr: Yup.number().optional(),
+            liabilityShareUsd: Yup.number().required(),
+            liabilityShareIdr: Yup.number().required(),
+            liabilitySharePremiumUsd: Yup.number().required(),
+            liabilitySharePremiumIdr: Yup.number().required(),
         }).optional(),
     }).optional(),
 });

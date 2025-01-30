@@ -6,7 +6,7 @@ interface StatementInputProps {
         inputStatementDate: string;
         inputOpeningfund: string;
         inputStatementPeriod: string;
-        inputTreatyYear: string;
+        inputTreatyYear: number;
     };
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -28,7 +28,7 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
     useEffect(() => {
         if (statementDateRef.current) {
             new Datepicker(statementDateRef.current, {
-                dateFormat: 'yyyy-mm-dd',
+                dateFormat: 'dd-mm-yyyy',
                 onChange: (selectedDate: any) => {
                     console.log('Selected Date:', selectedDate);
                     handleInputChange({
@@ -43,7 +43,7 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
 
         if (statementPeriodRef.current) {
             new Datepicker(statementPeriodRef.current, {
-                dateFormat: 'yyyy-mm-dd',
+                dateFormat: 'dd-mm-yyyy',
                 onChange: (selectedDate: any) => {
                     handleInputChange({
                         target: {
