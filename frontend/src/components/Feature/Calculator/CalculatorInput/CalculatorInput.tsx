@@ -12,7 +12,7 @@ import initialValues from "./InitialValues";
 import { convertPremiumShares } from "../PremiumDetail/premiumDetailsData";
 import { convertLayerShares } from "../LayerDetail/layerDetailsData";
 
-const API_BASE = import.meta.env.VITE_API_BASE || '';
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 interface CalculatorPayload {
     inputStatementDate: string;
@@ -115,10 +115,17 @@ function CalculatorInput() {
 
                 console.log('Submitting payload:', payload);
 
-                const response = await axios.post(`${API_BASE}/api/calculators`, payload, {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    setNetworkError("Please login first");
+                    setIsLoading(false);
+                    return;
+                }
+
+                const response = await axios.post(`${API_BASE}/calculators`, payload, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': token ? `Bearer ${token}` : undefined
                     },
                     validateStatus: (status) => status < 500
                 });
@@ -166,7 +173,11 @@ function CalculatorInput() {
         formik.setFieldValue(id, value);
     };
     return (
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            console.log("Form submitted");
+            formik.handleSubmit(e);
+        }}>
             <div className="space-y-6">
 
                 {networkError && (
