@@ -15,6 +15,7 @@ services:
       - DB_PASSWORD=admin
       - DB_NAME=fwea
       - DATABASE_URL=postgresql://postgres:admin@postgres:5432/fwea
+      - TZ=Asia/Jakarta # Set time zone for the backend container
     restart: always
 
   frontend:
@@ -37,9 +38,16 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=fwea
+      - TZ=Asia/Jakarta # Set time zone for Postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
+    healthcheck:
+      # Add a healthcheck for Postgres
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d fwea" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   jenkins:
     image: jenkins/jenkins:lts
