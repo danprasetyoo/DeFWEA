@@ -38,38 +38,32 @@ const createCalculator = async (req, res) => {
                 inputOpeningfund: validatedData.inputOpeningfund,
                 inputStatementPeriod: validatedData.inputStatementPeriod,
                 inputTreatyYear: validatedData.inputTreatyYear,
-                inputTreatyDetail: {
-                    create: validatedData.inputTreatyDetail ? {
-                        treatyCurrentYear: { create: validatedData.inputTreatyDetail.treatyCurrentYear },
-                        treatyPriorYear: { create: validatedData.inputTreatyDetail.treatyPriorYear },
-                    } : undefined,
-                },
-                inputLayerDetail: {
-                    create: validatedData.inputLayerDetail ? {
-                        layerPdma: { create: validatedData.inputLayerDetail.layerPdma },
-                        layerMa: { create: validatedData.inputLayerDetail.layerMa },
-                        layerAv: { create: validatedData.inputLayerDetail.layerAv },
-                        layerLiability: { create: validatedData.inputLayerDetail.layerLiability },
-                    } : undefined,
-                },
-                inputPremium: {
-                    create: validatedData.inputPremium ? {
-                        premiumPdma: { create: validatedData.inputPremium.premiumPdma },
-                        premiumMa: { create: validatedData.inputPremium.premiumMa },
-                        premiumAv: { create: validatedData.inputPremium.premiumAv },
-                        premiumLiability: { create: validatedData.inputPremium.premiumLiability },
-                    } : undefined,
-                },
-                inputShare: {
-                    create: validatedData.inputShare ? {
-                        sharePdma: { create: validatedData.inputShare.sharePdma },
-                        shareMa: { create: validatedData.inputShare.shareMa },
-                        shareAv: { create: validatedData.inputShare.shareAv },
-                        shareLiability: { create: validatedData.inputShare.shareLiability },
-                    } : undefined,
-                },
+                inputTreatyDetail: validatedData.inputTreatyDetail ? {
+                    connectOrCreate: {
+                        where: { id: validatedData.inputTreatyDetail.id || -1 }, // Dummy ID for create
+                        create: validatedData.inputTreatyDetail
+                    },
+                } : undefined,
+                inputLayerDetail: validatedData.inputLayerDetail ? {
+                    connectOrCreate: {
+                        where: { id: validatedData.inputLayerDetail.id || -1 },
+                        create: validatedData.inputLayerDetail
+                    },
+                } : undefined,
+                inputPremium: validatedData.inputPremium ? {
+                    connectOrCreate: {
+                        where: { id: validatedData.inputPremium.id || -1 },
+                        create: validatedData.inputPremium
+                    },
+                } : undefined,
+                inputShare: validatedData.inputShare ? {
+                    connectOrCreate: {
+                        where: { id: validatedData.inputShare.id || -1 },
+                        create: validatedData.inputShare
+                    },
+                } : undefined,
             },
-            include: { // Include related data for a complete response
+            include: {
                 inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },
                 inputLayerDetail: { include: { layerPdma: true, layerMa: true, layerAv: true, layerLiability: true } },
                 inputPremium: { include: { premiumPdma: true, premiumMa: true, premiumAv: true, premiumLiability: true } },
@@ -88,20 +82,23 @@ const getAllCalculators = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
 
-        const calculators = await prisma.calculator.findMany({
-            skip: (page - 1) * Number(limit),
-            take: Number(limit),
-            orderBy: { createdAt: 'desc' },
-            include: {
-                inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },
-                inputLayerDetail: { include: { layerPdma: true, layerMa: true, layerAv: true, layerLiability: true } },
-                inputPremium: { include: { premiumPdma: true, premiumMa: true, premiumAv: true, premiumLiability: true } },
-                inputShare: { include: { sharePdma: true, shareMa: true, shareAv: true, shareLiability: true } },
-            },
-        });
+        const [total, calculators] = await prisma.$transaction([
+            prisma.calculator.count(),
+            prisma.calculator.findMany({
+                skip: (page - 1) * Number(limit),
+                take: Number(limit),
+                orderBy: { createdAt: 'desc' },
+                include: {
+                    inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },
+                    inputLayerDetail: { include: { layerPdma: true, layerMa: true, layerAv: true, layerLiability: true } },
+                    inputPremium: { include: { premiumPdma: true, premiumMa: true, premiumAv: true, premiumLiability: true } },
+                    inputShare: { include: { sharePdma: true, shareMa: true, shareAv: true, shareLiability: true } },
+                },
+            })
+        ]);
 
+        res.set('X-Total-Count', total.toString());
         res.status(200).json(calculators);
-
     } catch (error) {
         handleError(res, error, 'Failed to fetch calculators');
     }
@@ -149,63 +146,27 @@ const updateCalculator = async (req, res) => {
                 inputStatementPeriod: validatedData.inputStatementPeriod,
                 inputTreatyYear: validatedData.inputTreatyYear,
                 inputTreatyDetail: validatedData.inputTreatyDetail ? {
-                    update: {
-                        treatyCurrentYear: validatedData.inputTreatyDetail.treatyCurrentYear ? {
-                            update: validatedData.inputTreatyDetail.treatyCurrentYear,
-                        } : undefined,
-                        treatyPriorYear: validatedData.inputTreatyDetail.treatyPriorYear ? {
-                            update: validatedData.inputTreatyDetail.treatyPriorYear,
-                        } : undefined,
+                    connectOrCreate: {
+                        where: { id: validatedData.inputTreatyDetail.id || -1 },
+                        create: validatedData.inputTreatyDetail
                     },
                 } : undefined,
                 inputLayerDetail: validatedData.inputLayerDetail ? {
-                    update: {
-                        layerPdma: validatedData.inputLayerDetail.layerPdma ? {
-                            update: validatedData.inputLayerDetail.layerPdma,
-                        } : undefined,
-                        layerMa: validatedData.inputLayerDetail.layerMa ? {
-                            update: validatedData.inputLayerDetail.layerMa,
-                        } : undefined,
-                        layerAv: validatedData.inputLayerDetail.layerAv ? {
-                            update: validatedData.inputLayerDetail.layerAv,
-                        } : undefined,
-                        layerLiability: validatedData.inputLayerDetail.layerLiability ? {
-                            update: validatedData.inputLayerDetail.layerLiability,
-                        } : undefined,
+                    connectOrCreate: {
+                        where: { id: validatedData.inputLayerDetail.id || -1 },
+                        create: validatedData.inputLayerDetail
                     },
                 } : undefined,
                 inputPremium: validatedData.inputPremium ? {
-                    update: {
-                        premiumPdma: validatedData.inputPremium.premiumPdma ? {
-                            update: validatedData.inputPremium.premiumPdma,
-                        } : undefined,
-                        premiumMa: validatedData.inputPremium.premiumMa ? {
-                            update: validatedData.inputPremium.premiumMa,
-                        } : undefined,
-                        premiumAv: validatedData.inputPremium.premiumAv ? {
-                            update: validatedData.inputPremium.premiumAv,
-                        } : undefined,
-                        // ... (lanjutan dari kode sebelumnya)
-
-                        premiumLiability: validatedData.inputPremium.premiumLiability ? {
-                            update: validatedData.inputPremium.premiumLiability,
-                        } : undefined,
+                    connectOrCreate: {
+                        where: { id: validatedData.inputPremium.id || -1 },
+                        create: validatedData.inputPremium
                     },
                 } : undefined,
                 inputShare: validatedData.inputShare ? {
-                    update: {
-                        sharePdma: validatedData.inputShare.sharePdma ? {
-                            update: validatedData.inputShare.sharePdma,
-                        } : undefined,
-                        shareMa: validatedData.inputShare.shareMa ? {
-                            update: validatedData.inputShare.shareMa,
-                        } : undefined,
-                        shareAv: validatedData.inputShare.shareAv ? {
-                            update: validatedData.inputShare.shareAv,
-                        } : undefined,
-                        shareLiability: validatedData.inputShare.shareLiability ? {
-                            update: validatedData.inputShare.shareLiability,
-                        } : undefined,
+                    connectOrCreate: {
+                        where: { id: validatedData.inputShare.id || -1 },
+                        create: validatedData.inputShare
                     },
                 } : undefined,
             },
@@ -228,20 +189,34 @@ const deleteCalculator = async (req, res) => {
     try {
         const { id } = req.params;
 
-        if (isNaN(parseInt(id))) {
-            return res.status(400).json({ error: "Invalid ID format" });
+        if (!Number.isInteger(Number(id))) {
+            return res.status(400).json({ error: "ID harus bilangan integer" });
         }
 
-        await prisma.calculator.delete({
-            where: { id: parseInt(id) },
-        });
+        const calculator = await prisma.calculator.findUnique({ where: { id: Number(id) } });
+        if (!calculator) {
+            return res.status(404).json({ error: "Data tidak ditemukan" });
+        }
 
-        res.status(204).end(); // 204 No Content is appropriate for successful delete
+        const treatyDetails = await prisma.treatyDetail.findMany({ where: { treatyDetailIdCurrent: calculator.inputTreatyDetail?.id || -1, treatyDetailIdPrior: calculator.inputTreatyDetail?.id || -1 } })
+        const layerDetails = await prisma.layerDetail.findMany({ where: { layerDetailIdPdma: calculator.inputLayerDetail?.layerPdma?.id || -1, layerDetailIdMa: calculator.inputLayerDetail?.layerMa?.id || -1, layerDetailIdAv: calculator.inputLayerDetail?.layerAv?.id || -1, layerDetailIdLiability: calculator.inputLayerDetail?.layerLiability?.id || -1 } })
+        const premiumDetails = await prisma.premiumDetail.findMany({ where: { premiumIdPdma: calculator.inputPremium?.premiumPdma?.id || -1, premiumIdMa: calculator.inputPremium?.premiumMa?.id || -1, premiumIdAv: calculator.inputPremium?.premiumAv?.id || -1, premiumIdLiability: calculator.inputPremium?.premiumLiability?.id || -1 } })
+        const shareDetails = await prisma.shareDetail.findMany({ where: { shareIdPdma: calculator.inputShare?.sharePdma?.id || -1, shareIdMa: calculator.inputShare?.shareMa?.id || -1, shareIdAv: calculator.inputShare?.shareAv?.id || -1, shareIdLiability: calculator.inputShare?.shareLiability?.id || -1 } })
 
+        await prisma.$transaction([
+            treatyDetails.length > 0 ? prisma.treatyDetail.deleteMany({ where: { id: { in: treatyDetails.map(td => td.id) } } }) : Promise.resolve(),
+            layerDetails.length > 0 ? prisma.layerDetail.deleteMany({ where: { id: { in: layerDetails.map(ld => ld.id) } } }) : Promise.resolve(),
+            premiumDetails.length > 0 ? prisma.premiumDetail.deleteMany({ where: { id: { in: premiumDetails.map(pd => pd.id) } } }) : Promise.resolve(),
+            shareDetails.length > 0 ? prisma.shareDetail.deleteMany({ where: { id: { in: shareDetails.map(sd => sd.id) } } }) : Promise.resolve(),
+            prisma.calculator.delete({ where: { id: Number(id) } }),
+        ]);
+
+        res.status(204).end();
     } catch (error) {
-        handleError(res, error, 'Failed to delete calculator');
+        handleError(res, error, 'Gagal menghapus kalkulator');
     }
 };
+
 
 module.exports = {
     createCalculator,

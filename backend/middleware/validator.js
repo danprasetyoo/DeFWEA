@@ -1,123 +1,99 @@
-// validator.js
 const { z } = require('zod');
 
+const TreatyYearSchema = z.object({
+    id: z.number().optional(), // Add ID for updates
+    Exchange: z.number().nullable().transform(val => val === null ? undefined : val),
+    Margin: z.number().nullable().transform(val => val === null ? undefined : val),
+    Brokerage: z.number().nullable().transform(val => val === null ? undefined : val),
+    Interest: z.number().nullable().transform(val => val === null ? undefined : val),
+    LAP: z.number().nullable().transform(val => val === null ? undefined : val),
+    Maintenance: z.number().nullable().transform(val => val === null ? undefined : val),
+});
+
 const TreatyDetailSchema = z.object({
-    treatyCurrentYear: z.object({
-        currentExchange: z.number().optional(),
-        currentMargin: z.number().optional(),
-        currentBrokerage: z.number().optional(),
-        currentInterest: z.number().optional(),
-        currentLAP: z.number().optional(),
-        currentMaintenance: z.number().optional(),
-    }).optional(),
-    treatyPriorYear: z.object({
-        priorExchange: z.number().optional(),
-        priorMargin: z.number().optional(),
-        priorBrokerage: z.number().optional(),
-        priorInterest: z.number().optional(),
-        priorLAP: z.number().optional(),
-        priorMaintenance: z.number().optional(),
-    }).optional(),
+    id: z.number().optional(),
+    treatyCurrentYear: TreatyYearSchema,
+    treatyPriorYear: TreatyYearSchema,
+});
+
+const LayerSchema = z.object({
+    id: z.number().optional(),
+    detailUsd: z.number().nullable().transform(val => val === null ? undefined : val),
+    detailIdr: z.number().nullable().transform(val => val === null ? undefined : val),
+    detailShare: z.number().nullable().transform(val => val === null ? undefined : val),
 });
 
 const LayerDetailSchema = z.object({
-    layerPdma: z.object({
-        pdmaDetailUsd: z.number().optional(),
-        pdmaDetailIdr: z.number().optional(),
-        pdmaDetailShare: z.number().optional(),
-    }).optional(),
-    layerMa: z.object({
-        maDetailUsd: z.number().optional(),
-        maDetailIdr: z.number().optional(),
-        maDetailShare: z.number().optional(),
-    }).optional(),
-    layerAv: z.object({
-        avDetailUsd: z.number().optional(),
-        avDetailIdr: z.number().optional(),
-        avDetailShare: z.number().optional(),
-    }).optional(),
-    layerLiability: z.object({
-        liabilityDetailUsd: z.number().optional(),
-        liabilityDetailIdr: z.number().optional(),
-        liabilityDetailShare: z.number().optional(),
-    }).optional(),
+    id: z.number().optional(),
+    layerPdma: LayerSchema,
+    layerMa: LayerSchema,
+    layerAv: LayerSchema,
+    layerLiability: LayerSchema,
 });
 
 const PremiumDetailSchema = z.object({
-    premiumPdma: z.object({
-        pdmaPremiumUsd: z.number().optional(),
-        pdmaPremiumIdr: z.number().optional(),
-        pdmaPremiumShare: z.number().optional(),
-    }).optional(),
-    premiumMa: z.object({
-        maPremiumUsd: z.number().optional(),
-        maPremiumIdr: z.number().optional(),
-        maPremiumShare: z.number().optional(),
-    }).optional(),
-    premiumAv: z.object({
-        avPremiumUsd: z.number().optional(),
-        avPremiumIdr: z.number().optional(),
-        avPremiumShare: z.number().optional(),
-    }).optional(),
-    premiumLiability: z.object({
-        liabilityPremiumUsd: z.number().optional(),
-        liabilityPremiumIdr: z.number().optional(),
-        liabilityPremiumShare: z.number().optional(),
-    }).optional(),
+    id: z.number().optional(),
+    premiumUsd: z.number().nullable().transform(val => val === null ? undefined : val),
+    premiumIdr: z.number().nullable().transform(val => val === null ? undefined : val),
+    premiumShare: z.number().nullable().transform(val => val === null ? undefined : val),
 });
 
+const PremiumSchema = z.object({
+    id: z.number().optional(),
+    premiumPdma: PremiumDetailSchema,
+    premiumMa: PremiumDetailSchema,
+    premiumAv: PremiumDetailSchema,
+    premiumLiability: PremiumDetailSchema,
+});
+
+
 const ShareDetailSchema = z.object({
-    sharePdma: z.object({
-        pdmaShareUsd: z.number().optional(),
-        pdmaShareIdr: z.number().optional(),
-        pdmaSharePremiumUsd: z.number().optional(),
-        pdmaSharePremiumIdr: z.number().optional(),
-    }).optional(),
-    shareMa: z.object({
-        maShareUsd: z.number().optional(),
-        maShareIdr: z.number().optional(),
-        maSharePremiumUsd: z.number().optional(),
-        maSharePremiumIdr: z.number().optional(),
-    }).optional(),
-    shareAv: z.object({
-        avShareUsd: z.number().optional(),
-        avShareIdr: z.number().optional(),
-        avSharePremiumUsd: z.number().optional(),
-        avSharePremiumIdr: z.number().optional(),
-    }).optional(),
-    shareLiability: z.object({
-        liabilityShareUsd: z.number().optional(),
-        liabilityShareIdr: z.number().optional(),
-        liabilitySharePremiumUsd: z.number().optional(),
-        liabilitySharePremiumIdr: z.number().optional(),
-    }).optional(),
+    id: z.number().optional(),
+    shareUsd: z.number().nullable().transform(val => val === null ? undefined : val),
+    shareIdr: z.number().nullable().transform(val => val === null ? undefined : val),
+    sharePremiumUsd: z.number().nullable().transform(val => val === null ? undefined : val),
+    sharePremiumIdr: z.number().nullable().transform(val => val === null ? undefined : val),
+});
+
+const ShareSchema = z.object({
+    id: z.number().optional(),
+    sharePdma: ShareDetailSchema,
+    shareMa: ShareDetailSchema,
+    shareAv: ShareDetailSchema,
+    shareLiability: ShareDetailSchema,
 });
 
 const CalculatorSchema = z.object({
-    inputStatementDate: z.string().refine(val => {
+    inputStatementDate: z.string().transform(val => {
         const date = new Date(val);
-        return !isNaN(date.getTime()) && val === date.toISOString().slice(0, 10); // Enforce YYYY-MM-DD
-    }, {
-        message: "Invalid date format. Use YYYY-MM-DD",
-    }).transform(val => new Date(val)),
+        if (isNaN(date.getTime()) || val !== date.toISOString().split('T')[0]) {
+            throw new z.ZodError([{ path: ['inputStatementDate'], message: "Format tanggal harus YYYY-MM-DD" }]);
+        }
+        return val;
+    }),
     inputOpeningfund: z.string(),
-    inputStatementPeriod: z.string().refine(val => {
+    inputStatementPeriod: z.string().transform(val => {
         const date = new Date(val);
-        return !isNaN(date.getTime()) && val === date.toISOString().slice(0, 10); // Enforce YYYY-MM-DD
-    }, {
-        message: "Invalid date format. Use YYYY-MM-DD",
-    }).transform(val => new Date(val)),
-    inputTreatyYear: z.number(),
-    inputTreatyDetail: TreatyDetailSchema.optional(),
-    inputLayerDetail: LayerDetailSchema.optional(),
-    inputPremium: PremiumDetailSchema.optional(),
-    inputShare: ShareDetailSchema.optional(),
+        if (isNaN(date.getTime()) || val !== date.toISOString().split('T')[0]) {
+            throw new z.ZodError([{ path: ['inputStatementPeriod'], message: "Format tanggal harus YYYY-MM-DD" }]);
+        }
+        return val;
+    }),
+    inputTreatyYear: z.number().transform(Number),
+    inputTreatyDetail: TreatyDetailSchema.nullable(),
+    inputLayerDetail: LayerDetailSchema.nullable(),
+    inputPremium: PremiumSchema.nullable(),
+    inputShare: ShareSchema.nullable(),
 });
 
 module.exports = {
     CalculatorSchema,
     TreatyDetailSchema,
     LayerDetailSchema,
+    PremiumSchema,
+    ShareSchema,
+    TreatyYearSchema,
+    LayerSchema,
     PremiumDetailSchema,
-    ShareDetailSchema
+    ShareDetailSchema,
 };
