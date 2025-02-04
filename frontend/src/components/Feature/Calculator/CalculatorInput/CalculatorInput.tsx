@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import StatementInput from "../StatementInput";
+import StatementInput from "../StatementInput/StatementInput";
 import TreatyDetail from "../TreatyDetail/TreatyDetail";
 import LayerDetail from "../LayerDetail/LayerDetail";
 import PremiumDetail from "../PremiumDetail/PremiumDetail";
@@ -121,7 +121,6 @@ function CalculatorInput() {
                     setIsLoading(false);
                     return;
                 }
-
                 const response = await axios.post(`${API_BASE}/calculators`, payload, {
                     headers: {
                         'Content-Type': 'application/json',

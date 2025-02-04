@@ -1,28 +1,28 @@
 const ShareValues = {
-    inputShare: {
+    inputShare: { // Corrected names throughout
         sharePdma: {
-            pdmaShareUsd: "",
-            pdmaShareIdr: "",
-            pdmaSharePremiumUsd: "",
-            pdmaSharePremiumIdr: "",
+            shareUsd: 0,
+            shareIdr: 0,
+            sharePremiumUsd: 0,
+            sharePremiumIdr: 0,
         },
         shareMa: {
-            maShareUsd: "",
-            maShareIdr: "",
-            maSharePremiumUsd: "",
-            maSharePremiumIdr: "",
+            shareUsd: 0,
+            shareIdr: 0,
+            sharePremiumUsd: 0,
+            sharePremiumIdr: 0,
         },
         shareAv: {
-            avShareUsd: "",
-            avShareIdr: "",
-            avSharePremiumUsd: "",
-            avSharePremiumIdr: "",
+            shareUsd: 0,
+            shareIdr: 0,
+            sharePremiumUsd: 0,
+            sharePremiumIdr: 0,
         },
         shareLiability: {
-            liabilityShareUsd: "",
-            liabilityShareIdr: "",
-            liabilitySharePremiumUsd: "",
-            liabilitySharePremiumIdr: "",
+            shareUsd: 0,
+            shareIdr: 0,
+            sharePremiumUsd: 0,
+            sharePremiumIdr: 0,
         },
     },
 }

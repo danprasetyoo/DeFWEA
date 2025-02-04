@@ -8,7 +8,7 @@ interface TreatyDetailProps {
 }
 
 function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
-    const [amounts, setAmounts] = useState(JSON.parse(JSON.stringify(TreatyValues)));
+    const [amounts, setAmounts] = useState(() => JSON.parse(JSON.stringify(TreatyValues.inputTreatyDetail)));
 
     const updateNestedField = (obj: any, path: string[], value: any) => {
         const [key, ...rest] = path;
@@ -22,7 +22,7 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
 
     const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
-        const numericValue = value.replace("%", "");
+        let numericValue = value.replace("%", "");
         let validValue = numericValue;
 
         if (/^\d*\.?\d+$/.test(numericValue)) {
@@ -33,12 +33,7 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
             }
         }
 
-        const path = id.split(".");
-        const updatedAmounts = { ...amounts };
-        updateNestedField(updatedAmounts, path, validValue);
-        setAmounts(updatedAmounts);
-
-        setAmounts((prevAmounts: any) => ({
+        setAmounts((prevAmounts: typeof amounts) => ({
             ...prevAmounts,
             [id]: validValue,
         }));
@@ -51,41 +46,31 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
         } as React.ChangeEvent<HTMLInputElement>);
     };
 
+
     const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        let validValue = value.replace(/[^0-9.]/g, "");
+        const numericValue = value.replace(/[^0-9.]/g, "");
+        let validValue = numericValue;
 
-        if (validValue.split(".").length > 2) {
-            validValue = validValue.slice(0, validValue.lastIndexOf("."));
+        if (numericValue.split(".").length > 2) {
+            validValue = numericValue.slice(0, numericValue.lastIndexOf("."));
         }
+
+        const num = parseFloat(validValue);
 
         const path = id.split(".");
         const updatedAmounts = { ...amounts };
-        updateNestedField(updatedAmounts, path, validValue);
+        updateNestedField(updatedAmounts, path, num);
         setAmounts(updatedAmounts);
 
         handleInputChange({
             target: {
                 id,
-                value: parseFloat(validValue),
+                value: validValue,
+                name: id,
             },
-        } as unknown as React.ChangeEvent<HTMLInputElement>);
+        } as React.ChangeEvent<HTMLInputElement>);
     };
-
-    // const handleStringInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { id, value } = e.target;
-    //     const path = id.split(".");
-    //     const updatedAmounts = { ...amounts };
-    //     updateNestedField(updatedAmounts, path, value);
-    //     setAmounts(updatedAmounts);
-
-    //     handleInputChange({
-    //         target: {
-    //             id,
-    //             value: value,
-    //         },
-    //     } as React.ChangeEvent<HTMLInputElement>);
-    // };
 
     return (
         <div>
@@ -93,43 +78,43 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
                 fields={[
                     {
                         currentLabel: "Exchange Rate",
-                        currentId: "inputTreatyDetail.treatyCurrentYear.currentExchange",
-                        priorId: "inputTreatyDetail.treatyPriorYear.priorExchange",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.Exchange",
+                        priorId: "inputTreatyDetail.treatyPriorYear.Exchange",
                         type: "text",
                         priorLabel: "",
                     },
                 ]}
                 amounts={amounts}
                 handleChange={handleAmountInput}
-                label={"Treaty Details"}
+                label={"Detail Treaty"}
             />
             <InputGroup
                 fields={[
                     {
-                        currentLabel: "Reinsurers' Margin",
-                        currentId: "inputTreatyDetail.treatyCurrentYear.currentMargin",
-                        priorId: "inputTreatyDetail.treatyPriorYear.priorMargin",
+                        currentLabel: "Margin Reasuransi",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.Margin",
+                        priorId: "inputTreatyDetail.treatyPriorYear.Margin",
                         type: "percentage",
                         priorLabel: "",
                     },
                     {
                         currentLabel: "Brokerage",
-                        currentId: "inputTreatyDetail.treatyCurrentYear.currentBrokerage",
-                        priorId: "inputTreatyDetail.treatyPriorYear.priorBrokerage",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.Brokerage",
+                        priorId: "inputTreatyDetail.treatyPriorYear.Brokerage",
                         type: "percentage",
                         priorLabel: "",
                     },
                     {
                         currentLabel: "Interest Rate",
-                        currentId: "inputTreatyDetail.treatyCurrentYear.currentInterest",
-                        priorId: "inputTreatyDetail.treatyPriorYear.priorInterest",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.Interest",
+                        priorId: "inputTreatyDetail.treatyPriorYear.Interest",
                         type: "percentage",
                         priorLabel: "",
                     },
                     {
                         currentLabel: "LAP",
-                        currentId: "inputTreatyDetail.treatyCurrentYear.currentLAP",
-                        priorId: "inputTreatyDetail.treatyPriorYear.priorLAP",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.LAP",
+                        priorId: "inputTreatyDetail.treatyPriorYear.LAP",
                         type: "percentage",
                         priorLabel: "",
                     },
@@ -141,9 +126,9 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
             <InputGroup
                 fields={[
                     {
-                        currentLabel: "Maintenance Credit",
-                        currentId: "inputTreatyDetail.treatyCurrentYear.currentMaintenance",
-                        priorId: "inputTreatyDetail.treatyPriorYear.priorMaintenance",
+                        currentLabel: "Maintenance",
+                        currentId: "inputTreatyDetail.treatyCurrentYear.Maintenance",
+                        priorId: "inputTreatyDetail.treatyPriorYear.Maintenance",
                         type: "text",
                         priorLabel: "",
                     },

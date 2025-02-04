@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { inputLayerDetail, inputShare } from "./layerDetailsData";
 
 export const useLayerDetails = (
@@ -8,7 +8,7 @@ export const useLayerDetails = (
     const [amounts, setAmounts] = useState(inputLayerDetail);
     const [results, setResults] = useState(inputShare);
 
-    const updateNestedField = (obj: any, path: string[], value: any) => {
+    const updateNestedField = useCallback((obj: any, path: string[], value: any) => {
         const [key, ...rest] = path;
         if (!rest.length) {
             obj[key] = value;
@@ -16,9 +16,9 @@ export const useLayerDetails = (
         }
         if (!obj[key]) obj[key] = {};
         updateNestedField(obj[key], rest, value);
-    };
+    }, []);
 
-    const handleLocalInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleLocalInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         const validValue = parseFloat((value || "").replace(/[^0-9.]/g, "")) || 0;
 
@@ -35,18 +35,12 @@ export const useLayerDetails = (
                 value: validValue.toString(),
             },
         });
-    };
+    }, [amounts, handleInputChange, updateNestedField]);
 
-    const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+    const handlePercentageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
         const numericValue = parseFloat((value || "").replace("%", "")) || 0;
-        let validValue = numericValue;
-
-        if (numericValue >= 0 && numericValue <= 100) {
-            validValue = numericValue;
-        } else {
-            validValue = 100;
-        }
+        const validValue = Math.max(0, Math.min(100, numericValue));
 
         const path = id.split(".");
         const updatedAmounts = JSON.parse(JSON.stringify(amounts));
@@ -61,68 +55,70 @@ export const useLayerDetails = (
                 value: validValue.toString(),
             },
         });
-    };
+    }, [amounts, handleInputChange, updateNestedField]);
 
-    const recalculateResults = (updatedAmounts: any) => {
-        const parsePercentage = (percentage: number) =>
-            parseFloat((percentage.toString() || "").replace("%", "").trim() || "0") / 100;
+    const recalculateResults = useCallback((updatedAmounts: any) => {
+        const parsePercentage = (percentage: number | string) => {
+            const num = parseFloat((percentage?.toString() || "").replace("%", "").trim() || "0");
+            return isNaN(num) ? 0 : num / 100;
+        };
 
-        const calculateShare = (amount: number, share: number) => {
-            const numericAmount = parseFloat(amount.toString() || "0");
-            const numericShare = parsePercentage(share);
-            return numericAmount * numericShare;
+        const calculateShare = (amount: number | string, share: number | string) => {
+            const numAmount = parseFloat(amount?.toString() || "0");
+            const numShare = parsePercentage(share);
+            return isNaN(numAmount) || isNaN(numShare) ? 0 : numAmount * numShare;
         };
 
         const newResults = {
             sharePdma: {
-                pdmaShareUsd: calculateShare(
-                    updatedAmounts.layerPdma.pdmaDetailUsd,
-                    updatedAmounts.layerPdma.pdmaDetailShare
+                shareUsd: calculateShare(
+                    updatedAmounts.layerPdma.detailUsd,  // Optional chaining
+                    updatedAmounts.layerPdma.detailShare // Optional chaining
                 ),
-                pdmaShareIdr: calculateShare(
-                    updatedAmounts.layerPdma.pdmaDetailIdr,
-                    updatedAmounts.layerPdma.pdmaDetailShare
+                shareIdr: calculateShare(
+                    updatedAmounts.layerPdma.detailIdr, // Optional chaining
+                    updatedAmounts.layerPdma.detailShare // Optional chaining
                 ),
             },
             shareMa: {
-                maShareUsd: calculateShare(
-                    updatedAmounts.layerMa.maDetailUsd,
-                    updatedAmounts.layerMa.maDetailShare
+                shareUsd: calculateShare(
+                    updatedAmounts.layerMa.detailUsd,   // Optional chaining
+                    updatedAmounts.layerMa.detailShare  // Optional chaining
                 ),
-                maShareIdr: calculateShare(
-                    updatedAmounts.layerMa.maDetailIdr,
-                    updatedAmounts.layerMa.maDetailShare
+                shareIdr: calculateShare(
+                    updatedAmounts.layerMa.detailIdr,  // Optional chaining
+                    updatedAmounts.layerMa.detailShare  // Optional chaining
                 ),
             },
             shareAv: {
-                avShareUsd: calculateShare(
-                    updatedAmounts.layerAv.avDetailUsd,
-                    updatedAmounts.layerAv.avDetailShare
+                shareUsd: calculateShare(
+                    updatedAmounts.layerAv.detailUsd,   // Optional chaining
+                    updatedAmounts.layerAv.detailShare  // Optional chaining
                 ),
-                avShareIdr: calculateShare(
-                    updatedAmounts.layerAv.avDetailIdr,
-                    updatedAmounts.layerAv.avDetailShare
+                shareIdr: calculateShare(
+                    updatedAmounts.layerAv.detailIdr,  // Optional chaining
+                    updatedAmounts.layerAv.detailShare  // Optional chaining
                 ),
             },
             shareLiability: {
-                liabilityShareUsd: calculateShare(
-                    updatedAmounts.layerLiability.liabilityDetailUsd,
-                    updatedAmounts.layerLiability.liabilityDetailShare
+                shareUsd: calculateShare(
+                    updatedAmounts.layerLiability.detailUsd, // Optional chaining
+                    updatedAmounts.layerLiability.detailShare // Optional chaining
                 ),
-                liabilityShareIdr: calculateShare(
-                    updatedAmounts.layerLiability.liabilityDetailIdr,
-                    updatedAmounts.layerLiability.liabilityDetailShare
+                shareIdr: calculateShare(
+                    updatedAmounts.layerLiability.detailIdr, // Optional chaining
+                    updatedAmounts.layerLiability.detailShare // Optional chaining
                 ),
             },
         };
 
         setResults(newResults);
         setFieldValue("inputShare", newResults);
-    };
+    }, []);
 
     useEffect(() => {
         recalculateResults(amounts);
-    }, [amounts]);
+    }, [amounts, recalculateResults]);
 
     return {
         amounts,

@@ -1,3 +1,4 @@
+import React from "react";
 import InputField from "./InputFields";
 
 interface InputGroupProps {
@@ -9,7 +10,7 @@ interface InputGroupProps {
         priorId: string;
         type: "text" | "percentage";
     }[];
-    amounts: Record<string, string>;
+    amounts: Record<string, any>;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 }
 

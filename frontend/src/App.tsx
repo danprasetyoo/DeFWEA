@@ -10,7 +10,7 @@ function App() {
         <NavigationItem />
         <div className="flex-1 p-6 ml-64 mt-16">
           <Routes>
-            <Route path="/calculator" element={<CalculatorInput />} />
+            <Route path="/calculators" element={<CalculatorInput />} />
           </Routes>
         </div>
       </div>

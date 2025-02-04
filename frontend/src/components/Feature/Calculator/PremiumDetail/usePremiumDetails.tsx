@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { inputPremium, inputShare } from "./premiumDetailsData";
 
 export const usePremiumDetails = (
@@ -8,7 +8,7 @@ export const usePremiumDetails = (
     const [amounts, setAmounts] = useState(inputPremium);
     const [results, setResults] = useState(inputShare);
 
-    const updateNestedField = (obj: any, path: string[], value: any) => {
+    const updateNestedField = useCallback((obj: any, path: string[], value: any) => {
         const [key, ...rest] = path;
         if (!rest.length) {
             obj[key] = value;
@@ -16,9 +16,9 @@ export const usePremiumDetails = (
         }
         if (!obj[key]) obj[key] = {};
         updateNestedField(obj[key], rest, value);
-    };
+    }, []);
 
-    const handleLocalInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleLocalInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         const validValue = parseFloat((value || "").replace(/[^0-9.]/g, "")) || 0;
 
@@ -35,18 +35,12 @@ export const usePremiumDetails = (
                 value: validValue.toString(),
             },
         });
-    };
+    }, [amounts, handleInputChange, updateNestedField]);
 
-    const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+    const handlePercentageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
         const numericValue = parseFloat((value || "").replace("%", "")) || 0;
-        let validValue = numericValue;
-
-        if (numericValue >= 0 && numericValue <= 100) {
-            validValue = numericValue;
-        } else {
-            validValue = 100;
-        }
+        const validValue = Math.max(0, Math.min(100, numericValue));
 
         const path = id.split(".");
         const updatedAmounts = JSON.parse(JSON.stringify(amounts));
@@ -61,68 +55,70 @@ export const usePremiumDetails = (
                 value: validValue.toString(),
             },
         });
-    };
+    }, [amounts, handleInputChange, updateNestedField]);
 
-    const recalculateResults = (updatedAmounts: any) => {
-        const parsePercentage = (percentage: number) =>
-            parseFloat((percentage.toString() || "").replace("%", "").trim() || "0") / 100;
+    const recalculateResults = useCallback((updatedAmounts: any) => {
+        const parsePercentage = (percentage: number | string) => {
+            const num = parseFloat((percentage?.toString() || "").replace("%", "").trim() || "0");
+            return isNaN(num) ? 0 : num / 100;
+        };
 
-        const calculateShare = (amount: number, share: number) => {
-            const numericAmount = parseFloat(amount.toString() || "0");
-            const numericShare = parsePercentage(share);
-            return numericAmount * numericShare;
+        const calculateShare = (amount: number | string, share: number | string) => {
+            const numAmount = parseFloat(amount?.toString() || "0");
+            const numShare = parsePercentage(share);
+            return isNaN(numAmount) || isNaN(numShare) ? 0 : numAmount * numShare;
         };
 
         const newResults = {
             sharePdma: {
-                pdmaSharePremiumUsd: calculateShare(
-                    updatedAmounts.premiumPdma.pdmaPremiumUsd,
-                    updatedAmounts.premiumPdma.pdmaPremiumShare
+                sharePremiumUsd: calculateShare(
+                    updatedAmounts.premiumPdma.premiumUsd,
+                    updatedAmounts.premiumPdma.premiumShare
                 ),
-                pdmaSharePremiumIdr: calculateShare(
-                    updatedAmounts.premiumPdma.pdmaPremiumIdr,
-                    updatedAmounts.premiumPdma.pdmaPremiumShare
+                sharePremiumIdr: calculateShare(
+                    updatedAmounts.premiumPdma.premiumIdr,
+                    updatedAmounts.premiumPdma.premiumShare
                 ),
             },
             shareMa: {
-                maSharePremiumUsd: calculateShare(
-                    updatedAmounts.premiumMa.maPremiumUsd,
-                    updatedAmounts.premiumMa.maPremiumShare
+                sharePremiumUsd: calculateShare(
+                    updatedAmounts.premiumMa.premiumUsd,
+                    updatedAmounts.premiumMa.premiumShare
                 ),
-                maSharePremiumIdr: calculateShare(
-                    updatedAmounts.premiumMa.maPremiumIdr,
-                    updatedAmounts.premiumMa.maPremiumShare
+                sharePremiumIdr: calculateShare(
+                    updatedAmounts.premiumMa.premiumIdr,
+                    updatedAmounts.premiumMa.premiumShare
                 ),
             },
             shareAv: {
-                avSharePremiumUsd: calculateShare(
-                    updatedAmounts.premiumAv.avPremiumUsd,
-                    updatedAmounts.premiumAv.avPremiumShare
+                sharePremiumUsd: calculateShare(
+                    updatedAmounts.premiumAv.premiumUsd,
+                    updatedAmounts.premiumAv.premiumShare
                 ),
-                avSharePremiumIdr: calculateShare(
-                    updatedAmounts.premiumAv.avPremiumIdr,
-                    updatedAmounts.premiumAv.avPremiumShare
+                sharePremiumIdr: calculateShare(
+                    updatedAmounts.premiumAv.premiumIdr,
+                    updatedAmounts.premiumAv.premiumShare
                 ),
             },
             shareLiability: {
-                liabilitySharePremiumUsd: calculateShare(
-                    updatedAmounts.premiumLiability.liabilityPremiumUsd,
-                    updatedAmounts.premiumLiability.liabilityPremiumShare
+                sharePremiumUsd: calculateShare(
+                    updatedAmounts.premiumLiability.premiumUsd,
+                    updatedAmounts.premiumLiability.premiumShare
                 ),
-                liabilitySharePremiumIdr: calculateShare(
-                    updatedAmounts.premiumLiability.liabilityPremiumIdr,
-                    updatedAmounts.premiumLiability.liabilityPremiumShare
+                sharePremiumIdr: calculateShare(
+                    updatedAmounts.premiumLiability.premiumIdr,
+                    updatedAmounts.premiumLiability.premiumShare
                 ),
             },
         };
 
         setResults(newResults);
         setFieldValue("inputShare", newResults);
-    };
+    }, []);
 
     useEffect(() => {
         recalculateResults(amounts);
-    }, [amounts]);
+    }, [amounts, recalculateResults]);
 
     return {
         amounts,
