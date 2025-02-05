@@ -12,7 +12,7 @@ import initialValues from "./InitialValues";
 import { convertPremiumShares } from "../PremiumDetail/premiumDetailsData";
 import { convertLayerShares } from "../LayerDetail/layerDetailsData";
 
-const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
 
 interface CalculatorPayload {
     inputStatementDate: string;
@@ -70,6 +70,7 @@ function CalculatorInput() {
         initialValues,
         validationSchema,
         onSubmit: async (values) => {
+            console.log("onSubmit function triggered");
             setIsLoading(true);
             setNetworkError(null); // Reset network error saat submit baru
 
@@ -121,13 +122,14 @@ function CalculatorInput() {
                     setIsLoading(false);
                     return;
                 }
-                const response = await axios.post(`${API_BASE}/calculators`, payload, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': token ? `Bearer ${token}` : undefined
-                    },
-                    validateStatus: (status) => status < 500
-                });
+
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...(token && { 'Authorization': `Bearer ${token}` })
+                };
+
+                const response = await axios.post(`${API_BASE}/calculators`, payload, { headers });
+
 
                 if (response.status === 201) {
                     console.log('Data saved successfully:', response.data);

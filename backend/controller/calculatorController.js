@@ -30,8 +30,18 @@ const handleError = (res, error, defaultMessage) => {
 
 const createCalculator = async (req, res) => {
     try {
-        const validatedData = CalculatorSchema.parse(req.body);
+        const result = CalculatorSchema.safeParse(req.body);
+        if (!result.success) {
+            return res.status(400).json({
+                error: 'Validation Error',
+                details: result.error.errors.map(e => ({
+                    path: e.path.join('.'),
+                    message: e.message,
+                })),
+            });
+        }
 
+        const validatedData = result.data;
         const calculator = await prisma.calculator.create({
             data: {
                 inputStatementDate: validatedData.inputStatementDate,
@@ -40,7 +50,7 @@ const createCalculator = async (req, res) => {
                 inputTreatyYear: validatedData.inputTreatyYear,
                 inputTreatyDetail: validatedData.inputTreatyDetail ? {
                     connectOrCreate: {
-                        where: { id: validatedData.inputTreatyDetail.id || -1 }, // Dummy ID for create
+                        where: { id: validatedData.inputTreatyDetail.id || -1 },
                         create: validatedData.inputTreatyDetail
                     },
                 } : undefined,
@@ -72,7 +82,6 @@ const createCalculator = async (req, res) => {
         });
 
         res.status(201).json({ data: calculator });
-
     } catch (error) {
         handleError(res, error, 'Failed to create calculator');
     }
@@ -106,14 +115,13 @@ const getAllCalculators = async (req, res) => {
 
 const getCalculatorById = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        if (isNaN(parseInt(id))) {
+        const id = Number(req.params.id);
+        if (!id) {
             return res.status(400).json({ error: "Invalid ID format" });
         }
 
         const calculator = await prisma.calculator.findUnique({
-            where: { id: parseInt(id) },
+            where: { id },
             include: {
                 inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },
                 inputLayerDetail: { include: { layerPdma: true, layerMa: true, layerAv: true, layerLiability: true } },
@@ -127,7 +135,6 @@ const getCalculatorById = async (req, res) => {
         }
 
         res.status(200).json(calculator);
-
     } catch (error) {
         handleError(res, error, 'Failed to fetch calculator');
     }
@@ -135,11 +142,25 @@ const getCalculatorById = async (req, res) => {
 
 const updateCalculator = async (req, res) => {
     try {
-        const { id } = req.params;
-        const validatedData = CalculatorSchema.partial().parse(req.body);
+        const id = Number(req.params.id);
+        if (!id) {
+            return res.status(400).json({ error: "Invalid ID format" });
+        }
 
+        const result = CalculatorSchema.partial().safeParse(req.body);
+        if (!result.success) {
+            return res.status(400).json({
+                error: 'Validation Error',
+                details: result.error.errors.map(e => ({
+                    path: e.path.join('.'),
+                    message: e.message,
+                })),
+            });
+        }
+
+        const validatedData = result.data;
         const updatedCalculator = await prisma.calculator.update({
-            where: { id: Number(id) },
+            where: { id },
             data: {
                 inputStatementDate: validatedData.inputStatementDate,
                 inputOpeningfund: validatedData.inputOpeningfund,
@@ -170,7 +191,7 @@ const updateCalculator = async (req, res) => {
                     },
                 } : undefined,
             },
-            include: { // Include related data for a complete response (same as create)
+            include: {
                 inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },
                 inputLayerDetail: { include: { layerPdma: true, layerMa: true, layerAv: true, layerLiability: true } },
                 inputPremium: { include: { premiumPdma: true, premiumMa: true, premiumAv: true, premiumLiability: true } },
@@ -179,7 +200,6 @@ const updateCalculator = async (req, res) => {
         });
 
         res.status(200).json({ data: updatedCalculator });
-
     } catch (error) {
         handleError(res, error, 'Failed to update calculator');
     }
@@ -187,36 +207,23 @@ const updateCalculator = async (req, res) => {
 
 const deleteCalculator = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        if (!Number.isInteger(Number(id))) {
-            return res.status(400).json({ error: "ID harus bilangan integer" });
+        const id = Number(req.params.id);
+        if (!id) {
+            return res.status(400).json({ error: "Invalid ID format" });
         }
 
-        const calculator = await prisma.calculator.findUnique({ where: { id: Number(id) } });
+        const calculator = await prisma.calculator.findUnique({ where: { id } });
         if (!calculator) {
-            return res.status(404).json({ error: "Data tidak ditemukan" });
+            return res.status(404).json({ error: "Calculator not found" });
         }
 
-        const treatyDetails = await prisma.treatyDetail.findMany({ where: { treatyDetailIdCurrent: calculator.inputTreatyDetail?.id || -1, treatyDetailIdPrior: calculator.inputTreatyDetail?.id || -1 } })
-        const layerDetails = await prisma.layerDetail.findMany({ where: { layerDetailIdPdma: calculator.inputLayerDetail?.layerPdma?.id || -1, layerDetailIdMa: calculator.inputLayerDetail?.layerMa?.id || -1, layerDetailIdAv: calculator.inputLayerDetail?.layerAv?.id || -1, layerDetailIdLiability: calculator.inputLayerDetail?.layerLiability?.id || -1 } })
-        const premiumDetails = await prisma.premiumDetail.findMany({ where: { premiumIdPdma: calculator.inputPremium?.premiumPdma?.id || -1, premiumIdMa: calculator.inputPremium?.premiumMa?.id || -1, premiumIdAv: calculator.inputPremium?.premiumAv?.id || -1, premiumIdLiability: calculator.inputPremium?.premiumLiability?.id || -1 } })
-        const shareDetails = await prisma.shareDetail.findMany({ where: { shareIdPdma: calculator.inputShare?.sharePdma?.id || -1, shareIdMa: calculator.inputShare?.shareMa?.id || -1, shareIdAv: calculator.inputShare?.shareAv?.id || -1, shareIdLiability: calculator.inputShare?.shareLiability?.id || -1 } })
-
-        await prisma.$transaction([
-            treatyDetails.length > 0 ? prisma.treatyDetail.deleteMany({ where: { id: { in: treatyDetails.map(td => td.id) } } }) : Promise.resolve(),
-            layerDetails.length > 0 ? prisma.layerDetail.deleteMany({ where: { id: { in: layerDetails.map(ld => ld.id) } } }) : Promise.resolve(),
-            premiumDetails.length > 0 ? prisma.premiumDetail.deleteMany({ where: { id: { in: premiumDetails.map(pd => pd.id) } } }) : Promise.resolve(),
-            shareDetails.length > 0 ? prisma.shareDetail.deleteMany({ where: { id: { in: shareDetails.map(sd => sd.id) } } }) : Promise.resolve(),
-            prisma.calculator.delete({ where: { id: Number(id) } }),
-        ]);
+        await prisma.calculator.delete({ where: { id } });
 
         res.status(204).end();
     } catch (error) {
-        handleError(res, error, 'Gagal menghapus kalkulator');
+        handleError(res, error, 'Failed to delete calculator');
     }
 };
-
 
 module.exports = {
     createCalculator,

@@ -8,7 +8,6 @@ interface InputFieldProps {
 }
 
 const InputField: React.FC<InputFieldProps> = ({ id, value, type, onChange }) => {
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
 

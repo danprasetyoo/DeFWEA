@@ -46,7 +46,6 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
         } as React.ChangeEvent<HTMLInputElement>);
     };
 
-
     const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         const numericValue = value.replace(/[^0-9.]/g, "");

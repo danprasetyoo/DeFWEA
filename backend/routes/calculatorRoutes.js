@@ -7,8 +7,7 @@ const {
     updateCalculator,
     deleteCalculator,
 } = require('../controller/calculatorController');
-const { CalculatorSchema } = require('../middleware/validator');
-const { validate } = require('../middleware/validate');
+const { validation, validate } = require('../middleware/validator');
 
 calculatorRouter.get('/', getAllCalculators);
 calculatorRouter.get('/:id', getCalculatorById);

@@ -1,105 +1,62 @@
 import * as Yup from 'yup';
 
+// Validasi untuk amount (USD, IDR, Share)
+const amountSchema = Yup.object({
+    usd: Yup.number().typeError("Harus berupa angka").nullable(),
+    idr: Yup.number().typeError("Harus berupa angka").nullable(),
+    share: Yup.number().typeError("Harus berupa angka").nullable(),
+});
+
+// Schema validasi utama
 export const validationSchema = Yup.object({
     inputStatementDate: Yup.string()
         .required("Tanggal statement wajib diisi")
-        .matches(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD"),
-    inputOpeningfund: Yup.string().required("Opening fund wajib diisi"),
-    inputStatementPeriod: Yup.string()
-        .required("Periode statement wajib diisi")
-        .matches(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD"),
+        .matches(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD")
+        .test("valid-date", "Tanggal tidak valid", value => !isNaN(Date.parse(value))),
+    inputOpeningfund: Yup.string().trim().required("Opening fund wajib diisi"),
+    inputStatementPeriode: Yup.string()
+        .required("Tanggal statement wajib diisi")
+        .matches(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD")
+        .test("valid-date", "Tanggal tidak valid", value => !isNaN(Date.parse(value))),
     inputTreatyYear: Yup.number()
         .required("Tahun treaty wajib diisi")
-        .typeError("Tahun treaty harus berupa angka"),
+        .typeError("Tahun treaty harus berupa angka")
+        .integer("Tahun treaty harus bilangan bulat")
+        .positive("Tahun treaty harus positif"),
     inputTreatyDetail: Yup.object({
         treatyCurrentYear: Yup.object({
-            Exchange: Yup.number().typeError("Harus berupa angka").nullable(),
-            Margin: Yup.number().typeError("Harus berupa angka").nullable(),
-            Brokerage: Yup.number().typeError("Harus berupa angka").nullable(),
-            Interest: Yup.number().typeError("Harus berupa angka").nullable(),
-            LAP: Yup.number().typeError("Harus berupa angka").nullable(),
-            Maintenance: Yup.number().typeError("Harus berupa angka").nullable(),
+            Exchange: amountSchema.nullable(),
+            Margin: amountSchema.nullable(),
+            Brokerage: amountSchema.nullable(),
+            Interest: amountSchema.nullable(),
+            LAP: amountSchema.nullable(),
+            Maintenance: amountSchema.nullable(),
         }).nullable(),
         treatyPriorYear: Yup.object({
-            Exchange: Yup.number().typeError("Harus berupa angka").nullable(),
-            Margin: Yup.number().typeError("Harus berupa angka").nullable(),
-            Brokerage: Yup.number().typeError("Harus berupa angka").nullable(),
-            Interest: Yup.number().typeError("Harus berupa angka").nullable(),
-            LAP: Yup.number().typeError("Harus berupa angka").nullable(),
-            Maintenance: Yup.number().typeError("Harus berupa angka").nullable(),
+            Exchange: amountSchema.nullable(),
+            Margin: amountSchema.nullable(),
+            Brokerage: amountSchema.nullable(),
+            Interest: amountSchema.nullable(),
+            LAP: amountSchema.nullable(),
+            Maintenance: amountSchema.nullable(),
         }).nullable(),
     }).nullable(),
-
     inputLayerDetail: Yup.object({
-        layerPdma: Yup.object({
-            detailUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            detailIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            detailShare: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        layerMa: Yup.object({
-            detailUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            detailIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            detailShare: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        layerAv: Yup.object({
-            detailUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            detailIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            detailShare: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        layerLiability: Yup.object({
-            detailUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            detailIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            detailShare: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
+        layerPdma: amountSchema.nullable(),
+        layerMa: amountSchema.nullable(),
+        layerAv: amountSchema.nullable(),
+        layerLiability: amountSchema.nullable(),
     }).nullable(),
-
     inputPremium: Yup.object({
-        premiumPdma: Yup.object({
-            premiumUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            premiumIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            premiumShare: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        premiumMa: Yup.object({
-            premiumUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            premiumIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            premiumShare: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        premiumAv: Yup.object({
-            premiumUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            premiumIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            premiumShare: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        premiumLiability: Yup.object({
-            premiumUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            premiumIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            premiumShare: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
+        premiumPdma: amountSchema.nullable(),
+        premiumMa: amountSchema.nullable(),
+        premiumAv: amountSchema.nullable(),
+        premiumLiability: amountSchema.nullable(),
     }).nullable(),
-
     inputShare: Yup.object({
-        sharePdma: Yup.object({
-            shareUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            shareIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            sharePremiumUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            sharePremiumIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        shareMa: Yup.object({
-            shareUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            shareIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            sharePremiumUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            sharePremiumIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        shareAv: Yup.object({
-            shareUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            shareIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            sharePremiumUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            sharePremiumIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
-        shareLiability: Yup.object({
-            shareUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            shareIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-            sharePremiumUsd: Yup.number().typeError("Harus berupa angka").nullable(),
-            sharePremiumIdr: Yup.number().typeError("Harus berupa angka").nullable(),
-        }).nullable(),
+        sharePdma: amountSchema.nullable(),
+        shareMa: amountSchema.nullable(),
+        shareAv: amountSchema.nullable(),
+        shareLiability: amountSchema.nullable(),
     }).nullable(),
 });
