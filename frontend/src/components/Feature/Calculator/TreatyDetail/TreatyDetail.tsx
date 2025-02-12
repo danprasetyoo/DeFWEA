@@ -5,9 +5,11 @@ import TreatyValues from "./TreatyValues";
 interface TreatyDetailProps {
     formData: any;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    formikError?: any;
+    formikTouched?: any;
 }
 
-function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
+function TreatyDetail({ handleInputChange, formikError, formikTouched }: TreatyDetailProps) {
     const [amounts, setAmounts] = useState(() => JSON.parse(JSON.stringify(TreatyValues.inputTreatyDetail)));
 
     const updateNestedField = (obj: any, path: string[], value: any) => {
@@ -41,9 +43,9 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
         handleInputChange({
             target: {
                 id,
-                value: validValue,
+                value: parseFloat(validValue),
             },
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as unknown as React.ChangeEvent<HTMLInputElement>);
     };
 
     const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,10 +67,10 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
         handleInputChange({
             target: {
                 id,
-                value: validValue,
+                value: num,
                 name: id,
             },
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as unknown as React.ChangeEvent<HTMLInputElement>);
     };
 
     return (
@@ -86,6 +88,8 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
                 amounts={amounts}
                 handleChange={handleAmountInput}
                 label={"Detail Treaty"}
+                formikError={formikError}
+                formikTouched={formikTouched}
             />
             <InputGroup
                 fields={[
@@ -121,6 +125,8 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
                 amounts={amounts}
                 handleChange={handlePercentageChange}
                 label={""}
+                formikError={formikError}
+                formikTouched={formikTouched}
             />
             <InputGroup
                 fields={[
@@ -135,6 +141,8 @@ function TreatyDetail({ handleInputChange }: TreatyDetailProps) {
                 amounts={amounts}
                 handleChange={handleAmountInput}
                 label={""}
+                formikError={formikError}
+                formikTouched={formikTouched}
             />
         </div>
     );

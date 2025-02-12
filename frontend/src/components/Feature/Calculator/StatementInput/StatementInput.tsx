@@ -12,47 +12,38 @@ interface StatementInputProps {
         inputTreatyYear: number;
     };
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void; // Add handleBlur prop
 }
 
-function StatementInput({ formData, handleInputChange }: StatementInputProps) {
+function StatementInput({ formData, handleInputChange, handleBlur }: StatementInputProps) {
     const statementDateRef = useRef<HTMLInputElement>(null);
     const statementPeriodRef = useRef<HTMLInputElement>(null);
     const [amount, setAmount] = useState(formData.inputOpeningfund);
-    const [isNegative, setIsNegative] = useState<boolean>(false);
+    const [isNegative, setIsNegative] = useState<boolean>(parseFloat(formData.inputOpeningfund) < 0);
 
     useEffect(() => {
-        console.log("Opening Fund:", formData.inputOpeningfund);
-        console.log("Is Negative:", isNegative);
-    }, [formData.inputOpeningfund, isNegative]);
+        setIsNegative(parseFloat(formData.inputOpeningfund) < 0);
+    }, [formData.inputOpeningfund]);
 
     useEffect(() => {
-        if (statementDateRef.current) {
-            new Datepicker(statementDateRef.current, {
-                dateFormat: 'yyyy-mm-dd', // Important: Use yyyy-mm-dd
-                onChange: (selectedDate: string) => { // selectedDate is already a string in yyyy-mm-dd format
-                    handleInputChange({
-                        target: {
-                            id: 'inputStatementDate',
-                            value: selectedDate,
-                        },
-                    } as React.ChangeEvent<HTMLInputElement>);
-                },
-            });
-        }
+        const setupDatepicker = (ref: React.RefObject<HTMLInputElement>, field: string) => {
+            if (ref.current) {
+                new Datepicker(ref.current, {
+                    dateFormat: 'yyyy-MM-dd',
+                    onChange: (selectedDate: string) => {
+                        handleInputChange({
+                            target: {
+                                id: field,
+                                value: selectedDate,
+                            },
+                        } as React.ChangeEvent<HTMLInputElement>);
+                    },
+                });
+            }
+        };
 
-        if (statementPeriodRef.current) {
-            new Datepicker(statementPeriodRef.current, {
-                dateFormat: 'yyyy-mm-dd', // Important: Use yyyy-mm-dd
-                onChange: (selectedDate: string) => { // selectedDate is already a string in yyyy-mm-dd format
-                    handleInputChange({
-                        target: {
-                            id: 'inputStatementPeriod',
-                            value: selectedDate,
-                        },
-                    } as React.ChangeEvent<HTMLInputElement>);
-                },
-            });
-        }
+        setupDatepicker(statementDateRef, 'inputStatementDate');
+        setupDatepicker(statementPeriodRef, 'inputStatementPeriod');
     }, []);
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,20 +53,17 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
         const currentOpeningFund = parseFloat(formData.inputOpeningfund || '0');
         const newValue = isChecked ? -Math.abs(currentOpeningFund) : Math.abs(currentOpeningFund);
 
-        if (currentOpeningFund !== newValue) {
-            handleInputChange({
-                target: {
-                    id: 'inputOpeningfund',
-                    value: newValue.toString(),
-                },
-            } as React.ChangeEvent<HTMLInputElement>);
-        }
+        handleInputChange({
+            target: {
+                id: 'inputOpeningfund',
+                value: newValue.toString(),
+            },
+        } as React.ChangeEvent<HTMLInputElement>);
     };
 
     const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-
-        if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
+        if (/^-?\d*\.?\d*$/.test(value)) {
             setAmount(value);
             handleInputChange({
                 target: {
@@ -83,19 +71,16 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
                     value: value,
                 },
             } as React.ChangeEvent<HTMLInputElement>);
-        } else {
-            console.warn('Rejected');
         }
     };
 
     const handleTreatyYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         if (/^\d{0,4}$/.test(value)) {
-            const numericValue = value === "" ? "" : parseInt(value, 10); // Parse to integer or empty string
             handleInputChange({
                 target: {
                     id: 'inputTreatyYear',
-                    value: numericValue,
+                    value: value === "" ? "" : parseInt(value, 10),
                 },
             } as React.ChangeEvent<HTMLInputElement>);
         }
@@ -106,26 +91,30 @@ function StatementInput({ formData, handleInputChange }: StatementInputProps) {
             <DateInput
                 id="inputStatementDate"
                 label="Statement Date"
-                ref={statementDateRef}
+                inputRef={statementDateRef}
                 value={formData.inputStatementDate}
                 handleInputChange={handleInputChange}
+                handleBlur={handleBlur} // Add handleBlur prop
             />
             <OpeningFundInput
                 amount={amount}
                 isNegative={isNegative}
                 handleCheckboxChange={handleCheckboxChange}
                 handleAmountInput={handleAmountInput}
+                handleBlur={handleBlur} // Add handleBlur prop
             />
             <DateInput
                 id="inputStatementPeriod"
                 label="Statement Period"
-                ref={statementPeriodRef}
+                inputRef={statementPeriodRef}
                 value={formData.inputStatementPeriod}
                 handleInputChange={handleInputChange}
+                handleBlur={handleBlur} // Add handleBlur prop
             />
             <TreatyYearInput
                 value={formData.inputTreatyYear.toString()}
                 handleInputChange={handleTreatyYearChange}
+                handleBlur={handleBlur} // Add handleBlur prop
             />
         </div>
     );

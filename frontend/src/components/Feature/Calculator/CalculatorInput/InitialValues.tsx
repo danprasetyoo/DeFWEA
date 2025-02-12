@@ -1,195 +1,95 @@
-interface CalculatorFormValues {
-    inputStatementDate: string;
-    inputOpeningfund: string;
-    inputStatementPeriod: string;
-    inputTreatyYear: number;
-    inputTreatyDetail: {
-        treatyCurrentYear?: {
-            Exchange: number;
-            Margin: number;
-            Brokerage: number;
-            Interest: number;
-            LAP: number;
-            Maintenance: number;
-        };
-        treatyPriorYear?: {
-            Exchange: number;
-            Margin: number;
-            Brokerage: number;
-            Interest: number;
-            LAP: number;
-            Maintenance: number;
-        };
-    },
-
-    inputLayerDetail: {
-        layerPdma?: {
-            detailUsd: number;
-            detailIdr: number;
-            detailShare: number;
-        },
-        layerMa?: {
-            detailUsd: number;
-            detailIdr: number;
-            detailShare: number;
-        },
-        layerAv?: {
-            detailUsd: number;
-            detailIdr: number;
-            detailShare: number;
-        },
-        layerLiability?: {
-            detailUsd: number;
-            detailIdr: number;
-            detailShare: number;
-        },
-    },
-
-    inputPremium: {
-        premiumPdma?: {
-            premiumUsd: number;
-            premiumIdr: number;
-            premiumShare: number;
-        },
-        premiumMa?: {
-            premiumUsd: number;
-            premiumIdr: number;
-            premiumShare: number;
-        },
-        premiumAv?: {
-            premiumUsd: number;
-            premiumIdr: number;
-            premiumShare: number;
-        },
-        premiumLiability?: {
-            premiumUsd: number;
-            premiumIdr: number;
-            premiumShare: number;
-        },
-    },
-
-    inputShare: {
-        sharePdma?: {
-            shareUsd: number;
-            shareIdr: number;
-            sharePremiumUsd: number;
-            sharePremiumIdr: number;
-        },
-        shareMa?: {
-            shareUsd: number;
-            shareIdr: number;
-            sharePremiumUsd: number;
-            sharePremiumIdr: number;
-        },
-        shareAv?: {
-            shareUsd: number;
-            shareIdr: number;
-            sharePremiumUsd: number;
-            sharePremiumIdr: number;
-        },
-        shareLiability?: {
-            shareUsd: number;
-            shareIdr: number;
-            sharePremiumUsd: number;
-            sharePremiumIdr: number;
-        },
-    },
+export interface CalculatorPayload {
+    inputStatementDate?: string;
+    inputOpeningfund?: string;
+    inputStatementPeriod?: string;
+    inputTreatyYear?: number;
+    inputTreatyDetail?: {
+        treatyCurrentYear?: AmountDetail;
+        treatyPriorYear?: AmountDetail;
+    };
+    inputLayerDetail?: {
+        layerPdma?: LayerAmountDetail;
+        layerMa?: LayerAmountDetail;
+        layerAv?: LayerAmountDetail;
+        layerLiability?: LayerAmountDetail;
+    };
+    inputPremium?: {
+        premiumPdma?: LayerAmountDetail;
+        premiumMa?: LayerAmountDetail;
+        premiumAv?: LayerAmountDetail;
+        premiumLiability?: LayerAmountDetail;
+    };
+    inputShare?: {
+        sharePdma?: ShareDetail;
+        shareMa?: ShareDetail;
+        shareAv?: ShareDetail;
+        shareLiability?: ShareDetail;
+    };
 }
 
+interface AmountDetail {
+    Exchange?: number | undefined;
+    Margin?: number | undefined;
+    Brokerage?: number | undefined;
+    Interest?: number | undefined;
+    LAP?: number | undefined;
+    Maintenance?: number | undefined;
+}
 
-const InitialValues: CalculatorFormValues = {
+interface LayerAmountDetail {
+    detailUsd?: number | undefined;
+    detailIdr?: number | undefined;
+    detailShare?: number | undefined;
+}
+
+interface ShareDetail {
+    shareUsd?: number | undefined;
+    shareIdr?: number | undefined;
+    sharePremiumUsd?: number | undefined;
+    sharePremiumIdr?: number | undefined;
+}
+
+const initialValues: CalculatorPayload = {
     inputStatementDate: "",
     inputOpeningfund: "",
     inputStatementPeriod: "",
-    inputTreatyYear: 0,
+    inputTreatyYear: undefined,
     inputTreatyDetail: {
         treatyCurrentYear: {
-            Exchange: 0, // Corrected names
-            Margin: 0,
-            Brokerage: 0,
-            Interest: 0,
-            LAP: 0,
-            Maintenance: 0,
+            Exchange: undefined,
+            Margin: undefined,
+            Brokerage: undefined,
+            Interest: undefined,
+            LAP: undefined,
+            Maintenance: undefined,
         },
         treatyPriorYear: {
-            Exchange: 0,
-            Margin: 0,
-            Brokerage: 0,
-            Interest: 0,
-            LAP: 0,
-            Maintenance: 0,
+            Exchange: undefined,
+            Margin: undefined,
+            Brokerage: undefined,
+            Interest: undefined,
+            LAP: undefined,
+            Maintenance: undefined,
         },
     },
     inputLayerDetail: {
-        layerPdma: {
-            detailUsd: 0,  // Corrected names
-            detailIdr: 0,
-            detailShare: 0,
-        },
-        layerMa: {
-            detailUsd: 0,
-            detailIdr: 0,
-            detailShare: 0,
-        },
-        layerAv: {
-            detailUsd: 0,
-            detailIdr: 0,
-            detailShare: 0,
-        },
-        layerLiability: {
-            detailUsd: 0,
-            detailIdr: 0,
-            detailShare: 0,
-        },
+        layerPdma: { detailUsd: undefined, detailIdr: undefined, detailShare: undefined },
+        layerMa: { detailUsd: undefined, detailIdr: undefined, detailShare: undefined },
+        layerAv: { detailUsd: undefined, detailIdr: undefined, detailShare: undefined },
+        layerLiability: { detailUsd: undefined, detailIdr: undefined, detailShare: undefined },
     },
-    inputPremium: {  // Corrected names throughout
-        premiumPdma: {
-            premiumUsd: 0,
-            premiumIdr: 0,
-            premiumShare: 0,
-        },
-        premiumMa: {
-            premiumUsd: 0,
-            premiumIdr: 0,
-            premiumShare: 0,
-        },
-        premiumAv: {
-            premiumUsd: 0,
-            premiumIdr: 0,
-            premiumShare: 0,
-        },
-        premiumLiability: {
-            premiumUsd: 0,
-            premiumIdr: 0,
-            premiumShare: 0,
-        },
+    inputPremium: {
+        premiumPdma: { detailUsd: undefined, detailIdr: undefined, detailShare: undefined },
+        premiumMa: { detailUsd: undefined, detailIdr: undefined, detailShare: undefined },
+        premiumAv: { detailUsd: undefined, detailIdr: undefined, detailShare: undefined },
+        premiumLiability: { detailUsd: undefined, detailIdr: undefined, detailShare: undefined },
     },
-    inputShare: { // Corrected names throughout
-        sharePdma: {
-            shareUsd: 0,
-            shareIdr: 0,
-            sharePremiumUsd: 0,
-            sharePremiumIdr: 0,
-        },
-        shareMa: {
-            shareUsd: 0,
-            shareIdr: 0,
-            sharePremiumUsd: 0,
-            sharePremiumIdr: 0,
-        },
-        shareAv: {
-            shareUsd: 0,
-            shareIdr: 0,
-            sharePremiumUsd: 0,
-            sharePremiumIdr: 0,
-        },
-        shareLiability: {
-            shareUsd: 0,
-            shareIdr: 0,
-            sharePremiumUsd: 0,
-            sharePremiumIdr: 0,
-        },
+    inputShare: {
+        sharePdma: { shareUsd: undefined, shareIdr: undefined, sharePremiumUsd: undefined, sharePremiumIdr: undefined },
+        shareMa: { shareUsd: undefined, shareIdr: undefined, sharePremiumUsd: undefined, sharePremiumIdr: undefined },
+        shareAv: { shareUsd: undefined, shareIdr: undefined, sharePremiumUsd: undefined, sharePremiumIdr: undefined },
+        shareLiability: { shareUsd: undefined, shareIdr: undefined, sharePremiumUsd: undefined, sharePremiumIdr: undefined },
     },
 };
 
-export default InitialValues;
+export default initialValues;

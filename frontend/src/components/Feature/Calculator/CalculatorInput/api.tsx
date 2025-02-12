@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_BASE || '';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
 export const setupAxiosInterceptors = () => {
     axios.interceptors.response.use(
@@ -25,7 +25,6 @@ interface Pagination {
     total: number;
 }
 
-// Penanganan response pagination
 export const fetchCalculators = async (pagination: Pagination, setPagination: (pagination: Pagination) => void) => {
     try {
         const response = await axios.get(`${API_BASE}/calculators`, {

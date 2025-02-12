@@ -56,19 +56,19 @@ export const convertPremiumShares = (input: typeof inputPremium) => {
     return {
         premiumPdma: {
             ...input.premiumPdma,
-            pdmaPremiumShare: convertToDecimal(input.premiumPdma.premiumShare),
+            premiumShare: convertToDecimal(input.premiumPdma.premiumShare),
         },
         premiumMa: {
             ...input.premiumMa,
-            maPremiumShare: convertToDecimal(input.premiumMa.premiumShare),
+            premiumShare: convertToDecimal(input.premiumMa.premiumShare),
         },
         premiumAv: {
             ...input.premiumAv,
-            avPremiumShare: convertToDecimal(input.premiumAv.premiumShare),
+            premiumShare: convertToDecimal(input.premiumAv.premiumShare),
         },
         premiumLiability: {
             ...input.premiumLiability,
-            liabilityPremiumShare: convertToDecimal(input.premiumLiability.premiumShare),
+            premiumShare: convertToDecimal(input.premiumLiability.premiumShare),
         },
     };
 };

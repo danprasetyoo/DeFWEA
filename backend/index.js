@@ -11,7 +11,7 @@ const app = express();
 
 // CORS (manual middleware)
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN || 'http://localhost:5005');
+    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN || 'http://localhost:5005/');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Request-ID');
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -34,7 +34,7 @@ const limiter = rateLimit({
     max: 100,
 });
 
-app.use('/api/calculators', limiter, calculatorRouter);
+app.use('/api/calculators', limiter, calculatorRouter); // Ensure this matches the frontend endpoint
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Health Check

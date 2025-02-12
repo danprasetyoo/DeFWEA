@@ -2,7 +2,7 @@ import React from "react";
 
 interface InputFieldProps {
     id: string;
-    value: string | number;
+    value: number;
     type: "text" | "percentage";
     onChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 }

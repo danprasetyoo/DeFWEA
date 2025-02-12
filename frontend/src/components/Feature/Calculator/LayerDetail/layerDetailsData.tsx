@@ -56,15 +56,15 @@ export const convertLayerShares = (input: typeof inputLayerDetail) => {
     return {
         layerPdma: {
             ...input.layerPdma,
-            pdmaDetailShare: convertToDecimal(input.layerPdma.detailShare),
+            detailShare: convertToDecimal(input.layerPdma.detailShare),
         },
         layerMa: {
             ...input.layerMa,
-            maDetailShare: convertToDecimal(input.layerMa.detailShare),
+            detailShare: convertToDecimal(input.layerMa.detailShare),
         },
         layerAv: {
             ...input.layerAv,
-            avDetailShare: convertToDecimal(input.layerAv.detailShare),
+            detailShare: convertToDecimal(input.layerAv.detailShare),
         },
         layerLiability: {
             ...input.layerLiability,
@@ -81,28 +81,96 @@ export const rows = (
         {
             label: "MDP-USD",
             inputs: [
-                { id: "layerPdma.detailUsd", placeholder: "Amount", value: amounts.layerPdma.detailUsd.toString(), onChange: handleLocalInputChange },
-                { id: "layerMa.detailUsd", placeholder: "Amount", value: amounts.layerMa.detailUsd.toString(), onChange: handleLocalInputChange },
-                { id: "layerAv.detailUsd", placeholder: "Amount", value: amounts.layerAv.detailUsd.toString(), onChange: handleLocalInputChange },
-                { id: "layerLiability.detailUsd", placeholder: "Amount", value: amounts.layerLiability.detailUsd.toString(), onChange: handleLocalInputChange },
+                {
+                    id: "layerPdma.detailUsd",
+                    placeholder: "Amount",
+                    value: amounts.layerPdma.detailUsd.toString(),
+                    onChange: handleLocalInputChange
+                },
+                {
+                    id: "layerMa.detailUsd",
+                    placeholder: "Amount",
+                    value: amounts.layerMa.detailUsd.toString(),
+                    onChange: handleLocalInputChange
+                },
+
+                {
+                    id: "layerAv.detailUsd",
+                    placeholder: "Amount",
+                    value: amounts.layerAv.detailUsd.toString(),
+                    onChange: handleLocalInputChange
+                },
+                {
+                    id: "layerLiability.detailUsd",
+                    placeholder: "Amount",
+                    value: amounts.layerLiability.detailUsd.toString(),
+                    onChange: handleLocalInputChange
+                },
             ],
         },
         {
             label: "MDP-IDR",
             inputs: [
-                { id: "layerPdma.detailIdr", placeholder: "Amount", value: amounts.layerPdma.detailIdr.toString(), onChange: handleLocalInputChange },
-                { id: "layerMa.detailIdr", placeholder: "Amount", value: amounts.layerMa.detailIdr.toString(), onChange: handleLocalInputChange },
-                { id: "layerAv.detailIdr", placeholder: "Amount", value: amounts.layerAv.detailIdr.toString(), onChange: handleLocalInputChange },
-                { id: "layerLiability.detailIdr", placeholder: "Amount", value: amounts.layerLiability.detailIdr.toString(), onChange: handleLocalInputChange },
+                {
+                    id: "layerPdma.detailIdr",
+                    placeholder: "Amount",
+                    value: amounts.layerPdma.detailIdr.toString(),
+                    onChange: handleLocalInputChange
+
+                },
+                {
+                    id: "layerMa.detailIdr",
+                    placeholder: "Amount",
+                    value: amounts.layerMa.detailIdr.toString(),
+                    onChange: handleLocalInputChange
+
+                },
+                {
+                    id: "layerAv.detailIdr",
+                    placeholder: "Amount",
+                    value: amounts.layerAv.detailIdr.toString(),
+                    onChange: handleLocalInputChange
+
+                },
+                {
+                    id: "layerLiability.detailIdr",
+                    placeholder: "Amount",
+                    value: amounts.layerLiability.detailIdr.toString(),
+                    onChange: handleLocalInputChange
+
+                },
             ],
         },
         {
             label: "Share (%)",
             inputs: [
-                { id: "layerPdma.detailShare", placeholder: "Percentage", value: amounts.layerPdma.detailShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerPdma.detailShare") },
-                { id: "layerMa.detailShare", placeholder: "Percentage", value: amounts.layerMa.detailShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerMa.detailShare") },
-                { id: "layerAv.detailShare", placeholder: "Percentage", value: amounts.layerAv.detailShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerAv.detailShare") },
-                { id: "layerLiability.detailShare", placeholder: "Percentage", value: amounts.layerLiability.detailShare.toString(), onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerLiability.detailShare") },
+                {
+                    id: "layerPdma.detailShare",
+                    placeholder: "Percentage",
+                    value: amounts.layerPdma.detailShare.toString(),
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerPdma.detailShare")
+
+                },
+                {
+                    id: "layerMa.detailShare",
+                    placeholder: "Percentage",
+                    value: amounts.layerMa.detailShare.toString(),
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerMa.detailShare")
+
+                },
+                {
+                    id: "layerAv.detailShare",
+                    placeholder: "Percentage",
+                    value: amounts.layerAv.detailShare.toString(),
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerAv.detailShare")
+
+                },
+                {
+                    id: "layerLiability.detailShare",
+                    placeholder: "Percentage",
+                    value: amounts.layerLiability.detailShare.toString(),
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handlePercentageChange(e, "layerLiability.detailShare")
+                },
             ],
         },
     ];
@@ -112,25 +180,25 @@ export const readonlyRows = (results: typeof inputShare) => [
         label: "MDP - USD",
         inputs: [
             {
-                id: "sharePdma.shareUsd",
+                id: "sharePdma.ShareUsd",
                 value: results.sharePdma.shareUsd.toString(),
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "shareMa.shareUsd",
+                id: "shareMa.ShareUsd",
                 value: results.shareMa.shareUsd.toString(),
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "shareAv.shareUsd",
+                id: "shareAv.ShareUsd",
                 value: results.shareAv.shareUsd.toString(),
                 readonly: true,
                 placeholder: ""
             },
             {
-                id: "shareLiability.shareUsd",
+                id: "shareLiability.ShareUsd",
                 value: results.shareLiability.shareUsd.toString(),
                 readonly: true,
                 placeholder: ""

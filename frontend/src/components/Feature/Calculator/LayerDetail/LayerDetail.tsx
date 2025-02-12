@@ -3,14 +3,14 @@ import InputGroup from "./InputGroup";
 import { rows, readonlyRows, inputLayerDetail } from "./layerDetailsData";
 import { useLayerDetails } from "./useLayerDetails";
 
-type LayerDetailProps = {
+type PremiumDetailProps = {
     amounts: typeof inputLayerDetail;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handlePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     setFieldValue: (field: string, value: any) => void;
 };
 
-const LayerDetail: React.FC<LayerDetailProps> = ({ handleInputChange, setFieldValue }) => {
+const PremiumDetail: React.FC<PremiumDetailProps> = ({ handleInputChange, setFieldValue }) => {
     const { amounts, results, handleLocalInputChange, handlePercentageChange } = useLayerDetails(handleInputChange, setFieldValue);
 
     return (
@@ -27,4 +27,4 @@ const LayerDetail: React.FC<LayerDetailProps> = ({ handleInputChange, setFieldVa
     );
 };
 
-export default LayerDetail;
+export default PremiumDetail;

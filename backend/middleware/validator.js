@@ -51,7 +51,7 @@ const CalculatorSchema = z.object({
         .regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD")
         .refine(val => !isNaN(Date.parse(val)), { message: "Tanggal tidak valid" }),
     inputOpeningfund: z.string().min(1, "Opening fund wajib diisi"),
-    inputStatementPeriode: z.string()
+    inputStatementPeriod: z.string()
         .regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD")
         .refine(val => !isNaN(Date.parse(val)), { message: "Tanggal tidak valid" }),
     inputTreatyYear: z.number().int().min(0, "Tahun treaty harus positif"),

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import StatementInput from "../StatementInput/StatementInput";
 import TreatyDetail from "../TreatyDetail/TreatyDetail";
@@ -5,7 +6,6 @@ import LayerDetail from "../LayerDetail/LayerDetail";
 import PremiumDetail from "../PremiumDetail/PremiumDetail";
 import axios from "axios";
 import { validationSchema } from "../../../../validation/validationSchema";
-import { useState } from "react";
 import { useLayerDetails } from "../LayerDetail/useLayerDetails";
 import { usePremiumDetails } from "../PremiumDetail/usePremiumDetails";
 import initialValues from "./InitialValues";
@@ -27,20 +27,22 @@ interface CalculatorPayload {
 
 function CalculatorInput() {
     const [isLoading, setIsLoading] = useState(false);
-    const [networkError, setNetworkError] = useState<string | null>(null); // State untuk network error
+    const [networkError, setNetworkError] = useState<string | null>(null);
 
     const sanitizeNumber = (value: any): number => {
         const num = parseFloat(value);
         return isNaN(num) ? 0 : num;
     };
 
+    // Fungsi formatDate tidak diubah jika input sudah DD-MM-YYYY atau akan diformat sebelum masuk sini
     const formatDate = (dateString: string): string => {
         try {
-            return new Date(dateString).toISOString();
+            return dateString.split('T')[0]; // Mengambil bagian tanggal saja (YYYY-MM-DD dari format ISO)
         } catch {
-            return new Date().toISOString();
+            return new Date().toISOString().split('T')[0]; // Default ke tanggal sekarang jika terjadi kesalahan
         }
     };
+
 
     const {
         amounts: layerAmounts,
@@ -67,14 +69,27 @@ function CalculatorInput() {
     };
 
     const formik = useFormik({
-        initialValues,
+        initialValues, // Menggunakan initialValues yang sudah dikoreksi
         validationSchema,
+        validate: (values) => {
+            try {
+                validationSchema.validateSync(values, { abortEarly: false });
+            } catch (errors) {
+                const validationErrors = errors as any;
+                console.log('Validation errors:', validationErrors.inner);
+                return validationErrors.inner.reduce((acc: any, error: any) => {
+                    acc[error.path] = error.message;
+                    return acc;
+                }, {});
+            }
+        },
         onSubmit: async (values) => {
             console.log("onSubmit function triggered");
             setIsLoading(true);
-            setNetworkError(null); // Reset network error saat submit baru
+            setNetworkError(null);
 
             try {
+                console.log("Cleaning values...");
                 const cleanedValues = Object.keys(values).reduce((acc: Partial<typeof initialValues>, key) => {
                     const value = values[key as keyof typeof initialValues];
                     if (value !== undefined && value !== null && value !== "") {
@@ -89,6 +104,17 @@ function CalculatorInput() {
                             if (typeof value === 'string' || typeof value === 'number' || value === undefined) {
                                 (acc as any)[key] = convertPercentageToDecimal(value);
                             }
+                        } else if (key.includes("Date") || key.includes("Period")) {
+                            // Pastikan formatDate menghasilkan format yang sesuai (DD-MM-YYYY jika diperlukan di backend)
+                            const dateValue = value as string;
+                            const parts = dateValue.split('-');
+                            if (parts.length === 3) {
+                                (acc as any)[key] = `${parts[0]}-${parts[1]}-${parts[2]}`; // Format DD-MM-YYYY
+                            } else {
+                                (acc as any)[key] = formatDate(value as string); // Fallback jika format lain (misalnya dari datepicker)
+                            }
+                        } else if (key.includes("Detail")) {
+                            (acc as any)[key] = typeof value === 'object' ? value : {};
                         } else {
                             (acc as any)[key] = value;
                         }
@@ -96,6 +122,8 @@ function CalculatorInput() {
                     return acc;
                 }, {} as Partial<typeof initialValues>);
 
+
+                console.log("Combining data...");
                 const combinedData = {
                     sharePdma: { ...layerResults.sharePdma, ...premiumResults.sharePdma },
                     shareMa: { ...layerResults.shareMa, ...premiumResults.shareMa },
@@ -104,9 +132,9 @@ function CalculatorInput() {
                 };
 
                 const payload: CalculatorPayload = {
-                    inputStatementDate: formatDate(cleanedValues.inputStatementDate as string),
+                    inputStatementDate: cleanedValues.inputStatementDate as string,
                     inputOpeningfund: cleanedValues.inputOpeningfund as string,
-                    inputStatementPeriod: formatDate(cleanedValues.inputStatementPeriod as string),
+                    inputStatementPeriod: cleanedValues.inputStatementPeriod as string,
                     inputTreatyYear: sanitizeNumber(cleanedValues.inputTreatyYear),
                     inputTreatyDetail: cleanedValues.inputTreatyDetail,
                     inputLayerDetail: convertLayerShares(layerAmounts),
@@ -116,26 +144,22 @@ function CalculatorInput() {
 
                 console.log('Submitting payload:', payload);
 
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    setNetworkError("Please login first");
-                    setIsLoading(false);
-                    return;
-                }
-
                 const headers = {
-                    'Content-Type': 'application/json',
-                    ...(token && { 'Authorization': `Bearer ${token}` })
+                    'Content-Type': 'application/json'
                 };
+
+                console.log('Making network request to:', `${API_BASE}/calculators`);
 
                 const response = await axios.post(`${API_BASE}/calculators`, payload, { headers });
 
+                console.log('Network request completed');
 
                 if (response.status === 201) {
                     console.log('Data saved successfully:', response.data);
                     formik.resetForm();
                     // Handle success (redirect/show notification)
                 } else if (response.data?.details) {
+                    console.log('Handling response errors');
                     const errors: Record<string, string> = {};
                     response.data.details.forEach((err: { path: string[]; message: string }) => {
                         const path = err.path.join('.');
@@ -164,6 +188,7 @@ function CalculatorInput() {
                     }
                 }
             } finally {
+                console.log("Setting isLoading to false");
                 setIsLoading(false);
             }
         },
@@ -171,12 +196,18 @@ function CalculatorInput() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        formik.setFieldValue(id, value);
+        let formattedValue = value;
+        if (id === "inputStatementDate" || id === "inputStatementPeriod") {
+            const inputDate = value; // Asumsi input sudah dalam format DD-MM-YYYY dari datepicker/input
+            formattedValue = inputDate; // Langsung gunakan nilai input, tidak perlu formatDate jika sudah benar formatnya
+        }
+        formik.setFieldValue(id, formattedValue);
     };
+
+
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            console.log("Form submitted");
             formik.handleSubmit(e);
         }}>
             <div className="space-y-6">
@@ -185,10 +216,24 @@ function CalculatorInput() {
                     <div className="text-red-500">{networkError}</div>
                 )}
 
-                <StatementInput formData={formik.values} handleInputChange={handleInputChange} />
+                <StatementInput
+                    formData={{
+                        inputStatementDate: formik.values.inputStatementDate || '',
+                        inputOpeningfund: formik.values.inputOpeningfund || '',
+                        inputStatementPeriod: formik.values.inputStatementPeriod || '',
+                        inputTreatyYear: formik.values.inputTreatyYear || 0,
+                    }}
+                    handleInputChange={handleInputChange}
+                    handleBlur={formik.handleBlur}
+                />
                 <br />
 
-                <TreatyDetail formData={formik.values} handleInputChange={handleInputChange} />
+                <TreatyDetail
+                    formData={formik.values}
+                    handleInputChange={handleInputChange}
+                    formikError={formik.errors}
+                    formikTouched={formik.touched}
+                />
                 <br />
 
                 <LayerDetail
