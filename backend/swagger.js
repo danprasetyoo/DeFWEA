@@ -1,4 +1,3 @@
-// swagger.js
 const swaggerJSDoc = require('swagger-jsdoc');
 
 const options = {
@@ -11,12 +10,11 @@ const options = {
         },
         servers: [
             {
-                url: process.env.API_URL || 'http://localhost:5000/api',
+                url: process.env.API_URL || 'http://192.168.1.87:5000/api',
                 description: 'Development server'
             }
         ],
     },
-    // Path to your route files containing JSDoc comments
     apis: ['./routes/*.js'],
 };
 

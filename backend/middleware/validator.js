@@ -7,54 +7,84 @@ const AmountSchema = z.object({
 });
 
 const TreatyYearSchema = z.object({
-    id: z.number().optional(),
-    Exchange: AmountSchema.nullable(),
-    Margin: AmountSchema.nullable(),
-    Brokerage: AmountSchema.nullable(),
-    Interest: AmountSchema.nullable(),
-    LAP: AmountSchema.nullable(),
-    Maintenance: AmountSchema.nullable(),
+    Exchange: z.number().nullable(),
+    Margin: z.number().nullable(),
+    Brokerage: z.number().nullable(),
+    Interest: z.number().nullable(),
+    LAP: z.number().nullable(),
+    Maintenance: z.number().nullable(),
 });
 
 const TreatyDetailSchema = z.object({
-    id: z.number().optional(),
     treatyCurrentYear: TreatyYearSchema.nullable(),
     treatyPriorYear: TreatyYearSchema.nullable(),
 });
 
-const LayerSchema = z.object({
-    id: z.number().optional(),
-    layerPdma: AmountSchema.nullable(),
-    layerMa: AmountSchema.nullable(),
-    layerAv: AmountSchema.nullable(),
-    layerLiability: AmountSchema.nullable(),
+const LayerAmountDetailSchema = z.object({
+    detailUsd: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
+    detailIdr: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
+    detailShare: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
 });
 
-const PremiumSchema = z.object({
-    id: z.number().optional(),
-    premiumPdma: AmountSchema.nullable(),
-    premiumMa: AmountSchema.nullable(),
-    premiumAv: AmountSchema.nullable(),
-    premiumLiability: AmountSchema.nullable(),
+const LayerSchema = z.object({
+    layerPdma: LayerAmountDetailSchema.nullable(),
+    layerMa: LayerAmountDetailSchema.nullable(),
+    layerAv: LayerAmountDetailSchema.nullable(),
+    layerLiability: LayerAmountDetailSchema.nullable(),
+});
+
+const ShareDetailSchema = z.object({
+    shareUsd: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
+    shareIdr: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
+    sharePremiumUsd: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
+    sharePremiumIdr: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
 });
 
 const ShareSchema = z.object({
-    id: z.number().optional(),
-    sharePdma: AmountSchema.nullable(),
-    shareMa: AmountSchema.nullable(),
-    shareAv: AmountSchema.nullable(),
-    shareLiability: AmountSchema.nullable(),
+    sharePdma: ShareDetailSchema.nullable(),
+    shareMa: ShareDetailSchema.nullable(),
+    shareAv: ShareDetailSchema.nullable(),
+    shareLiability: ShareDetailSchema.nullable(),
+});
+
+const PremiumDetailSchema = z.object({
+    premiumUsd: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
+    premiumIdr: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
+    premiumShare: z.preprocess(val => val === "" ? null : Number(val), z.number().nullable()),
+});
+
+const PremiumSchema = z.object({
+    premiumPdma: PremiumDetailSchema.nullable(),
+    premiumMa: PremiumDetailSchema.nullable(),
+    premiumAv: PremiumDetailSchema.nullable(),
+    premiumLiability: PremiumDetailSchema.nullable(),
 });
 
 const CalculatorSchema = z.object({
     inputStatementDate: z.string()
-        .regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD")
-        .refine(val => !isNaN(Date.parse(val)), { message: "Tanggal tidak valid" }),
+        .nullable()
+        .refine(val => {
+            if (!val) return true;
+            const date = new Date(val);
+            return !isNaN(date.getTime());
+        }, { message: "Tanggal tidak valid" })
+        .refine(val => {
+            if (!val) return true;
+            return /^\d{2}\/\d{2}\/\d{4}$/.test(val)
+        }, { message: "Format tanggal harus MM/DD/YYYY" }),
     inputOpeningfund: z.string().min(1, "Opening fund wajib diisi"),
     inputStatementPeriod: z.string()
-        .regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal harus YYYY-MM-DD")
-        .refine(val => !isNaN(Date.parse(val)), { message: "Tanggal tidak valid" }),
-    inputTreatyYear: z.number().int().min(0, "Tahun treaty harus positif"),
+        .nullable()
+        .refine(val => {
+            if (!val) return true;
+            const date = new Date(val);
+            return !isNaN(date.getTime());
+        }, { message: "Tanggal tidak valid" })
+        .refine(val => {
+            if (!val) return true;
+            return /^\d{2}\/\d{2}\/\d{4}$/.test(val)
+        }, { message: "Format tanggal harus MM/DD/YYYY" }),
+    inputTreatyYear: z.number().int().min(0, "Tahun treaty harus positif").nullable(),
     inputTreatyDetail: TreatyDetailSchema.nullable(),
     inputLayerDetail: LayerSchema.nullable(),
     inputPremium: PremiumSchema.nullable(),
@@ -63,8 +93,8 @@ const CalculatorSchema = z.object({
 
 const validate = (schema) => (req, res, next) => {
     try {
-        schema.parse(req.body);  // Parsing request body with Zod schema
-        next();  // Pass to the next middleware if validation passes
+        schema.parse(req.body);
+        next();
     } catch (error) {
         if (error instanceof z.ZodError) {
             res.status(400).json({
@@ -81,7 +111,6 @@ const validate = (schema) => (req, res, next) => {
 };
 
 module.exports = {
-    CalculatorSchema,
     ShareSchema,
     PremiumSchema,
     LayerSchema,
@@ -89,4 +118,5 @@ module.exports = {
     TreatyYearSchema,
     AmountSchema,
     validate,
+    CalculatorSchema,
 };

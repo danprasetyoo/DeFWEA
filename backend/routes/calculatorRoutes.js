@@ -11,7 +11,7 @@ const { CalculatorSchema, validate } = require('../middleware/validator');
 
 calculatorRouter.get('/', getAllCalculators);
 calculatorRouter.get('/:id', getCalculatorById);
-calculatorRouter.post('/', validate(CalculatorSchema), createCalculator); // Ensure this matches the frontend endpoint
+calculatorRouter.post('/', validate(CalculatorSchema), createCalculator);
 calculatorRouter.patch('/:id', validate(CalculatorSchema.partial()), updateCalculator);
 calculatorRouter.delete('/:id', deleteCalculator);
 

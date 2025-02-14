@@ -1,6 +1,6 @@
 export const inputLayerDetail = {
     layerPdma: {
-        detailUsd: 0,  // Corrected names
+        detailUsd: 0,
         detailIdr: 0,
         detailShare: 0,
     },

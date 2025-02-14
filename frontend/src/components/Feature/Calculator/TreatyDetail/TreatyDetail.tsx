@@ -24,29 +24,31 @@ function TreatyDetail({ handleInputChange, formikError, formikTouched }: TreatyD
 
     const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { value } = e.target;
-        let numericValue = value.replace("%", "");
+        const numericValue = value.replace(/[^0-9.]/g, "");
         let validValue = numericValue;
+        let decimalValue = parseFloat(numericValue) / 100;
 
-        if (/^\d*\.?\d+$/.test(numericValue)) {
-            if (parseFloat(numericValue) >= 0 && parseFloat(numericValue) <= 100) {
-                validValue = numericValue + "%";
-            } else {
-                validValue = "100%";
-            }
+        if (numericValue === "" || isNaN(decimalValue)) {
+            decimalValue = 0;
+            validValue = "";
+        } else if (parseFloat(numericValue) > 100) {
+            validValue = "100";
+            decimalValue = 1;
         }
 
         setAmounts((prevAmounts: typeof amounts) => ({
             ...prevAmounts,
-            [id]: validValue,
+            [id]: validValue + "%",
         }));
 
         handleInputChange({
             target: {
                 id,
-                value: parseFloat(validValue),
+                value: decimalValue,
             },
         } as unknown as React.ChangeEvent<HTMLInputElement>);
     };
+
 
     const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;

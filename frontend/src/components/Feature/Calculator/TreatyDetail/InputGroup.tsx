@@ -1,4 +1,3 @@
-// InputGroup.tsx
 import React from "react";
 import InputField from "./InputFields";
 

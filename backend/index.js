@@ -9,9 +9,8 @@ const specs = require('./swagger');
 
 const app = express();
 
-// CORS (manual middleware)
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN || 'http://localhost:5005/');
+    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN || 'http://192.168.1.87:5005');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Request-ID');
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -34,7 +33,7 @@ const limiter = rateLimit({
     max: 100,
 });
 
-app.use('/api/calculators', limiter, calculatorRouter); // Ensure this matches the frontend endpoint
+app.use('/api/calculators', limiter, calculatorRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Health Check
@@ -55,7 +54,7 @@ app.use((err, req, res, next) => {
     const response = {
         error: {
             message: statusCode === 500 ? 'Internal Server Error' : err.message,
-            ...(process.env.NODE_ENV === 'development' && { stack: err.stack }), // Conditional stack trace
+            ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
         },
     };
 
@@ -67,7 +66,7 @@ const prisma = new PrismaClient();
 
 // Server Startup (with graceful shutdown)
 const PORT = process.env.PORT || 5000;
-let server; // Store the server object
+let server;
 
 const startServer = async () => {
     try {

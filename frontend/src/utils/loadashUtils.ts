@@ -16,16 +16,16 @@ export const deepSet = (object: any, path: string, value: any) => {
 };
 
 const convertValueAccordingToInitialType = (_obj: any, path: string, value: any) => {
-    const sampleValue = _.get(InitialValues, path, null); // Default null
+    const sampleValue = _.get(InitialValues, path, null);
 
     if (sampleValue === null || sampleValue === undefined) {
-        return value; // Handle cases where the path is not in InitialValues
+        return value;
     }
 
     if (typeof sampleValue === 'number') {
         if (typeof value === 'string') {
             if (value.includes('%')) {
-                const numericValue = parseFloat(value.replace(/[^0-9.-]/g, '')); // More robust percentage conversion
+                const numericValue = parseFloat(value.replace(/[^0-9.-]/g, ''));
                 return isNaN(numericValue) ? 0 : numericValue / 100;
             }
 
@@ -40,7 +40,7 @@ const convertValueAccordingToInitialType = (_obj: any, path: string, value: any)
         return String(value);
     }
 
-    if (typeof sampleValue === 'boolean') { // Handle boolean types
+    if (typeof sampleValue === 'boolean') {
         return !!value;
     }
 

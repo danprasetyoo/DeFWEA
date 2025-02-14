@@ -17,11 +17,11 @@ const handleError = (res, error, defaultMessage) => {
         });
     }
 
-    if (error.code === 'P2025') { // Record not found
+    if (error.code === 'P2025') {
         return res.status(404).json({ error: 'Record not found' });
     }
 
-    if (error.code === 'P2002') { // Unique constraint violation
+    if (error.code === 'P2002') {
         return res.status(400).json({ error: 'Unique constraint violation' });
     }
 
@@ -30,59 +30,84 @@ const handleError = (res, error, defaultMessage) => {
 
 const createCalculator = async (req, res) => {
     try {
-        const result = CalculatorSchema.safeParse(req.body);
-        if (!result.success) {
-            return res.status(400).json({
-                error: 'Validation Error',
-                details: result.error.errors.map(e => ({
-                    path: e.path.join('.'),
-                    message: e.message,
-                })),
-            });
-        }
+        const validatedData = CalculatorSchema.parse(req.body);
 
-        const validatedData = result.data;
         const calculator = await prisma.calculator.create({
             data: {
                 inputStatementDate: validatedData.inputStatementDate,
                 inputOpeningfund: validatedData.inputOpeningfund,
                 inputStatementPeriod: validatedData.inputStatementPeriod,
                 inputTreatyYear: validatedData.inputTreatyYear,
-                inputTreatyDetail: validatedData.inputTreatyDetail ? {
-                    connectOrCreate: {
-                        where: { id: validatedData.inputTreatyDetail.id || -1 },
-                        create: validatedData.inputTreatyDetail
+                inputTreatyDetail: {
+                    create: {
+                        treatyCurrentYear: {
+                            create: validatedData.inputTreatyDetail.treatyCurrentYear,
+                        },
+                        treatyPriorYear: {
+                            create: validatedData.inputTreatyDetail.treatyPriorYear,
+                        },
                     },
-                } : undefined,
-                inputLayerDetail: validatedData.inputLayerDetail ? {
-                    connectOrCreate: {
-                        where: { id: validatedData.inputLayerDetail.id || -1 },
-                        create: validatedData.inputLayerDetail
+                },
+                inputLayerDetail: {
+                    create: {
+                        layerPdma: {
+                            create: validatedData.inputLayerDetail.layerPdma,
+                        },
+                        layerMa: {
+                            create: validatedData.inputLayerDetail.layerMa,
+                        },
+                        layerAv: {
+                            create: validatedData.inputLayerDetail.layerAv,
+                        },
+                        layerLiability: {
+                            create: validatedData.inputLayerDetail.layerLiability,
+                        },
                     },
-                } : undefined,
-                inputPremium: validatedData.inputPremium ? {
-                    connectOrCreate: {
-                        where: { id: validatedData.inputPremium.id || -1 },
-                        create: validatedData.inputPremium
+                },
+                inputPremium: {
+                    create: {
+                        premiumPdma: {
+                            create: validatedData.inputPremium.premiumPdma,
+                        },
+                        premiumMa: {
+                            create: validatedData.inputPremium.premiumMa,
+                        },
+                        premiumAv: {
+                            create: validatedData.inputPremium.premiumAv,
+                        },
+                        premiumLiability: {
+                            create: validatedData.inputPremium.premiumLiability,
+                        },
                     },
-                } : undefined,
-                inputShare: validatedData.inputShare ? {
-                    connectOrCreate: {
-                        where: { id: validatedData.inputShare.id || -1 },
-                        create: validatedData.inputShare
+                },
+                inputShare: {
+                    create: {
+                        sharePdma: {
+                            create: validatedData.inputShare.sharePdma,
+                        },
+                        shareMa: {
+                            create: validatedData.inputShare.shareMa,
+                        },
+                        shareAv: {
+                            create: validatedData.inputShare.shareAv,
+                        },
+                        shareLiability: {
+                            create: validatedData.inputShare.shareLiability,
+                        },
                     },
-                } : undefined,
+                },
             },
             include: {
-                inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },
-                inputLayerDetail: { include: { layerPdma: true, layerMa: true, layerAv: true, layerLiability: true } },
-                inputPremium: { include: { premiumPdma: true, premiumMa: true, premiumAv: true, premiumLiability: true } },
-                inputShare: { include: { sharePdma: true, shareMa: true, shareAv: true, shareLiability: true } },
+                inputTreatyDetail: true,
+                inputLayerDetail: true,
+                inputPremium: true,
+                inputShare: true,
             },
         });
 
         res.status(201).json({ data: calculator });
     } catch (error) {
+        console.error('Error creating calculator:', error);
         handleError(res, error, 'Failed to create calculator');
     }
 };
@@ -147,18 +172,8 @@ const updateCalculator = async (req, res) => {
             return res.status(400).json({ error: "Invalid ID format" });
         }
 
-        const result = CalculatorSchema.partial().safeParse(req.body);
-        if (!result.success) {
-            return res.status(400).json({
-                error: 'Validation Error',
-                details: result.error.errors.map(e => ({
-                    path: e.path.join('.'),
-                    message: e.message,
-                })),
-            });
-        }
+        const validatedData = CalculatorSchema.partial().parse(req.body);
 
-        const validatedData = result.data;
         const updatedCalculator = await prisma.calculator.update({
             where: { id },
             data: {
@@ -166,30 +181,10 @@ const updateCalculator = async (req, res) => {
                 inputOpeningfund: validatedData.inputOpeningfund,
                 inputStatementPeriod: validatedData.inputStatementPeriod,
                 inputTreatyYear: validatedData.inputTreatyYear,
-                inputTreatyDetail: validatedData.inputTreatyDetail ? {
-                    connectOrCreate: {
-                        where: { id: validatedData.inputTreatyDetail.id || -1 },
-                        create: validatedData.inputTreatyDetail
-                    },
-                } : undefined,
-                inputLayerDetail: validatedData.inputLayerDetail ? {
-                    connectOrCreate: {
-                        where: { id: validatedData.inputLayerDetail.id || -1 },
-                        create: validatedData.inputLayerDetail
-                    },
-                } : undefined,
-                inputPremium: validatedData.inputPremium ? {
-                    connectOrCreate: {
-                        where: { id: validatedData.inputPremium.id || -1 },
-                        create: validatedData.inputPremium
-                    },
-                } : undefined,
-                inputShare: validatedData.inputShare ? {
-                    connectOrCreate: {
-                        where: { id: validatedData.inputShare.id || -1 },
-                        create: validatedData.inputShare
-                    },
-                } : undefined,
+                inputTreatyDetail: validatedData.inputTreatyDetail,
+                inputLayerDetail: validatedData.inputLayerDetail,
+                inputPremium: validatedData.inputPremium,
+                inputShare: validatedData.inputShare,
             },
             include: {
                 inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },

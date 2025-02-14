@@ -1,5 +1,5 @@
 const ShareValues = {
-    inputShare: { // Corrected names throughout
+    inputShare: {
         sharePdma: {
             shareUsd: 0,
             shareIdr: 0,

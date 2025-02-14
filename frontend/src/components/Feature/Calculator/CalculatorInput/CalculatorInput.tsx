@@ -12,7 +12,7 @@ import initialValues from "./InitialValues";
 import { convertPremiumShares } from "../PremiumDetail/premiumDetailsData";
 import { convertLayerShares } from "../LayerDetail/layerDetailsData";
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://192.168.1.87:5000/api';
 
 interface CalculatorPayload {
     inputStatementDate: string;
@@ -34,12 +34,11 @@ function CalculatorInput() {
         return isNaN(num) ? 0 : num;
     };
 
-    // Fungsi formatDate tidak diubah jika input sudah DD-MM-YYYY atau akan diformat sebelum masuk sini
     const formatDate = (dateString: string): string => {
         try {
-            return dateString.split('T')[0]; // Mengambil bagian tanggal saja (YYYY-MM-DD dari format ISO)
+            return dateString.split('T')[0];
         } catch {
-            return new Date().toISOString().split('T')[0]; // Default ke tanggal sekarang jika terjadi kesalahan
+            return new Date().toISOString().split('T')[0];
         }
     };
 
@@ -69,7 +68,7 @@ function CalculatorInput() {
     };
 
     const formik = useFormik({
-        initialValues, // Menggunakan initialValues yang sudah dikoreksi
+        initialValues,
         validationSchema,
         validate: (values) => {
             try {
@@ -105,13 +104,12 @@ function CalculatorInput() {
                                 (acc as any)[key] = convertPercentageToDecimal(value);
                             }
                         } else if (key.includes("Date") || key.includes("Period")) {
-                            // Pastikan formatDate menghasilkan format yang sesuai (DD-MM-YYYY jika diperlukan di backend)
                             const dateValue = value as string;
                             const parts = dateValue.split('-');
                             if (parts.length === 3) {
-                                (acc as any)[key] = `${parts[0]}-${parts[1]}-${parts[2]}`; // Format DD-MM-YYYY
+                                (acc as any)[key] = `${parts[0]}-${parts[1]}-${parts[2]}`;
                             } else {
-                                (acc as any)[key] = formatDate(value as string); // Fallback jika format lain (misalnya dari datepicker)
+                                (acc as any)[key] = formatDate(value as string);
                             }
                         } else if (key.includes("Detail")) {
                             (acc as any)[key] = typeof value === 'object' ? value : {};
@@ -157,7 +155,6 @@ function CalculatorInput() {
                 if (response.status === 201) {
                     console.log('Data saved successfully:', response.data);
                     formik.resetForm();
-                    // Handle success (redirect/show notification)
                 } else if (response.data?.details) {
                     console.log('Handling response errors');
                     const errors: Record<string, string> = {};
@@ -198,8 +195,8 @@ function CalculatorInput() {
         const { id, value } = e.target;
         let formattedValue = value;
         if (id === "inputStatementDate" || id === "inputStatementPeriod") {
-            const inputDate = value; // Asumsi input sudah dalam format DD-MM-YYYY dari datepicker/input
-            formattedValue = inputDate; // Langsung gunakan nilai input, tidak perlu formatDate jika sudah benar formatnya
+            const inputDate = value;
+            formattedValue = inputDate;
         }
         formik.setFieldValue(id, formattedValue);
     };

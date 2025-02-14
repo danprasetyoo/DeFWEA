@@ -75,7 +75,7 @@ export const formatDate = (dateString: string): string => {
     if (day && month && year) {
         return `${year}-${month}-${day}`;
     }
-    return new Date().toISOString().split('T')[0]; // Default to current date if parsing fails
+    return new Date().toISOString().split('T')[0];
 };
 
 export const convertPercentageToDecimal = (value: string | number | undefined) => {

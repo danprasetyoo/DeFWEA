@@ -72,42 +72,42 @@ export const useLayerDetails = (
         const newResults = {
             sharePdma: {
                 shareUsd: calculateShare(
-                    updatedAmounts.layerPdma.detailUsd,  // Optional chaining
-                    updatedAmounts.layerPdma.detailShare // Optional chaining
+                    updatedAmounts.layerPdma.detailUsd,
+                    updatedAmounts.layerPdma.detailShare
                 ),
                 shareIdr: calculateShare(
-                    updatedAmounts.layerPdma.detailIdr, // Optional chaining
-                    updatedAmounts.layerPdma.detailShare // Optional chaining
+                    updatedAmounts.layerPdma.detailIdr,
+                    updatedAmounts.layerPdma.detailShare
                 ),
             },
             shareMa: {
                 shareUsd: calculateShare(
-                    updatedAmounts.layerMa.detailUsd,   // Optional chaining
-                    updatedAmounts.layerMa.detailShare  // Optional chaining
+                    updatedAmounts.layerMa.detailUsd,
+                    updatedAmounts.layerMa.detailShare
                 ),
                 shareIdr: calculateShare(
-                    updatedAmounts.layerMa.detailIdr,  // Optional chaining
-                    updatedAmounts.layerMa.detailShare  // Optional chaining
+                    updatedAmounts.layerMa.detailIdr,
+                    updatedAmounts.layerMa.detailShare
                 ),
             },
             shareAv: {
                 shareUsd: calculateShare(
-                    updatedAmounts.layerAv.detailUsd,   // Optional chaining
-                    updatedAmounts.layerAv.detailShare  // Optional chaining
+                    updatedAmounts.layerAv.detailUsd,
+                    updatedAmounts.layerAv.detailShare
                 ),
                 shareIdr: calculateShare(
-                    updatedAmounts.layerAv.detailIdr,  // Optional chaining
-                    updatedAmounts.layerAv.detailShare  // Optional chaining
+                    updatedAmounts.layerAv.detailIdr,
+                    updatedAmounts.layerAv.detailShare
                 ),
             },
             shareLiability: {
                 shareUsd: calculateShare(
-                    updatedAmounts.layerLiability.detailUsd, // Optional chaining
-                    updatedAmounts.layerLiability.detailShare // Optional chaining
+                    updatedAmounts.layerLiability.detailUsd,
+                    updatedAmounts.layerLiability.detailShare
                 ),
                 shareIdr: calculateShare(
-                    updatedAmounts.layerLiability.detailIdr, // Optional chaining
-                    updatedAmounts.layerLiability.detailShare // Optional chaining
+                    updatedAmounts.layerLiability.detailIdr,
+                    updatedAmounts.layerLiability.detailShare
                 ),
             },
         };

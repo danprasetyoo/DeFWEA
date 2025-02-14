@@ -12,7 +12,7 @@ interface StatementInputProps {
         inputTreatyYear: number;
     };
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void; // Add handleBlur prop
+    handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 function StatementInput({ formData, handleInputChange, handleBlur }: StatementInputProps) {
@@ -94,14 +94,14 @@ function StatementInput({ formData, handleInputChange, handleBlur }: StatementIn
                 inputRef={statementDateRef}
                 value={formData.inputStatementDate}
                 handleInputChange={handleInputChange}
-                handleBlur={handleBlur} // Add handleBlur prop
+                handleBlur={handleBlur}
             />
             <OpeningFundInput
                 amount={amount}
                 isNegative={isNegative}
                 handleCheckboxChange={handleCheckboxChange}
                 handleAmountInput={handleAmountInput}
-                handleBlur={handleBlur} // Add handleBlur prop
+                handleBlur={handleBlur}
             />
             <DateInput
                 id="inputStatementPeriod"
@@ -109,12 +109,12 @@ function StatementInput({ formData, handleInputChange, handleBlur }: StatementIn
                 inputRef={statementPeriodRef}
                 value={formData.inputStatementPeriod}
                 handleInputChange={handleInputChange}
-                handleBlur={handleBlur} // Add handleBlur prop
+                handleBlur={handleBlur}
             />
             <TreatyYearInput
                 value={formData.inputTreatyYear.toString()}
                 handleInputChange={handleTreatyYearChange}
-                handleBlur={handleBlur} // Add handleBlur prop
+                handleBlur={handleBlur}
             />
         </div>
     );
