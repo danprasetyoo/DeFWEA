@@ -9,6 +9,9 @@ const specs = require('./swagger');
 
 const app = express();
 
+// Prisma Client
+const prisma = new PrismaClient();
+
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN || 'http://192.168.1.87:5005');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -60,9 +63,6 @@ app.use((err, req, res, next) => {
 
     res.status(statusCode).json(response);
 });
-
-// Prisma Client
-const prisma = new PrismaClient();
 
 // Server Startup (with graceful shutdown)
 const PORT = process.env.PORT || 5000;
