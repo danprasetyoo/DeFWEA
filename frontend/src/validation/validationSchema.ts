@@ -1,12 +1,31 @@
-import * as Yup from 'yup';
+import * as Yup from "yup";
 
-const amountSchema = Yup.object({
-    usd: Yup.number().typeError("Harus berupa angka").nullable(),
-    idr: Yup.number().typeError("Harus berupa angka").nullable(),
-    share: Yup.number().typeError("Harus berupa angka").nullable(),
+const amountDetailSchema = Yup.object().shape({
+    Exchange: Yup.number().nullable(),
+    Margin: Yup.number().nullable(),
+    Brokerage: Yup.number().nullable(),
+    Interest: Yup.number().nullable(),
+    LAP: Yup.number().nullable(),
+    Maintenance: Yup.number().nullable(),
 });
 
-export const validationSchema = Yup.object({
+// Layer Amount Detail Schema
+const layerAmountDetailSchema = Yup.object().shape({
+    detailUsd: Yup.number().nullable(),
+    detailIdr: Yup.number().nullable(),
+    detailShare: Yup.number().nullable(),
+});
+
+// Share Detail Schema
+const shareDetailSchema = Yup.object().shape({
+    shareUsd: Yup.number().nullable(),
+    shareIdr: Yup.number().nullable(),
+    sharePremiumUsd: Yup.number().nullable(),
+    sharePremiumIdr: Yup.number().nullable(),
+});
+
+// Main Validation Schema
+export const validationSchema = Yup.object().shape({
     inputStatementDate: Yup.string()
         .nullable()
         .required("Tanggal statement wajib diisi")
@@ -40,40 +59,26 @@ export const validationSchema = Yup.object({
         .typeError("Tahun treaty harus berupa angka")
         .integer("Tahun treaty harus bilangan bulat")
         .positive("Tahun treaty harus positif"),
-    inputTreatyDetail: Yup.object({
-        treatyCurrentYear: Yup.object({
-            Exchange: Yup.number().nullable(),
-            Margin: Yup.number().nullable(),
-            Brokerage: Yup.number().nullable(),
-            Interest: Yup.number().nullable(),
-            LAP: Yup.number().nullable(),
-            Maintenance: Yup.number().nullable(),
-        }).nullable(),
-        treatyPriorYear: Yup.object({
-            Exchange: Yup.number().nullable(),
-            Margin: Yup.number().nullable(),
-            Brokerage: Yup.number().nullable(),
-            Interest: Yup.number().nullable(),
-            LAP: Yup.number().nullable(),
-            Maintenance: Yup.number().nullable(),
-        }).nullable(),
+    inputTreatyDetail: Yup.object().shape({
+        treatyCurrentYear: amountDetailSchema.nullable(),
+        treatyPriorYear: amountDetailSchema.nullable(),
     }).nullable(),
-    inputLayerDetail: Yup.object({
-        layerPdma: amountSchema.nullable(),
-        layerMa: amountSchema.nullable(),
-        layerAv: amountSchema.nullable(),
-        layerLiability: amountSchema.nullable(),
+    inputLayerDetail: Yup.object().shape({
+        layerPdma: layerAmountDetailSchema.nullable(),
+        layerMa: layerAmountDetailSchema.nullable(),
+        layerAv: layerAmountDetailSchema.nullable(),
+        layerLiability: layerAmountDetailSchema.nullable(),
     }).nullable(),
-    inputPremium: Yup.object({
-        premiumPdma: amountSchema.nullable(),
-        premiumMa: amountSchema.nullable(),
-        premiumAv: amountSchema.nullable(),
-        premiumLiability: amountSchema.nullable(),
+    inputPremium: Yup.object().shape({
+        premiumPdma: layerAmountDetailSchema.nullable(),
+        premiumMa: layerAmountDetailSchema.nullable(),
+        premiumAv: layerAmountDetailSchema.nullable(),
+        premiumLiability: layerAmountDetailSchema.nullable(),
     }).nullable(),
-    inputShare: Yup.object({
-        sharePdma: amountSchema.nullable(),
-        shareMa: amountSchema.nullable(),
-        shareAv: amountSchema.nullable(),
-        shareLiability: amountSchema.nullable(),
+    inputShare: Yup.object().shape({
+        sharePdma: shareDetailSchema.nullable(),
+        shareMa: shareDetailSchema.nullable(),
+        shareAv: shareDetailSchema.nullable(),
+        shareLiability: shareDetailSchema.nullable(),
     }).nullable(),
 });

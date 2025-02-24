@@ -38,6 +38,8 @@ model LayerDetail {
   detailUsd      Float    @default(0)
   detailIdr      Float    @default(0)
   detailShare    Float    @default(0)
+  calculatorId   Int?
+  calculator     Calculator? @relation(fields: [calculatorId], references: [id])
 }
 
 model PremiumDetail {
@@ -49,6 +51,8 @@ model PremiumDetail {
   premiumUsd     Float    @default(0)
   premiumIdr     Float    @default(0)
   premiumShare   Float    @default(0)
+  calculatorId   Int?
+  calculator     Calculator? @relation(fields: [calculatorId], references: [id])
 }
 
 model ShareDetail {
@@ -61,6 +65,8 @@ model ShareDetail {
   shareIdr       Float    @default(0)
   sharePremiumUsd Float   @default(0)
   sharePremiumIdr Float   @default(0)
+  calculatorId   Int?
+  calculator     Calculator? @relation(fields: [calculatorId], references: [id])
 }
 
 model TreatyDetail {
@@ -75,6 +81,8 @@ model TreatyDetail {
   Interest       Float? @default(0)
   LAP            Float? @default(0)
   Maintenance    Float? @default(0)
+  calculatorId   Int?
+  calculator     Calculator? @relation(fields: [calculatorId], references: [id])
 }
 
 model TreatyType {
@@ -95,4 +103,8 @@ model Calculator {
   version             String   @default("1")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  treatyDetails       TreatyDetail[]
+  layerDetails        LayerDetail[]
+  premiumDetails      PremiumDetail[]
+  shareDetails        ShareDetail[]
 }

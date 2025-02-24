@@ -58,11 +58,51 @@ export interface CalculatorPayload {
     inputStatementDate: string;
     inputOpeningfund: string;
     inputStatementPeriod: string;
-    inputTreatyYear: number;
-    inputTreatyDetail?: object;
-    inputLayerDetail?: object;
-    inputPremium?: object;
-    inputShare?: object;
+    inputTreatyYear: number | undefined; // Bisa null atau undefined
+    inputTreatyDetail: {
+        treatyCurrentYear: AmountDetail | null | undefined; // Bisa null, undefined, atau AmountDetail
+        treatyPriorYear: AmountDetail | null | undefined; // Bisa null, undefined, atau AmountDetail
+    } | null | undefined; // Bisa null atau undefined
+    inputLayerDetail: {
+        layerPdma: LayerAmountDetail | null | undefined;
+        layerMa: LayerAmountDetail | null | undefined;
+        layerAv: LayerAmountDetail | null | undefined;
+        layerLiability: LayerAmountDetail | null | undefined;
+    } | null | undefined;
+    inputPremium: {
+        premiumPdma: LayerAmountDetail | null | undefined;
+        premiumMa: LayerAmountDetail | null | undefined;
+        premiumAv: LayerAmountDetail | null | undefined;
+        premiumLiability: LayerAmountDetail | null | undefined;
+    } | null | undefined;
+    inputShare: {
+        sharePdma: ShareDetail | null | undefined;
+        shareMa: ShareDetail | null | undefined;
+        shareAv: ShareDetail | null | undefined;
+        shareLiability: ShareDetail | null | undefined;
+    } | null | undefined;
+}
+
+interface AmountDetail {
+    Exchange: number | null | undefined;
+    Margin: number | null | undefined;
+    Brokerage: number | null | undefined;
+    Interest: number | null | undefined;
+    LAP: number | null | undefined;
+    Maintenance: number | null | undefined;
+}
+
+interface LayerAmountDetail {
+    detailUsd: number | null | undefined;
+    detailIdr: number | null | undefined;
+    detailShare: number | null | undefined;
+}
+
+interface ShareDetail {
+    shareUsd: number | null | undefined;
+    shareIdr: number | null | undefined;
+    sharePremiumUsd: number | null | undefined;
+    sharePremiumIdr: number | null | undefined;
 }
 
 export const sanitizeNumber = (value: any): number => {
