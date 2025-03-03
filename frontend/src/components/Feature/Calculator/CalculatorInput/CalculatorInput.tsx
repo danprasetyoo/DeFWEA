@@ -19,7 +19,7 @@ interface CalculatorPayload {
     inputOpeningfund: string;
     inputStatementPeriod: string;
     inputTreatyYear: number;
-    inputTreatyDetail?: object | null;
+    inputTreatyDetail?: object;
     inputLayerDetail?: object;
     inputPremium?: object;
     inputShare?: object;

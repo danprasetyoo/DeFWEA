@@ -32,60 +32,76 @@ const createCalculator = async (req, res) => {
     try {
         const validatedData = CalculatorSchema.parse(req.body);
 
-        // 1. Fetch related Detail IDs (same as before)
-        const detailPromises = Object.keys(validatedData.inputLayerDetail || {}).map(async (key) => { // Handle potentially null inputLayerDetail
-            const detail = await prisma.detail.findUnique({ where: { description: key } });
-            if (!detail) {
-                throw new Error(`Detail with description '${key}' not found.`); // Important error handling
-            }
-            return { key, detailId: detail.id };
-        });
-
-        const details = await Promise.all(detailPromises);
-
         const calculator = await prisma.calculator.create({
             data: {
                 inputStatementDate: validatedData.inputStatementDate,
                 inputOpeningfund: validatedData.inputOpeningfund,
                 inputStatementPeriod: validatedData.inputStatementPeriod,
                 inputTreatyYear: validatedData.inputTreatyYear,
-                treatyDetails: {
-                    create: validatedData.inputTreatyDetail ? { // Conditionally create treatyDetails
-                        treatyCurrentYear: validatedData.inputTreatyDetail.treatyCurrentYear,
-                        treatyPriorYear: validatedData.inputTreatyDetail.treatyPriorYear,
-                    } : undefined,
+                inputTreatyDetail: {
+                    create: {
+                        treatyCurrentYear: {
+                            create: validatedData.inputTreatyDetail.treatyCurrentYear,
+                        },
+                        treatyPriorYear: {
+                            create: validatedData.inputTreatyDetail.treatyPriorYear,
+                        },
+                    },
                 },
-                layerDetails: {
-                    create: Object.keys(validatedData.inputLayerDetail || {}).map(key => ({ // Handle potentially null inputLayerDetail
-                        detailId: details.find(d => d.key === key).detailId,
-                        detailUsd: validatedData.inputLayerDetail?.[key]?.detailUsd, // Optional chaining
-                        detailIdr: validatedData.inputLayerDetail?.[key]?.detailIdr,
-                        detailShare: validatedData.inputLayerDetail?.[key]?.detailShare,
-                    })),
+                inputLayerDetail: {
+                    create: {
+                        layerPdma: {
+                            create: validatedData.inputLayerDetail.layerPdma,
+                        },
+                        layerMa: {
+                            create: validatedData.inputLayerDetail.layerMa,
+                        },
+                        layerAv: {
+                            create: validatedData.inputLayerDetail.layerAv,
+                        },
+                        layerLiability: {
+                            create: validatedData.inputLayerDetail.layerLiability,
+                        },
+                    },
                 },
-                premiumDetails: {
-                    create: Object.keys(validatedData.inputPremium || {}).map(key => ({ // Handle potentially null inputPremium
-                        detailId: details.find(d => d.key === key).detailId,
-                        premiumUsd: validatedData.inputPremium?.[key]?.premiumUsd, // Optional chaining
-                        premiumIdr: validatedData.inputPremium?.[key]?.premiumIdr,
-                        premiumShare: validatedData.inputPremium?.[key]?.premiumShare,
-                    })),
+                inputPremium: {
+                    create: {
+                        premiumPdma: {
+                            create: validatedData.inputPremium.premiumPdma,
+                        },
+                        premiumMa: {
+                            create: validatedData.inputPremium.premiumMa,
+                        },
+                        premiumAv: {
+                            create: validatedData.inputPremium.premiumAv,
+                        },
+                        premiumLiability: {
+                            create: validatedData.inputPremium.premiumLiability,
+                        },
+                    },
                 },
-                shareDetails: {
-                    create: Object.keys(validatedData.inputShare || {}).map(key => ({ // Handle potentially null inputShare
-                        detailId: details.find(d => d.key === key).detailId,
-                        shareUsd: validatedData.inputShare?.[key]?.shareUsd, // Optional chaining
-                        shareIdr: validatedData.inputShare?.[key]?.shareIdr,
-                        sharePremiumUsd: validatedData.inputShare?.[key]?.sharePremiumUsd,
-                        sharePremiumIdr: validatedData.inputShare?.[key]?.sharePremiumIdr,
-                    })),
+                inputShare: {
+                    create: {
+                        sharePdma: {
+                            create: validatedData.inputShare.sharePdma,
+                        },
+                        shareMa: {
+                            create: validatedData.inputShare.shareMa,
+                        },
+                        shareAv: {
+                            create: validatedData.inputShare.shareAv,
+                        },
+                        shareLiability: {
+                            create: validatedData.inputShare.shareLiability,
+                        },
+                    },
                 },
             },
-            include: { // Include related data in the response
-                treatyDetails: true,
-                layerDetails: true,
-                premiumDetails: true,
-                shareDetails: true,
+            include: {
+                inputTreatyDetail: true,
+                inputLayerDetail: true,
+                inputPremium: true,
+                inputShare: true,
             },
         });
 
@@ -158,101 +174,23 @@ const updateCalculator = async (req, res) => {
 
         const validatedData = CalculatorSchema.partial().parse(req.body);
 
-        const updatedData = {};
-
-        if (validatedData.inputStatementDate !== undefined) updatedData.inputStatementDate = validatedData.inputStatementDate;
-        if (validatedData.inputOpeningfund !== undefined) updatedData.inputOpeningfund = validatedData.inputOpeningfund;
-        if (validatedData.inputStatementPeriod !== undefined) updatedData.inputStatementPeriod = validatedData.inputStatementPeriod;
-        if (validatedData.inputTreatyYear !== undefined) updatedData.inputTreatyYear = validatedData.inputTreatyYear;
-
-        if (validatedData.inputTreatyDetail) {
-            updatedData.treatyDetails = {
-                update: {
-                    treatyCurrentYear: validatedData.inputTreatyDetail.treatyCurrentYear,
-                    treatyPriorYear: validatedData.inputTreatyDetail.treatyPriorYear,
-                },
-            };
-        }
-
-        if (validatedData.inputLayerDetail) {
-            const detailPromises = Object.keys(validatedData.inputLayerDetail).map(async (key) => {
-                const detail = await prisma.detail.findUnique({ where: { description: key } });
-                if (!detail) {
-                    throw new Error(`Detail with description '${key}' not found.`);
-                }
-                return { key, detailId: detail.id };
-            });
-
-            const details = await Promise.all(detailPromises);
-
-            updatedData.layerDetails = {
-                updateMany: Object.keys(validatedData.inputLayerDetail).map(key => ({
-                    where: { detailId: details.find(d => d.key === key).detailId },
-                    data: {
-                        detailUsd: validatedData.inputLayerDetail[key]?.detailUsd,
-                        detailIdr: validatedData.inputLayerDetail[key]?.detailIdr,
-                        detailShare: validatedData.inputLayerDetail[key]?.detailShare,
-                    },
-                })),
-            };
-        }
-
-        if (validatedData.inputPremium) {
-            const detailPromises = Object.keys(validatedData.inputPremium).map(async (key) => {
-                const detail = await prisma.detail.findUnique({ where: { description: key } });
-                if (!detail) {
-                    throw new Error(`Detail with description '${key}' not found.`);
-                }
-                return { key, detailId: detail.id };
-            });
-
-            const details = await Promise.all(detailPromises);
-
-            updatedData.premiumDetails = {
-                updateMany: Object.keys(validatedData.inputPremium).map(key => ({
-                    where: { detailId: details.find(d => d.key === key).detailId },
-                    data: {
-                        premiumUsd: validatedData.inputPremium[key]?.premiumUsd,
-                        premiumIdr: validatedData.inputPremium[key]?.premiumIdr,
-                        premiumShare: validatedData.inputPremium[key]?.premiumShare,
-                    },
-                })),
-            };
-        }
-
-        if (validatedData.inputShare) {
-            const detailPromises = Object.keys(validatedData.inputShare).map(async (key) => {
-                const detail = await prisma.detail.findUnique({ where: { description: key } });
-                if (!detail) {
-                    throw new Error(`Detail with description '${key}' not found.`);
-                }
-                return { key, detailId: detail.id };
-            });
-
-            const details = await Promise.all(detailPromises);
-
-            updatedData.shareDetails = {
-                updateMany: Object.keys(validatedData.inputShare).map(key => ({
-                    where: { detailId: details.find(d => d.key === key).detailId },
-                    data: {
-                        shareUsd: validatedData.inputShare[key]?.shareUsd,
-                        shareIdr: validatedData.inputShare[key]?.shareIdr,
-                        sharePremiumUsd: validatedData.inputShare[key]?.sharePremiumUsd,
-                        sharePremiumIdr: validatedData.inputShare[key]?.sharePremiumIdr,
-                    },
-                })),
-            };
-        }
-
-
         const updatedCalculator = await prisma.calculator.update({
             where: { id },
-            data: updatedData,
+            data: {
+                inputStatementDate: validatedData.inputStatementDate,
+                inputOpeningfund: validatedData.inputOpeningfund,
+                inputStatementPeriod: validatedData.inputStatementPeriod,
+                inputTreatyYear: validatedData.inputTreatyYear,
+                inputTreatyDetail: validatedData.inputTreatyDetail,
+                inputLayerDetail: validatedData.inputLayerDetail,
+                inputPremium: validatedData.inputPremium,
+                inputShare: validatedData.inputShare,
+            },
             include: {
-                treatyDetails: true,
-                layerDetails: true,
-                premiumDetails: true,
-                shareDetails: true,
+                inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },
+                inputLayerDetail: { include: { layerPdma: true, layerMa: true, layerAv: true, layerLiability: true } },
+                inputPremium: { include: { premiumPdma: true, premiumMa: true, premiumAv: true, premiumLiability: true } },
+                inputShare: { include: { sharePdma: true, shareMa: true, shareAv: true, shareLiability: true } },
             },
         });
 
