@@ -30,9 +30,9 @@ const handleError = (res, error, defaultMessage) => {
 
 const createCalculator = async (req, res) => {
     try {
-        console.log('Request body:', req.body); // Add logging for request body
+        console.log('Request body:', req.body);
         const validatedData = CalculatorSchema.parse(req.body);
-        console.log('Validated data:', validatedData); // Add logging for validated data
+        console.log('Validated data:', validatedData);
 
         const calculator = await prisma.calculator.create({
             data: {
@@ -42,49 +42,141 @@ const createCalculator = async (req, res) => {
                 inputTreatyYear: validatedData.inputTreatyYear,
                 inputTreatyDetail: validatedData.inputTreatyDetail ? {
                     create: {
-                        treatyCurrentYear: validatedData.inputTreatyDetail.treatyCurrentYear,
-                        treatyPriorYear: validatedData.inputTreatyDetail.treatyPriorYear,
+                        treatyCurrentYear: validatedData.inputTreatyDetail.treatyCurrentYear ? {
+                            Exchange: validatedData.inputTreatyDetail.treatyCurrentYear.Exchange,
+                            Margin: validatedData.inputTreatyDetail.treatyCurrentYear.Margin,
+                            Brokerage: validatedData.inputTreatyDetail.treatyCurrentYear.Brokerage,
+                            Interest: validatedData.inputTreatyDetail.treatyCurrentYear.Interest,
+                            LAP: validatedData.inputTreatyDetail.treatyCurrentYear.LAP,
+                            Maintenance: validatedData.inputTreatyDetail.treatyCurrentYear.Maintenance,
+                        } : undefined,
+                        treatyPriorYear: validatedData.inputTreatyDetail.treatyPriorYear ? {
+                            Exchange: validatedData.inputTreatyDetail.treatyPriorYear.Exchange,
+                            Margin: validatedData.inputTreatyDetail.treatyPriorYear.Margin,
+                            Brokerage: validatedData.inputTreatyDetail.treatyPriorYear.Brokerage,
+                            Interest: validatedData.inputTreatyDetail.treatyPriorYear.Interest,
+                            LAP: validatedData.inputTreatyDetail.treatyPriorYear.LAP,
+                            Maintenance: validatedData.inputTreatyDetail.treatyPriorYear.Maintenance,
+                        } : undefined,
                     },
                 } : undefined,
                 inputLayerDetail: validatedData.inputLayerDetail ? {
                     create: {
-                        layerPdma: validatedData.inputLayerDetail.layerPdma,
-                        layerMa: validatedData.inputLayerDetail.layerMa,
-                        layerAv: validatedData.inputLayerDetail.layerAv,
-                        layerLiability: validatedData.inputLayerDetail.layerLiability,
+                        layerPdma: validatedData.inputLayerDetail.layerPdma ? {
+                            detailUsd: validatedData.inputLayerDetail.layerPdma.detailUsd,
+                            detailIdr: validatedData.inputLayerDetail.layerPdma.detailIdr,
+                            detailShare: validatedData.inputLayerDetail.layerPdma.detailShare,
+                        } : undefined,
+                        layerMa: validatedData.inputLayerDetail.layerMa ? {
+                            detailUsd: validatedData.inputLayerDetail.layerMa.detailUsd,
+                            detailIdr: validatedData.inputLayerDetail.layerMa.detailIdr,
+                            detailShare: validatedData.inputLayerDetail.layerMa.detailShare,
+                        } : undefined,
+                        layerAv: validatedData.inputLayerDetail.layerAv ? {
+                            detailUsd: validatedData.inputLayerDetail.layerAv.detailUsd,
+                            detailIdr: validatedData.inputLayerDetail.layerAv.detailIdr,
+                            detailShare: validatedData.inputLayerDetail.layerAv.detailShare,
+                        } : undefined,
+                        layerLiability: validatedData.inputLayerDetail.layerLiability ? {
+                            detailUsd: validatedData.inputLayerDetail.layerLiability.detailUsd,
+                            detailIdr: validatedData.inputLayerDetail.layerLiability.detailIdr,
+                            detailShare: validatedData.inputLayerDetail.layerLiability.detailShare,
+                        } : undefined,
                     },
                 } : undefined,
                 inputPremium: validatedData.inputPremium ? {
                     create: {
-                        premiumPdma: validatedData.inputPremium.premiumPdma,
-                        premiumMa: validatedData.inputPremium.premiumMa,
-                        premiumAv: validatedData.inputPremium.premiumAv,
-                        premiumLiability: validatedData.inputPremium.premiumLiability,
+                        premiumPdma: validatedData.inputPremium.premiumPdma ? {
+                            premiumUsd: validatedData.inputPremium.premiumPdma.premiumUsd,
+                            premiumIdr: validatedData.inputPremium.premiumPdma.premiumIdr,
+                            premiumShare: validatedData.inputPremium.premiumPdma.premiumShare,
+                        } : undefined,
+                        premiumMa: validatedData.inputPremium.premiumMa ? {
+                            premiumUsd: validatedData.inputPremium.premiumMa.premiumUsd,
+                            premiumIdr: validatedData.inputPremium.premiumMa.premiumIdr,
+                            premiumShare: validatedData.inputPremium.premiumMa.premiumShare,
+                        } : undefined,
+                        premiumAv: validatedData.inputPremium.premiumAv ? {
+                            premiumUsd: validatedData.inputPremium.premiumAv.premiumUsd,
+                            premiumIdr: validatedData.inputPremium.premiumAv.premiumIdr,
+                            premiumShare: validatedData.inputPremium.premiumAv.premiumShare,
+                        } : undefined,
+                        premiumLiability: validatedData.inputPremium.premiumLiability ? {
+                            premiumUsd: validatedData.inputPremium.premiumLiability.premiumUsd,
+                            premiumIdr: validatedData.inputPremium.premiumLiability.premiumIdr,
+                            premiumShare: validatedData.inputPremium.premiumLiability.premiumShare,
+                        } : undefined,
                     },
                 } : undefined,
                 inputShare: validatedData.inputShare ? {
                     create: {
-                        sharePdma: validatedData.inputShare.sharePdma,
-                        shareMa: validatedData.inputShare.shareMa,
-                        shareAv: validatedData.inputShare.shareAv,
-                        shareLiability: validatedData.inputShare.shareLiability,
+                        sharePdma: validatedData.inputShare.sharePdma ? {
+                            shareUsd: validatedData.inputShare.sharePdma.shareUsd,
+                            shareIdr: validatedData.inputShare.sharePdma.shareIdr,
+                            sharePremiumUsd: validatedData.inputShare.sharePdma.sharePremiumUsd,
+                            sharePremiumIdr: validatedData.inputShare.sharePdma.sharePremiumIdr,
+                        } : undefined,
+                        shareMa: validatedData.inputShare.shareMa ? {
+                            shareUsd: validatedData.inputShare.shareMa.shareUsd,
+                            shareIdr: validatedData.inputShare.shareMa.shareIdr,
+                            sharePremiumUsd: validatedData.inputShare.shareMa.sharePremiumUsd,
+                            sharePremiumIdr: validatedData.inputShare.shareMa.sharePremiumIdr,
+                        } : undefined,
+                        shareAv: validatedData.inputShare.shareAv ? {
+                            shareUsd: validatedData.inputShare.shareAv.shareUsd,
+                            shareIdr: validatedData.inputShare.shareAv.shareIdr,
+                            sharePremiumUsd: validatedData.inputShare.shareAv.sharePremiumUsd,
+                            sharePremiumIdr: validatedData.inputShare.shareAv.sharePremiumIdr,
+                        } : undefined,
+                        shareLiability: validatedData.inputShare.shareLiability ? {
+                            shareUsd: validatedData.inputShare.shareLiability.shareUsd,
+                            shareIdr: validatedData.inputShare.shareLiability.shareIdr,
+                            sharePremiumUsd: validatedData.inputShare.shareLiability.sharePremiumUsd,
+                            sharePremiumIdr: validatedData.inputShare.shareLiability.sharePremiumIdr,
+                        } : undefined,
                     },
                 } : undefined,
             },
             include: {
-                inputTreatyDetail: true,
-                inputLayerDetail: true,
-                inputPremium: true,
-                inputShare: true,
+                inputTreatyDetail: {
+                    include: {
+                        treatyCurrentYear: true,
+                        treatyPriorYear: true,
+                    },
+                },
+                inputLayerDetail: {
+                    include: {
+                        layerPdma: true,
+                        layerMa: true,
+                        layerAv: true,
+                        layerLiability: true,
+                    },
+                },
+                inputPremium: {
+                    include: {
+                        premiumPdma: true,
+                        premiumMa: true,
+                        premiumAv: true,
+                        premiumLiability: true,
+                    },
+                },
+                inputShare: {
+                    include: {
+                        sharePdma: true,
+                        shareMa: true,
+                        shareAv: true,
+                        shareLiability: true,
+                    },
+                },
             },
         });
 
-        console.log('Calculator created:', calculator); // Add logging for created calculator
+        console.log('Calculator created:', calculator);
         res.status(201).json({ data: calculator });
     } catch (error) {
         console.error('Error creating calculator:', error);
         if (error.meta && error.meta.target) {
-            console.error('Error target:', error.meta.target); // Add logging for error target
+            console.error('Error target:', error.meta.target);
         }
         handleError(res, error, 'Failed to create calculator');
     }
