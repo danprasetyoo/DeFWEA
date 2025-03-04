@@ -30,7 +30,9 @@ const handleError = (res, error, defaultMessage) => {
 
 const createCalculator = async (req, res) => {
     try {
+        console.log('Request body:', req.body); // Add logging for request body
         const validatedData = CalculatorSchema.parse(req.body);
+        console.log('Validated data:', validatedData); // Add logging for validated data
 
         const calculator = await prisma.calculator.create({
             data: {
@@ -38,64 +40,36 @@ const createCalculator = async (req, res) => {
                 inputOpeningfund: validatedData.inputOpeningfund,
                 inputStatementPeriod: validatedData.inputStatementPeriod,
                 inputTreatyYear: validatedData.inputTreatyYear,
-                inputTreatyDetail: {
+                inputTreatyDetail: validatedData.inputTreatyDetail ? {
                     create: {
-                        treatyCurrentYear: {
-                            create: validatedData.inputTreatyDetail.treatyCurrentYear,
-                        },
-                        treatyPriorYear: {
-                            create: validatedData.inputTreatyDetail.treatyPriorYear,
-                        },
+                        treatyCurrentYear: validatedData.inputTreatyDetail.treatyCurrentYear,
+                        treatyPriorYear: validatedData.inputTreatyDetail.treatyPriorYear,
                     },
-                },
-                inputLayerDetail: {
+                } : undefined,
+                inputLayerDetail: validatedData.inputLayerDetail ? {
                     create: {
-                        layerPdma: {
-                            create: validatedData.inputLayerDetail.layerPdma,
-                        },
-                        layerMa: {
-                            create: validatedData.inputLayerDetail.layerMa,
-                        },
-                        layerAv: {
-                            create: validatedData.inputLayerDetail.layerAv,
-                        },
-                        layerLiability: {
-                            create: validatedData.inputLayerDetail.layerLiability,
-                        },
+                        layerPdma: validatedData.inputLayerDetail.layerPdma,
+                        layerMa: validatedData.inputLayerDetail.layerMa,
+                        layerAv: validatedData.inputLayerDetail.layerAv,
+                        layerLiability: validatedData.inputLayerDetail.layerLiability,
                     },
-                },
-                inputPremium: {
+                } : undefined,
+                inputPremium: validatedData.inputPremium ? {
                     create: {
-                        premiumPdma: {
-                            create: validatedData.inputPremium.premiumPdma,
-                        },
-                        premiumMa: {
-                            create: validatedData.inputPremium.premiumMa,
-                        },
-                        premiumAv: {
-                            create: validatedData.inputPremium.premiumAv,
-                        },
-                        premiumLiability: {
-                            create: validatedData.inputPremium.premiumLiability,
-                        },
+                        premiumPdma: validatedData.inputPremium.premiumPdma,
+                        premiumMa: validatedData.inputPremium.premiumMa,
+                        premiumAv: validatedData.inputPremium.premiumAv,
+                        premiumLiability: validatedData.inputPremium.premiumLiability,
                     },
-                },
-                inputShare: {
+                } : undefined,
+                inputShare: validatedData.inputShare ? {
                     create: {
-                        sharePdma: {
-                            create: validatedData.inputShare.sharePdma,
-                        },
-                        shareMa: {
-                            create: validatedData.inputShare.shareMa,
-                        },
-                        shareAv: {
-                            create: validatedData.inputShare.shareAv,
-                        },
-                        shareLiability: {
-                            create: validatedData.inputShare.shareLiability,
-                        },
+                        sharePdma: validatedData.inputShare.sharePdma,
+                        shareMa: validatedData.inputShare.shareMa,
+                        shareAv: validatedData.inputShare.shareAv,
+                        shareLiability: validatedData.inputShare.shareLiability,
                     },
-                },
+                } : undefined,
             },
             include: {
                 inputTreatyDetail: true,
@@ -105,9 +79,13 @@ const createCalculator = async (req, res) => {
             },
         });
 
+        console.log('Calculator created:', calculator); // Add logging for created calculator
         res.status(201).json({ data: calculator });
     } catch (error) {
         console.error('Error creating calculator:', error);
+        if (error.meta && error.meta.target) {
+            console.error('Error target:', error.meta.target); // Add logging for error target
+        }
         handleError(res, error, 'Failed to create calculator');
     }
 };
@@ -162,6 +140,33 @@ const getCalculatorById = async (req, res) => {
         res.status(200).json(calculator);
     } catch (error) {
         handleError(res, error, 'Failed to fetch calculator');
+    }
+};
+
+const getCalculatorByVersion = async (req, res) => {
+    try {
+        const { version } = req.params;
+        if (!version) {
+            return res.status(400).json({ error: "Invalid version format" });
+        }
+
+        const calculator = await prisma.calculator.findFirst({
+            where: { version },
+            include: {
+                inputTreatyDetail: { include: { treatyCurrentYear: true, treatyPriorYear: true } },
+                inputLayerDetail: { include: { layerPdma: true, layerMa: true, layerAv: true, layerLiability: true } },
+                inputPremium: { include: { premiumPdma: true, premiumMa: true, premiumAv: true, premiumLiability: true } },
+                inputShare: { include: { sharePdma: true, shareMa: true, shareAv: true, shareLiability: true } },
+            },
+        });
+
+        if (!calculator) {
+            return res.status(404).json({ error: 'Calculator not found' });
+        }
+
+        res.status(200).json(calculator);
+    } catch (error) {
+        handleError(res, error, 'Failed to fetch calculator by version');
     }
 };
 
@@ -226,4 +231,5 @@ module.exports = {
     getCalculatorById,
     updateCalculator,
     deleteCalculator,
+    getCalculatorByVersion, // Add the new function to the exports
 };
