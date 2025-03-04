@@ -30,9 +30,9 @@ const handleError = (res, error, defaultMessage) => {
 
 const createCalculator = async (req, res) => {
     try {
-        console.log('Request body:', req.body);
+        console.log('Request body:', req.body); // Add logging for request body
         const validatedData = CalculatorSchema.parse(req.body);
-        console.log('Validated data:', validatedData);
+        console.log('Validated data:', validatedData); // Add logging for validated data
 
         const calculator = await prisma.calculator.create({
             data: {
@@ -171,12 +171,12 @@ const createCalculator = async (req, res) => {
             },
         });
 
-        console.log('Calculator created:', calculator);
+        console.log('Calculator created:', calculator); // Add logging for created calculator
         res.status(201).json({ data: calculator });
     } catch (error) {
         console.error('Error creating calculator:', error);
         if (error.meta && error.meta.target) {
-            console.error('Error target:', error.meta.target);
+            console.error('Error target:', error.meta.target); // Add logging for error target
         }
         handleError(res, error, 'Failed to create calculator');
     }
