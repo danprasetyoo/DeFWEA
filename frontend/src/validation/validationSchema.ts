@@ -1,11 +1,5 @@
 import * as Yup from 'yup';
 
-const amountSchema = Yup.object({
-    usd: Yup.number().typeError("Harus berupa angka").nullable(),
-    idr: Yup.number().typeError("Harus berupa angka").nullable(),
-    share: Yup.number().typeError("Harus berupa angka").nullable(),
-});
-
 export const validationSchema = Yup.object({
     inputStatementDate: Yup.string()
         .nullable()
@@ -40,40 +34,27 @@ export const validationSchema = Yup.object({
         .typeError("Tahun treaty harus berupa angka")
         .integer("Tahun treaty harus bilangan bulat")
         .positive("Tahun treaty harus positif"),
-    inputTreatyDetail: Yup.object({
-        treatyCurrentYear: Yup.object({
-            Exchange: Yup.number().nullable(),
-            Margin: Yup.number().nullable(),
-            Brokerage: Yup.number().nullable(),
-            Interest: Yup.number().nullable(),
-            LAP: Yup.number().nullable(),
-            Maintenance: Yup.number().nullable(),
-        }).nullable(),
-        treatyPriorYear: Yup.object({
-            Exchange: Yup.number().nullable(),
-            Margin: Yup.number().nullable(),
-            Brokerage: Yup.number().nullable(),
-            Interest: Yup.number().nullable(),
-            LAP: Yup.number().nullable(),
-            Maintenance: Yup.number().nullable(),
-        }).nullable(),
+    version: Yup.string().optional(),
+    treatyYear: Yup.object({
+        treatyDetailIdCurrent: Yup.number().integer().nullable(),
+        treatyDetailIdPrior: Yup.number().integer().nullable(),
     }).nullable(),
-    inputLayerDetail: Yup.object({
-        layerPdma: amountSchema.nullable(),
-        layerMa: amountSchema.nullable(),
-        layerAv: amountSchema.nullable(),
-        layerLiability: amountSchema.nullable(),
+    layer: Yup.object({
+        layerDetailIdPdma: Yup.number().integer().nullable(),
+        layerDetailIdMa: Yup.number().integer().nullable(),
+        layerDetailIdAv: Yup.number().integer().nullable(),
+        layerDetailIdLiability: Yup.number().integer().nullable(),
     }).nullable(),
-    inputPremium: Yup.object({
-        premiumPdma: amountSchema.nullable(),
-        premiumMa: amountSchema.nullable(),
-        premiumAv: amountSchema.nullable(),
-        premiumLiability: amountSchema.nullable(),
+    premium: Yup.object({
+        premiumIdPdma: Yup.number().integer().nullable(),
+        premiumIdMa: Yup.number().integer().nullable(),
+        premiumIdAv: Yup.number().integer().nullable(),
+        premiumIdLiability: Yup.number().integer().nullable(),
     }).nullable(),
-    inputShare: Yup.object({
-        sharePdma: amountSchema.nullable(),
-        shareMa: amountSchema.nullable(),
-        shareAv: amountSchema.nullable(),
-        shareLiability: amountSchema.nullable(),
+    share: Yup.object({
+        shareIdPdma: Yup.number().integer().nullable(),
+        shareIdMa: Yup.number().integer().nullable(),
+        shareIdAv: Yup.number().integer().nullable(),
+        shareIdLiability: Yup.number().integer().nullable(),
     }).nullable(),
 });

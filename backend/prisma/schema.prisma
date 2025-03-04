@@ -9,91 +9,71 @@ datasource db {
 }
 
 model TreatyDetail {
-  id                   Int           @id @default(autoincrement())
-  Exchange             Float?
-  Margin               Float?
-  Brokerage            Float?
-  Interest             Float?
-  LAP                  Float?
-  Maintenance          Float?
-  treatyCurrent        TreatyYear?   @relation("TreatyDetailToTreatyYearCurrent", map: "TreatyDetailToTreatyYearCurrent")
+  id                    Int           @id @default(autoincrement())
+  Exchange              Float?
+  Margin                Float?
+  Brokerage             Float?
+  Interest              Float?
+  LAP                   Float?
+  Maintenance           Float?
   treatyDetailIdCurrent Int?
-  treatyPrior          TreatyYear?   @relation("TreatyDetailToTreatyYearPrior", map: "TreatyDetailToTreatyYearPrior")
   treatyDetailIdPrior   Int?
-  transactions         Transaction[] @relation("TreatyDetailToTransaction")
-  transactionCode      String?
+  transactions          Transaction[] @relation("TreatyDetailToTransaction")
+  transactionCode       String?
 }
 
 model TreatyYear {
   id                    Int           @id @default(autoincrement())
-  treatyCurrentYear     TreatyDetail? @relation("TreatyDetailToTreatyYearCurrent", fields: [treatyDetailIdCurrent], references: [id], map: "TreatyDetailToTreatyYearCurrent")
   treatyDetailIdCurrent Int?          @unique
-  treatyPriorYear       TreatyDetail? @relation("TreatyDetailToTreatyYearPrior", fields: [treatyDetailIdPrior], references: [id], map: "TreatyDetailToTreatyYearPrior")
   treatyDetailIdPrior   Int?          @unique
   calculators           Calculator[]  @relation("CalculatorToTreatyDetail")
   transactions          Transaction[] @relation("TreatyYearToTransaction")
 }
 
 model LayerDetail {
-  id                     Int           @id @default(autoincrement())
-  detailUsd              Float?
-  detailIdr              Float?
-  detailShare            Float?
-  layerPdma              Layer?        @relation("LayerDetailToLayerPdma", map: "LayerDetailToLayerPdma")
-  layerDetailIdPdma      Int?
-  layerMa                Layer?        @relation("LayerDetailToLayerMa", map: "LayerDetailToLayerMa")
-  layerDetailIdMa        Int?
-  layerAv                Layer?        @relation("LayerDetailToLayerAv", map: "LayerDetailToLayerAv")
-  layerDetailIdAv        Int?
-  layerLiability         Layer?        @relation("LayerDetailToLayerLiability", map: "LayerDetailToLayerLiability")
+  id                   Int           @id @default(autoincrement())
+  detailUsd            Float?
+  detailIdr            Float?
+  detailShare          Float?
+  layerDetailIdPdma    Int?
+  layerDetailIdMa      Int?
+  layerDetailIdAv      Int?
   layerDetailIdLiability Int?
-  transactions           Transaction[] @relation("LayerDetailToTransaction")
-  transactionCode        String?
+  transactions         Transaction[] @relation("LayerDetailToTransaction")
+  transactionCode      String?
 }
 
 model Layer {
-  id                     Int           @id @default(autoincrement())
-  layerPdma              LayerDetail?  @relation("LayerDetailToLayerPdma", fields: [layerDetailIdPdma], references: [id], map: "LayerDetailToLayerPdma")
-  layerDetailIdPdma      Int?          @unique
-  layerMa                LayerDetail?  @relation("LayerDetailToLayerMa", fields: [layerDetailIdMa], references: [id], map: "LayerDetailToLayerMa")
-  layerDetailIdMa        Int?          @unique
-  layerAv                LayerDetail?  @relation("LayerDetailToLayerAv", fields: [layerDetailIdAv], references: [id], map: "LayerDetailToLayerAv")
-  layerDetailIdAv        Int?          @unique
-  layerLiability         LayerDetail?  @relation("LayerDetailToLayerLiability", fields: [layerDetailIdLiability], references: [id], map: "LayerDetailToLayerLiability")
+  id                   Int           @id @default(autoincrement())
+  layerDetailIdPdma    Int?          @unique
+  layerDetailIdMa      Int?          @unique
+  layerDetailIdAv      Int?          @unique
   layerDetailIdLiability Int?          @unique
-  calculators            Calculator[]  @relation("CalculatorToLayerDetail")
-  transactions           Transaction[] @relation("LayerToTransaction")
+  calculators          Calculator[]  @relation("CalculatorToLayerDetail")
+  transactions         Transaction[] @relation("LayerToTransaction")
 }
 
 model PremiumDetail {
-  id               Int           @id @default(autoincrement())
-  premiumUsd       Float?
-  premiumIdr       Float?
-  premiumShare     Float?
-  premiumPdma      Premium?      @relation("PremiumToPremiumDetailPdma", map: "PremiumToPremiumDetailPdma")
-  premiumIdPdma    Int?
-  premiumMa        Premium?      @relation("PremiumToPremiumDetailMa", map: "PremiumToPremiumDetailMa")
-  premiumIdMa      Int?
-  premiumAv        Premium?      @relation("PremiumToPremiumDetailAv", map: "PremiumToPremiumDetailAv")
-  premiumIdAv      Int?
-  premiumLiability Premium?      @relation("PremiumToPremiumDetailLiability", map: "PremiumToPremiumDetailLiability")
-  premiumIdLiability Int?
-  transactions     Transaction[] @relation("PremiumDetailToTransaction")
-  transactionCode  String?
+  id                   Int           @id @default(autoincrement())
+  premiumUsd           Float?
+  premiumIdr           Float?
+  premiumShare         Float?
+  premiumIdPdma        Int?
+  premiumIdMa          Int?
+  premiumIdAv          Int?
+  premiumIdLiability   Int?
+  transactions         Transaction[] @relation("PremiumDetailToTransaction")
+  transactionCode      String?
 }
 
 model Premium {
-  id               Int            @id @default(autoincrement())
-  premiumPdma      PremiumDetail? @relation("PremiumToPremiumDetailPdma", fields: [premiumIdPdma], references: [id], map: "PremiumToPremiumDetailPdma")
-  premiumIdPdma    Int?           @unique
-  premiumMa        PremiumDetail? @relation("PremiumToPremiumDetailMa", fields: [premiumIdMa], references: [id], map: "PremiumToPremiumDetailMa")
-  premiumIdMa      Int?           @unique
-  premiumAv        PremiumDetail? @relation("PremiumToPremiumDetailAv", fields: [premiumIdAv], references: [id], map: "PremiumToPremiumDetailAv")
-  premiumIdAv      Int?           @unique
-  premiumLiability PremiumDetail? @relation("PremiumToPremiumDetailLiability", fields: [premiumIdLiability], references: [id], map: "PremiumToPremiumDetailLiability")
-  premiumIdLiability Int?           @unique
-  calculators      Calculator[]   @relation("CalculatorToPremium")
-  transactions     Transaction[]  @relation("PremiumToTransaction")
+  id                   Int           @id @default(autoincrement())
+  premiumIdPdma        Int?          @unique
+  premiumIdMa          Int?          @unique
+  premiumIdAv          Int?          @unique
+  premiumIdLiability   Int?          @unique
+  calculators          Calculator[]  @relation("CalculatorToPremium")
+  transactions         Transaction[] @relation("PremiumToTransaction")
 }
 
 model ShareDetail {
@@ -102,30 +82,22 @@ model ShareDetail {
   shareIdr        Float?
   sharePremiumUsd Float?
   sharePremiumIdr Float?
-  sharePdma       Share?        @relation("ShareToShareDetailPdma", map: "ShareToShareDetailPdma")
   shareIdPdma     Int?
-  shareMa         Share?        @relation("ShareToShareDetailMa", map: "ShareToShareDetailMa")
   shareIdMa       Int?
-  shareAv         Share?        @relation("ShareToShareDetailAv", map: "ShareToShareDetailAv")
   shareIdAv       Int?
-  shareLiability  Share?        @relation("ShareToShareDetailLiability", map: "ShareToShareDetailLiability")
   shareIdLiability Int?
   transactions    Transaction[] @relation("ShareDetailToTransaction")
   transactionCode String?
 }
 
 model Share {
-  id              Int            @id @default(autoincrement())
-  sharePdma       ShareDetail?   @relation("ShareToShareDetailPdma", fields: [shareIdPdma], references: [id], map: "ShareToShareDetailPdma")
-  shareIdPdma     Int?           @unique
-  shareMa         ShareDetail?   @relation("ShareToShareDetailMa", fields: [shareIdMa], references: [id], map: "ShareToShareDetailMa")
-  shareIdMa       Int?           @unique
-  shareAv         ShareDetail?   @relation("ShareToShareDetailAv", fields: [shareIdAv], references: [id], map: "ShareToShareDetailAv")
-  shareIdAv       Int?           @unique
-  shareLiability  ShareDetail?   @relation("ShareToShareDetailLiability", fields: [shareIdLiability], references: [id], map: "ShareToShareDetailLiability")
-  shareIdLiability Int?           @unique
-  calculators     Calculator[]   @relation("CalculatorToShare")
-  transactions    Transaction[]  @relation("ShareToTransaction")
+  id              Int           @id @default(autoincrement())
+  shareIdPdma     Int?          @unique
+  shareIdMa       Int?          @unique
+  shareIdAv       Int?          @unique
+  shareIdLiability Int?          @unique
+  calculators     Calculator[]  @relation("CalculatorToShare")
+  transactions    Transaction[] @relation("ShareToTransaction")
 }
 
 model Calculator {
@@ -134,45 +106,45 @@ model Calculator {
   inputOpeningfund     String
   inputStatementPeriod String
   inputTreatyYear      Int
-  inputTreatyDetail    TreatyYear?  @relation("CalculatorToTreatyDetail", fields: [treatyDetailId], references: [id])
   treatyDetailId       Int?
-  inputLayerDetail     Layer?       @relation("CalculatorToLayerDetail", fields: [layerDetailId], references: [id])
   layerDetailId        Int?
-  inputPremium         Premium?     @relation("CalculatorToPremium", fields: [premiumId], references: [id])
   premiumId            Int?
-  inputShare           Share?       @relation("CalculatorToShare", fields: [shareId], references: [id])
   shareId              Int?
   version              String       @default("1")
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
   transaction          Transaction? @relation("CalculatorToTransaction")
+  TreatyYear           TreatyYear?  @relation("CalculatorToTreatyDetail", fields: [treatyDetailId], references: [id])
+  Layer                Layer?       @relation("CalculatorToLayerDetail", fields: [layerDetailId], references: [id])
+  Premium              Premium?     @relation("CalculatorToPremium", fields: [premiumId], references: [id])
+  Share                Share?       @relation("CalculatorToShare", fields: [shareId], references: [id])
 }
 
 model Transaction {
-  id              Int       @id @default(autoincrement())
-  transactionCode String    @unique
-  transactionDate DateTime  @default(now())
+  id              Int           @id @default(autoincrement())
+  transactionCode String        @unique
+  transactionDate DateTime      @default(now())
   amountUSD       Float?
   amountIDR       Float?
-  treatyYear      TreatyYear? @relation("TreatyYearToTransaction", fields: [treatyYearId], references: [id])
   treatyYearId    Int?
-  treatyDetail    TreatyDetail? @relation("TreatyDetailToTransaction", fields: [treatyDetailId], references: [id])
   treatyDetailId  Int?
-  layer           Layer? @relation("LayerToTransaction", fields: [layerId], references: [id])
   layerId         Int?
-  layerDetail     LayerDetail? @relation("LayerDetailToTransaction", fields: [layerDetailId], references: [id])
   layerDetailId   Int?
-  premium         Premium? @relation("PremiumToTransaction", fields: [premiumId], references: [id])
   premiumId       Int?
-  premiumDetail   PremiumDetail? @relation("PremiumDetailToTransaction", fields: [premiumDetailId], references: [id])
   premiumDetailId Int?
-  share           Share? @relation("ShareToTransaction", fields: [shareId], references: [id])
   shareId         Int?
-  shareDetail     ShareDetail? @relation("ShareDetailToTransaction", fields: [shareDetailId], references: [id])
   shareDetailId   Int?
-  version         String    @default("1")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  calculator      Calculator? @relation("CalculatorToTransaction", fields: [calculatorId], references: [id])
-  calculatorId    Int? @unique
+  version         String        @default("1")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  calculatorId    Int?          @unique
+  TreatyDetail    TreatyDetail? @relation("TreatyDetailToTransaction", fields: [treatyDetailId], references: [id])
+  TreatyYear      TreatyYear?   @relation("TreatyYearToTransaction", fields: [treatyYearId], references: [id])
+  LayerDetail     LayerDetail?  @relation("LayerDetailToTransaction", fields: [layerDetailId], references: [id])
+  Layer           Layer?        @relation("LayerToTransaction", fields: [layerId], references: [id])
+  PremiumDetail   PremiumDetail? @relation("PremiumDetailToTransaction", fields: [premiumDetailId], references: [id])
+  Premium         Premium?      @relation("PremiumToTransaction", fields: [premiumId], references: [id])
+  ShareDetail     ShareDetail?  @relation("ShareDetailToTransaction", fields: [shareDetailId], references: [id])
+  Share           Share?        @relation("ShareToTransaction", fields: [shareId], references: [id])
+  Calculator      Calculator?   @relation("CalculatorToTransaction", fields: [calculatorId], references: [id])
 }
